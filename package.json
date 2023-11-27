@@ -1,11 +1,12 @@
 {
-  "name": "tone-top-list",
+  "name": "album-pulse",
   "version": "1.0.0",
   "description": "CS 546 - Group Project",
   "main": "app.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "Burak Yesil, Sanya Mann, Nusiba Zaman, Melissa Ozcan, Makena Williamson",
   "license": "ISC"
 }
