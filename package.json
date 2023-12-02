@@ -5,8 +5,12 @@
   "main": "app.js",
   "type": "module",
   "scripts": {
+    "start": "node app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Burak Yesil, Sanya Mann, Nusiba Zaman, Melissa Ozcan, Makena Williamson",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
 }
