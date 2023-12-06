@@ -1,35 +1,88 @@
 // TODO: Implement user related routes -> Export
-
 import { Router } from 'express';
-const router = Router();
+
+import {userData} from '../data/index.js'
 import helpers from '../helpers.js';
 
 // TODO: Import data functions
+const router = Router();
 
 // Login
+router
+    .route("/")
+    .get(async(req, res)=>{
+        try{ 
+            return res.render("about",
+            {
+                title: "About" 
+            })
+        }catch(e){
+            return res.status(404).json({ error: e.message });  
+        }
+        return 1
+    })
+
+
 router
     .route('/login')
     .get(async (req, res) => {
         try {
-            // TODO: Input validation
-            // TODO: Take user/password -> Find in database -> redirect to user profile html route
+            return res.render("login", {
+                title: "Login",
+            })
         } catch (e) {
-            // TODO: Revise later
-            console.log(e)
             return res.status(404).json({ error: e.message });
         }
-    });
+    }).post(
+        async (req, res) =>{
+            //TODO Input Validation
+            try{
+                const user = await userData.loginUser(req.body.user, req.body.pass, req.body.confirmPass)
+                return res.send(user)
+            }catch(e){
+                return res.send({error: e.message})
+            }
+
+        }
+    )
 
 // Registration
 router
     .route('/register')
-    .post(async (req, res) =>{
-        try{
-            //TODO: Input Validation
-            //TODO: Check if user exists -> register user/update db -> redirect to login
-        }catch(e){
-            // TODO: Revise later
-            console.log(e)
+    .get(async (req, res) =>{
+        try {
+            return res.render("register", {
+                title: "Register",
+            })
+        } catch (e) {
+            return res.status(404).json({ error: e.message });
+        }
+    }).post(
+        async (req, res) =>{
+            //TODO Input Validation
+            try{
+                const user = await userData.registerUser(req.body.user, req.body.pass, req.body.confirmPass)
+                if (user){
+                    req.session.user = user
+                    return res.send(user)
+                }
+            }catch(e){
+                return res.send({error: e.message})
+            }
+
+        }
+    )
+
+
+// Registration
+router
+    .route('/about')
+    .get(async (req, res) =>{
+        try {
+            return res.render("about", {
+                title: "About",
+            })
+        } catch (e) {
             return res.status(404).json({ error: e.message });
         }
     });

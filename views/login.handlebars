@@ -1,0 +1,21 @@
+{{!
+
+login form handlebar template
+
+}}
+
+<div class="container">
+    <form id="login-form" action="/login" method="POST">
+        <label for="user"><b>Username: </b></label>
+        <input type="text" placeholder="Enter Username" name="user" required />
+
+        <label for="pass"><b>Password: </b></label>
+        <input type="password" placeholder="Enter Password" name="pass" required />
+
+        <button type="submit">Login</button>
+    </form>
+</div>
+<div class="container">
+    <a href="/resetpass"> Forgot Password?</a>
+    <a href="/register"> New Account</a>
+</div>
