@@ -114,3 +114,5 @@ router
             return res.status(404).json({ error: e.message });
         }
     })
+
+export default router;
