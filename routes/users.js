@@ -61,13 +61,10 @@ router
         async (req, res) =>{
             //TODO Input Validation
             try{
-                const user = await userData.registerUser(req.body.user, req.body.pass, req.body.confirmPass)
-                if (user){
-                    req.session.user = user
-                    return res.send(user)
-                }
+                const user = await userData.registerUser(req.body.user, req.body.pass, req.body.confirmPass);
+                return res.redirect('/login');
             }catch(e){
-                return res.send({error: e.message})
+                return res.send({registrationPosterror: e.stack})
             }
 
         }
