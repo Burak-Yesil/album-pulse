@@ -7,6 +7,7 @@ export const registerUser = async (
     confirmPassword
   ) => {
 
+
     //Do Input Validation:
     //Check if user exists, passwords match, etc.
     console.log("entered register")
