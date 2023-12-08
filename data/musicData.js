@@ -2,13 +2,6 @@ import * as col from '../config/mongoCollections.js';
 import * as spotify from './spotifyAPI.js';
 
 
-export const newAlbum = async (name) => {
-// adds album to database with info from spotify API and average ranking
-
-
-
-}
-
 export const getRankings = async (name) => {
 // checks if album has been ranked yet. If yes, returns rankings and information for that album. 
 // If not, finds album from spotifyAPI and returns that there are no rankings
@@ -19,7 +12,7 @@ if(!album){
     // can't find album in collection, so look with API
     album = spotify.albumInfo(name);
     if(!album){ throw 'Album could not be found.';}
-    return {album: album, ranking: 'No Rankings Yet'};
+    return {album: album, ranking: {}};
 }
 // If album exists, return its rankings and 
 const rankings = {}
@@ -39,9 +32,33 @@ export const addRanking = async (name, rating, review) => {
 // lets user add ranking and then adds ranking to the rankings database
 // also adds ranking to the array of rankings in the album object; edits albums database 
 
+// validation 
+// check if name is string and checking if album exists at all is done in getRankings
+// rating must be int between 1-5
+// review CAN be empty !! must be string and add a word limit 
+
 let newRanking = {
-    album_Name: name,
-    
+    albumName: name,
+    rating: rating,
+    review: review
 }
+
+// add ranking to collection of all album rankings 
+const rankingcol = await col.rankings();
+const addRanking = await rankingcol.insertOne(newRanking);
+
+// find all rankings for this album
+const obj = await getRankings(name);
+const album = obj.album;  // the album object in the collection
+const rankings = obj.rankings; // array of rankings for specific album
+
+const numberOfRankings = rankings.length(); 
+let total = 0;
+for(i=0; i<numberOfRankings; i++){
+    total += rankings[i].rating;
+}
+const avg = total / numberOfRankings; 
+album.avgranking = avg;
+
 
 }

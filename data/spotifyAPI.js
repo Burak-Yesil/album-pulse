@@ -76,6 +76,33 @@ const spotifyAPI = (function() {
   })();
 
 
+export const getAlbumObject = async(albumName) => {
+    const token = await spotifyAPI.getToken();
+    const result = await fetch(`https://api.spotify.com/v1/search?q=${encodeURIComponent(albumName)}&type=album`, {
+          method: 'GET',
+          headers: { 'Authorization': 'Bearer ' + token }
+    });
+    const data = await result.json();
+    const firstAlbum=data.albums.items[0];
+
+    const name = firstAlbum.name;
+    const artistName = firstAlbum.artists[0].name;
+    const genres = firstAlbum.genres;
+    const totalTracks = firstAlbum.total_tracks;
+    const albumType = firstAlbum.album_type;
+    const albumCover = firstAlbum.images;
+    
+    return {
+      albumName: name,
+      artistNames: artistName,
+      genres: genres,
+      totalTracks: totalTracks,
+      albumType: albumType,
+      albumCover: albumCover,
+      avgranking: null
+    }
+}
+
 //how to use:
 const token = await spotifyAPI.getToken();
 const albumName = 'Blue Slide Park'; // Replace with the desired album name
