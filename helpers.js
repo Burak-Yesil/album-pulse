@@ -1,3 +1,19 @@
+// Helper functions to validate types:
+let isValidNumber = (number) => {
+    return ((typeof number === 'number') && !isNaN(number) && isFinite(number));
+}
+
+let isValidString = (str) => {
+    return ((typeof str === 'string') && (str != null));
+}
+
+let isValidArray = (arr) => {
+    return (Array.isArray(arr));
+}
+
+let isValidObject = (obj) => {
+    return ((typeof obj === 'object') && (!Array.isArray(obj)) && (obj !== null));
+}
 
 //source: https://stackoverflow.com/questions/5778020/check-whether-an-input-string-contains-a-number-in-javascript 
 const includesNumber= (input) => {
@@ -23,4 +39,4 @@ const validPassword = (password) => {
     
 };
 
-export default {includesNumber, validEmail, validPassword};
+export default {includesNumber, validEmail, validPassword, isValidArray, isValidNumber, isValidObject, isValidString};
