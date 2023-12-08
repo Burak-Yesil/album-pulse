@@ -7,10 +7,12 @@ export const getRankings = async (name) => {
 // If not, finds album from spotifyAPI and returns that there are no rankings
 if(!name){ throw 'Must Enter Album Name'; }
 const album = await col.albums.findOne({name});
+const albums = await col.albums();
 const { ranks } = await col.rankings();
 if(!album){
     // can't find album in collection, so look with API
-    album = spotify.albumInfo(name);
+    album = spotify.getAlbumObject(name);
+    const addAlbum = await albums.insertOne(album);
     if(!album){ throw 'Album could not be found.';}
     return {album: album, ranking: {}};
 }
