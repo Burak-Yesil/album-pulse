@@ -154,6 +154,20 @@ const spotifyAPI = (function() {
     }
 })();
 
+/* after making all the functions for like getName and getCover can we fill in this function to export into musicdata
+export const albumInfo = async (albumName) => {
+  token = await spotifyAPI.getToken();
+  info = await spotifyAPI.getAlbum(token, albumName);
+  return {
+    albumName: info.name,
+    artistNames: 
+    genres: 
+    totalTracks: 
+    albumType:
+    albumCover: 
+  }
+}
+*/ 
 
 const token = await spotifyAPI.getToken();
 const albumName = 'Blue Slide Park'; // Replace with the desired album name
