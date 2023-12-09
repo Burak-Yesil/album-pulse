@@ -6,7 +6,7 @@ const spotifyAPI = (function() {
 
 
     //generates token for us, the token changes every hour so it needs to go through the spotify api everytime
-    const _getToken = async () => {
+    const getToken = async () => {
 
         const result = await fetch('https://accounts.spotify.com/api/token', {
             method: 'POST',
@@ -34,6 +34,82 @@ const spotifyAPI = (function() {
       const firstAlbum = data.albums.items[0];
       return firstAlbum;
   }
+
+  const getAlbumInfo=async(token, albumName)=>{
+    const result = await fetch(`https://api.spotify.com/v1/search?q=${encodeURIComponent(albumName)}&type=album`, {
+          method: 'GET',
+          headers: { 'Authorization': 'Bearer ' + token }
+    });
+    const data = await result.json();
+    const firstAlbum=data.albums.items[0];
+    return firstAlbum;
+  }
+
+  const getAlbumName=async(token, albumName)=>{
+    const result = await fetch(`https://api.spotify.com/v1/search?q=${encodeURIComponent(albumName)}&type=album`, {
+          method: 'GET',
+          headers: { 'Authorization': 'Bearer ' + token }
+    });
+    const data = await result.json();
+    const firstAlbum=data.albums.items[0];
+    return firstAlbum.name;
+  }
+
+  const getAlbumArtist=async(token, albumName)=>{
+    const result = await fetch(`https://api.spotify.com/v1/search?q=${encodeURIComponent(albumName)}&type=album`, {
+          method: 'GET',
+          headers: { 'Authorization': 'Bearer ' + token }
+    });
+    const data = await result.json();
+    const firstAlbum=data.albums.items[0];
+    return firstAlbum.artists[0].name;
+  }
+
+  
+
+  return {
+    getToken,
+    getAlbumInfo,
+    getAlbumName,
+    getAlbumArtist
+  }
+  })();
+
+
+export const getAlbumObject = async(albumName) => {
+    const token = await spotifyAPI.getToken();
+    const result = await fetch(`https://api.spotify.com/v1/search?q=${encodeURIComponent(albumName)}&type=album`, {
+          method: 'GET',
+          headers: { 'Authorization': 'Bearer ' + token }
+    });
+    const data = await result.json();
+    const firstAlbum=data.albums.items[0];
+
+    const name = firstAlbum.name;
+    const artistName = firstAlbum.artists[0].name;
+    const genres = firstAlbum.genres;
+    const totalTracks = firstAlbum.total_tracks;
+    const albumType = firstAlbum.album_type;
+    const albumCover = firstAlbum.images;
+    
+    return {
+      albumName: name,
+      artistNames: artistName,
+      genres: genres,
+      totalTracks: totalTracks,
+      albumType: albumType,
+      albumCover: albumCover,
+      avgranking: null
+    }
+}
+
+//how to use:
+const token = await spotifyAPI.getToken();
+const albumName = 'Blue Slide Park'; // Replace with the desired album name
+const albumInfo = await spotifyAPI.getAlbumName(token, albumName);
+console.log(albumInfo);
+
+
   
 //the specs, important ones to keep note of : name, images
 
@@ -144,18 +220,19 @@ const spotifyAPI = (function() {
 */
 
 
-    return {
-        getToken() {
-            return _getToken();
-        },
-        getAlbum(token, albumName){
-            return _getAlbum(token, albumName);
-        }
-    }
-})();
 
+/* after making all the functions for like getName and getCover can we fill in this function to export into musicdata
+export const albumInfo = async (albumName) => {
+  token = await spotifyAPI.getToken();
+  info = await spotifyAPI.getAlbum(token, albumName);
+  return {
+    albumName: info.name,
+    artistNames: 
+    genres: 
+    totalTracks: 
+    albumType:
+    albumCover: 
+  }
+}
+*/ 
 
-const token = await spotifyAPI.getToken();
-const albumName = 'Blue Slide Park'; // Replace with the desired album name
-const albumInfo = await spotifyAPI.getAlbum(token, albumName);
-console.log(albumInfo.name);
