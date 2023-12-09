@@ -20,10 +20,37 @@ const spotifyAPI = (function() {
         const data = await result.json();
         return data.access_token;
     }
-    
+
+    const getReccomendations = async (albumName) => {
+      try {
+          let token = await getToken();
+          let albumInfo = await getAlbumInfo(albumName);
+          let albumArtists = albumInfo.artists.map(artist => artist.id);
+  
+          const queryParams = new URLSearchParams({
+              seed_artists: albumArtists.join(','),
+              limit: 3
+          });
+          const result = await fetch(`https://api.spotify.com/v1/recommendations?${queryParams}`, {
+              method: 'GET',
+              headers: {
+                  'Authorization': 'Bearer ' + token,
+                  'Content-Type': 'application/json'
+              }
+          });
+          let data = await result.json();
+            let recommendedAlbums = data?.tracks?.map(track => track.album.name) || [];
+          return recommendedAlbums;
+      } catch (error) {
+          console.error('Error in getReccomendations:', error);
+          return null;
+      }
+  }
+  
 
     //this is how we will get all the album info. the specs for this can be found here: https://developer.spotify.com/documentation/web-api/reference/get-an-album
-    const _getAlbum = async (token, albumName) => {
+    const _getAlbum = async (albumName) => {
+      const token = await spotifyAPI.getToken();
       const result = await fetch(`https://api.spotify.com/v1/search?q=${encodeURIComponent(albumName)}&type=album`, {
           method: 'GET',
           headers: { 'Authorization': 'Bearer ' + token }
@@ -35,7 +62,8 @@ const spotifyAPI = (function() {
       return firstAlbum;
   }
 
-  const getAlbumInfo=async(token, albumName)=>{
+  const getAlbumInfo=async(albumName)=>{
+    const token = await spotifyAPI.getToken();
     const result = await fetch(`https://api.spotify.com/v1/search?q=${encodeURIComponent(albumName)}&type=album`, {
           method: 'GET',
           headers: { 'Authorization': 'Bearer ' + token }
@@ -45,7 +73,8 @@ const spotifyAPI = (function() {
     return firstAlbum;
   }
 
-  const getAlbumName=async(token, albumName)=>{
+  const getAlbumName=async(albumName)=>{
+    const token = await spotifyAPI.getToken();
     const result = await fetch(`https://api.spotify.com/v1/search?q=${encodeURIComponent(albumName)}&type=album`, {
           method: 'GET',
           headers: { 'Authorization': 'Bearer ' + token }
@@ -55,7 +84,8 @@ const spotifyAPI = (function() {
     return firstAlbum.name;
   }
 
-  const getAlbumArtist=async(token, albumName)=>{
+  const getAlbumArtist=async(albumName)=>{
+    const token = await spotifyAPI.getToken();
     const result = await fetch(`https://api.spotify.com/v1/search?q=${encodeURIComponent(albumName)}&type=album`, {
           method: 'GET',
           headers: { 'Authorization': 'Bearer ' + token }
@@ -65,13 +95,12 @@ const spotifyAPI = (function() {
     return firstAlbum.artists[0].name;
   }
 
-  
-
   return {
     getToken,
     getAlbumInfo,
     getAlbumName,
-    getAlbumArtist
+    getAlbumArtist,
+    getReccomendations
   }
   })();
 
@@ -103,10 +132,11 @@ export const getAlbumObject = async(albumName) => {
     }
 }
 
+
 //how to use:
-const token = await spotifyAPI.getToken();
-const albumName = 'Blue Slide Park'; // Replace with the desired album name
-const albumInfo = await spotifyAPI.getAlbumName(token, albumName);
+//const token = await spotifyAPI.getToken();
+const albumName = 'Twenty Something Nightmare'; // Replace with the desired album name
+const albumInfo = await spotifyAPI.getReccomendations(albumName);
 console.log(albumInfo);
 
 
