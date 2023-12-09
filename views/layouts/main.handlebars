@@ -9,6 +9,15 @@
     <body>
         <header>
             <a href="/about">LOGO</a>
+            {{#if loggedIn}}
+                <nav>
+                    <ul>
+                        <li><a href="/about">About</a></li>
+                        <li><a href="/user">Profile</a></li>
+                        <li><a href="/trending">Trending</a></li>
+                    </ul>
+                </nav>
+            {{/if}}
         </header>
         <main>
             {{{body}}}

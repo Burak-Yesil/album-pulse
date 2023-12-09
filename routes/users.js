@@ -12,14 +12,18 @@ router
     .route("/")
     .get(async(req, res)=>{
         try{ 
+            let loggedIn = false;
+            if(req.session.user){
+                loggedIn = true;
+            }   
             return res.render("about",
             {
-                title: "About" 
+                title: "About",
+                loggedIn
             })
         }catch(e){
             return res.status(404).json({ error: e.message });  
         }
-        return 1
     })
 
 
@@ -27,8 +31,13 @@ router
     .route('/login')
     .get(async (req, res) => {
         try {
+            let loggedIn = false;
+            if(req.session.user){
+                loggedIn = true;
+            }
             return res.render("login", {
                 title: "Login",
+                loggedIn
             })
         } catch (e) {
             return res.status(404).json({ error: e.message });
@@ -37,6 +46,7 @@ router
     .post(
         async (req, res) =>{
             //TODO Input Validation
+            console.log('here')
             try{
                 let username = req.body.user;
                 let password = req.body.pass;
@@ -61,8 +71,13 @@ router
     .route('/register')
     .get(async (req, res) =>{
         try {
+            let loggedIn = false;
+            if(req.session.user){
+                loggedIn = true;
+            }
             return res.render("register", {
                 title: "Register",
+                loggedIn
             })
         } catch (e) {
             return res.status(404).json({ error: e.message });
@@ -87,8 +102,13 @@ router
     .route('/about')
     .get(async (req, res) =>{
         try {
+            let loggedIn = false;
+            if(req.session.user){
+                loggedIn = true;
+            }
             return res.render("about", {
                 title: "About",
+                loggedIn
             })
         } catch (e) {
             return res.status(404).json({ error: e.message });
@@ -101,7 +121,11 @@ router
     .get(async (req, res) =>{
         try{
             // TODO: 
-            return res.render('user', {user: req.params.username})
+            let loggedIn = false;
+            if(req.session.user){
+                loggedIn = true;
+            }
+            return res.render('user', {title: "Profile", loggedIn, user: req.params.username})
         }catch(e){
             // TODO: Revise later
             return res.status(404).json({ error: e.message });
