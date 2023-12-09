@@ -12,14 +12,18 @@ router
     .route("/")
     .get(async(req, res)=>{
         try{ 
+            let loggedIn = false;
+            if(req.session.user){
+                loggedIn = true;
+            }   
             return res.render("about",
             {
-                title: "About" 
+                title: "About",
+                loggedIn
             })
         }catch(e){
             return res.status(404).json({ error: e.message });  
         }
-        return 1
     })
 
 
@@ -27,37 +31,59 @@ router
     .route('/login')
     .get(async (req, res) => {
         try {
+            let loggedIn = false;
+            if(req.session.user){
+                loggedIn = true;
+            }
             return res.render("login", {
                 title: "Login",
+                loggedIn
             })
         } catch (e) {
             return res.status(404).json({ error: e.message });
         }
-    }).post(
+    })
+    .post(
         async (req, res) =>{
             //TODO Input Validation
+            console.log('here')
             try{
-                const user = await userData.loginUser(req.body.user, req.body.pass, req.body.confirmPass)
-                return res.send(user)
+                let username = req.body.user;
+                let password = req.body.pass;
+                let confirmPassword = req.body.confirmPass;
+                const person = await userData.loginUser(username, password, confirmPassword);
+                let url = '/user/' + username;
+                return res.redirect(url);
             }catch(e){
-                return res.send({error: e.message})
+                return res.status(400).render('login', {title: "Login", error: e.message});
             }
-
         }
     )
+
+router.route('/logout').get(async (req, res) => {
+    //code here for GET
+    req.session.destroy();
+    return res.render('logout', { title: "Logout" });
+});
 
 // Registration
 router
     .route('/register')
     .get(async (req, res) =>{
         try {
+            let loggedIn = false;
+            if(req.session.user){
+                loggedIn = true;
+            }
             return res.render("register", {
                 title: "Register",
+                loggedIn
             })
         } catch (e) {
             return res.status(404).json({ error: e.message });
         }
-    }).post(
+    })
+    .post(
         async (req, res) =>{
             //TODO Input Validation
             try{
@@ -76,8 +102,13 @@ router
     .route('/about')
     .get(async (req, res) =>{
         try {
+            let loggedIn = false;
+            if(req.session.user){
+                loggedIn = true;
+            }
             return res.render("about", {
                 title: "About",
+                loggedIn
             })
         } catch (e) {
             return res.status(404).json({ error: e.message });
@@ -86,21 +117,25 @@ router
 
 // Create ranking / Delete user
 router
-    .route('/:userid') 
+    .route('/user/:username') 
     .get(async (req, res) =>{
         try{
-            // TODO: Fetch the album that user searched up once Submit button is pressed
-            // Cont. Once name is fetched, query spotify api
-            // Cont. Once album is found, then allow ranking -> get ranking
+            // TODO: 
+            let loggedIn = false;
+            if(req.session.user){
+                loggedIn = true;
+            }
+            return res.render('user', {title: "Profile", loggedIn, user: req.params.username})
         }catch(e){
             // TODO: Revise later
-            console.log(e)
             return res.status(404).json({ error: e.message });
         }
     })
     .post(async (req, res) =>{
         try{
-            // TODO: Post album that was queried to database along with ranking to user/album collection
+            // TODO: Fetch the album that user searched up once Submit button is pressed
+            // Cont. Once name is fetched, query spotify api
+            // Cont. Once album is found, then allow ranking -> get ranking
         }catch(e){
             // TODO: Revise later
             console.log(e)
