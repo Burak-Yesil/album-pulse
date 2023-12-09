@@ -31,7 +31,7 @@ router
                 title: "Login",
             })
         } catch (e) {
-            return res.status(404).json({ error: e.message });
+            return res.status(404).json({ loginGetError: e.message });
         }
     }).post(
         async (req, res) =>{
@@ -40,7 +40,7 @@ router
                 const user = await userData.loginUser(req.body.user, req.body.pass, req.body.confirmPass)
                 return res.send(user)
             }catch(e){
-                return res.send({error: e.message})
+                return res.send({loginPostError: e.message})
             }
 
         }

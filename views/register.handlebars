@@ -2,13 +2,13 @@
 
     <form id="registration-form" action="/register" method="POST">
         <label for="user"><b>Username: </b></label>
-        <input type="text" placeholder="Enter Username" name="user" required />
+        <input type="text" placeholder="Enter Username" name="user" id="pass" required />
 
         <label for="pass"><b>Password: </b></label>
-        <input type="password" placeholder="Enter Password" name="pass" required />
+        <input type="password" placeholder="Enter Password" name="pass" id="pass" required />
 
         <label for="confirm-pass"><b>Confirm Password: </b></label>
-        <input type="password" placeholder="Confirm Password" name="confirmPass" required />
+        <input type="password" placeholder="Confirm Password" name="confirm-pass" id="confirm-pass" required />
 
         <!-- put other shit here for making an acc -->
 
@@ -19,3 +19,4 @@
 
     <a href="/login"> Already Have an Account? Log In </a>
 </div>
+<p id="error" class="error" hidden></p>
