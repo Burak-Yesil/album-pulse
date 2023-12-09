@@ -12,8 +12,6 @@ app.use(express.static('public'));
 app.engine('handlebars', exphbs.engine({defaultLayout: 'main'}));
 app.set('view engine', 'handlebars');
 
-configRoutesFunction(app);
-
 app.use(session({
   name: 'AuthState',
   secret: 'some secret string!',
@@ -22,7 +20,7 @@ app.use(session({
 }))
 
 
-app.use(async(req, res, next)=>{
+app.use('/', async(req, res, next)=>{
   const currentPath = req.path.toLowerCase();
   if (!req.session.user){
     console.log(currentPath)
@@ -40,7 +38,7 @@ app.use(async(req, res, next)=>{
 
 
 
-
+configRoutesFunction(app);
 
 app.listen(3000, () => {
   console.log("We've now got a server!");
