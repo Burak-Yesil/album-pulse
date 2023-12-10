@@ -17,6 +17,7 @@ export const registerUser = async (
     const doc = {
       userName,
       password,
+      rankings: []
     }
     
     const result = await usersCollection.insertOne(doc);
@@ -34,7 +35,9 @@ export const loginUser = async (userName, password) => {
     
     if (validPassword){
       return {
-        userName: user.userName
+        id: user._id,
+        userName: user.userName,
+        rankings: user.rankings
       }
     }
     throw new Error("Either the email address or password is invalid")
