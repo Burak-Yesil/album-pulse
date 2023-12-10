@@ -20,12 +20,12 @@ const includesNumber= (input) => {
     return /\d/.test(input);
 }
 
-//source: https://www.scaler.com/topics/email-validation-in-javascript/
-const validEmail = (email) => {
-    var emailFormat =  /\S+@\S+\.\S+/;
-    if (email.match(emailFormat)) return true;
-    else return false;
-};
+const validUser = (user) => {
+if(typeof user !== 'string') return false;
+    user=user.trim();
+    if(user.length<5) return false;
+    return true;
+}
 
 //https://stackoverflow.com/questions/12090077/javascript-regular-expression-password-validation-having-special-characters
 const validPassword = (password) => {
@@ -39,4 +39,4 @@ const validPassword = (password) => {
     
 };
 
-export default {includesNumber, validEmail, validPassword, isValidArray, isValidNumber, isValidObject, isValidString};
+export default {includesNumber, validUser, validPassword, isValidArray, isValidNumber, isValidObject, isValidString};
