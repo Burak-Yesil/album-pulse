@@ -19,6 +19,7 @@ router
         }catch(e){
             return res.status(404).json({ error: e.message });  
         }
+        return 1
     })
 
 
@@ -28,25 +29,24 @@ router
         try {
             return res.render("login", {
                 title: "Login",
-                loggedIn
             })
         } catch (e) {
-            return res.status(404).json({ loginGetError: e.message });
+            return res.status(404).json({ error: e.message });
         }
     })
     .post(
         async (req, res) =>{
             //TODO Input Validation
-            console.log('here')
             try{
                 let username = req.body.user;
                 let password = req.body.pass;
                 let confirmPassword = req.body.confirmPass;
                 const person = await userData.loginUser(username, password, confirmPassword);
+                req.session.user = person
                 let url = '/user/' + username;
                 return res.redirect(url);
             }catch(e){
-                return res.send({error: e.message})
+                return res.status(400).render('login', {title: "Login", error: e.message});
             }
         }
     )
@@ -64,7 +64,6 @@ router
         try {
             return res.render("register", {
                 title: "Register",
-                loggedIn
             })
         } catch (e) {
             return res.status(404).json({ error: e.message });
@@ -91,7 +90,6 @@ router
         try {
             return res.render("about", {
                 title: "About",
-                loggedIn
             })
         } catch (e) {
             return res.status(404).json({ error: e.message });
@@ -103,9 +101,9 @@ router
     .route('/user/:username') 
     .get(async (req, res) =>{
         try{
-            // TODO: Fetch the album that user searched up once Submit button is pressed
-            // Cont. Once name is fetched, query spotify api
-            // Cont. Once album is found, then allow ranking -> get ranking
+            // TODO: 
+            const user = req.session.user
+            return res.render('user', {user: user.userName })
         }catch(e){
             // TODO: Revise later
             return res.status(404).json({ error: e.message });
