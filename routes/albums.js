@@ -38,7 +38,7 @@ router
     .route('/trending')
     .get(async (req, res) => {
         try {
-            // TODO: Call trending function
+            res.render('trending', { title: 'Trending Albums' });
         } catch (e) {
             // TODO: Revise later
             console.log(e)

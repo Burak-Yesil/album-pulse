@@ -80,7 +80,8 @@ export const findUser = async (username) => {
 }
 
 /**
- * @returns the top 10 albums with best average rankings from albums collection
+ * @returns the top 10 albums with best average rankings from albums collection.
+ * If there are 0-10 albums, then it returns all of them.
  */
 export const topRanked = async () => {
     const albums = await col.albums;
