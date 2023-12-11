@@ -1,6 +1,8 @@
 <!-- Page for "Most popular albums based on rankings" right now --->
 
-<p>Trending Albums on AlbumPulse</p>
-{{#each topRanked}}
-    <p>{{this.title}} by {{this.artist}}</p>
-{{/each}}
+<p>Trending Albums on AlbumPulse:</p>
+<ul class="top_ranked">
+    {{#each topRanked}}
+    <li>{{this}}</li>
+    {{/each}}
+</ul>

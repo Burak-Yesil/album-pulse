@@ -1,6 +1,6 @@
 import * as col from '../config/mongoCollections.js';
 import * as spotify from './spotifyAPI.js';
-import { validUser, validPassword } from './helpers.js';
+import { validUser, validPassword } from '../helpers.js';
 
 export const getRankings = async (name) => {
     // checks if album has been ranked yet. If yes, returns rankings and information for that album. 
@@ -81,11 +81,18 @@ export const findUser = async (username) => {
 
 /**
  * @returns the top 10 albums with best average rankings from albums collection.
- * If there are 0-10 albums, then it returns all of them.
+ * If there are 0 albums, then it returns a message saying there are no albums.
+ * If there are <10 albums, then it returns all of them.
  */
 export const topRanked = async () => {
     const albums = await col.albums;
     const rankings = await col.rankings;
+    if (albums.length == 0) {
+        return ['There are currently no albums in the database. You should add some!'];
+    }
+    else if (albums.length < 10) {
+        return albums;
+    }
 
     const albumRankings = {}; // albums and all of their rankings
 
@@ -104,7 +111,7 @@ export const topRanked = async () => {
         let avg = total / currRankings.length;
         albumRankings[curr.albumName] = avg;
     }
-
+    // TODO: format the data to be ready to be printed on the webpage
     const sorted = Object.keys(albumRankings).sort(function (a, b) { return albumRankings[a] - albumRankings[b] });
     return sorted.slice(0, 10);
 }

@@ -20,7 +20,7 @@ const includesNumber= (input) => {
     return /\d/.test(input);
 }
 
-const validUser = (user) => {
+export const validUser = (user) => {
 if(typeof user !== 'string') return false;
     user=user.trim();
     if(user.length<5) return false;
@@ -28,7 +28,7 @@ if(typeof user !== 'string') return false;
 }
 
 //https://stackoverflow.com/questions/12090077/javascript-regular-expression-password-validation-having-special-characters
-const validPassword = (password) => {
+export const validPassword = (password) => {
     if(typeof password !== 'string') return false;
     password=password.trim();
     if(password.length<8) return false;

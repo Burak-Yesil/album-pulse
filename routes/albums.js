@@ -3,6 +3,7 @@
 import { Router } from 'express';
 const router = Router();
 import helpers from '../helpers.js';
+import {topRanked } from '../data/musicData.js';
 // TODO: Import data functions
 
 // Specific Album Page
@@ -38,7 +39,8 @@ router
     .route('/trending')
     .get(async (req, res) => {
         try {
-            res.render('trending', { title: 'Trending Albums' });
+            let topRankedAlbums = await topRanked();
+            res.render('trending', { title: 'Trending Albums', topRanked: topRankedAlbums });
         } catch (e) {
             // TODO: Revise later
             console.log(e)
