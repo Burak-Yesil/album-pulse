@@ -3,7 +3,7 @@
 import { Router } from 'express';
 const router = Router();
 import helpers from '../helpers.js';
-import {topRanked } from '../data/musicData.js';
+import { topRanked, mostFrequent } from '../data/musicData.js';
 // TODO: Import data functions
 
 // Specific Album Page
@@ -21,12 +21,13 @@ router
         }
     });
 
-// Album Tier List
+// Most Frequently Ranked Albums List
 router
-    .route('/tierlist')
+    .route('/frequent')
     .get(async (req, res) => {
         try {
-            // TODO: Call tierlist function
+            let mostFrequentAlbums = await mostFrequent();
+            res.render('frequent', { title: 'Most Frequently Ranked Albums', mostFrequent: mostFrequentAlbums });
         } catch (e) {
             // TODO: Revise later
             console.log(e)
@@ -34,7 +35,7 @@ router
         }
     });
 
-// Most frequent albums page
+// Top ranked albums page
 router
     .route('/trending')
     .get(async (req, res) => {
