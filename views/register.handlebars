@@ -1,6 +1,9 @@
 <div class="container">
+    <h1>Requirements:</h1>
+    <p>Username must be at least 5 characters.</p>
+    <p>Password must be at least 8 characters long, no spaces, and must contain at least one of the following: uppercase letter, number, special character.</p>
 
-    <form id="registration-form" action="/register" method="POST">
+    <form id="register-form" action="/register" method="POST">
         <label for="user"><b>Username: </b></label>
         <input type="text" placeholder="Enter Username" name="user" id="pass" required />
 
@@ -10,13 +13,10 @@
         <label for="confirm-pass"><b>Confirm Password: </b></label>
         <input type="password" placeholder="Confirm Password" name="confirm-pass" id="confirm-pass" required />
 
-        <!-- put other shit here for making an acc -->
-
         <button type="submit">Create Account</button>
     </form>
 </div>
 <div class="container">
-
     <a href="/login"> Already Have an Account? Log In </a>
 </div>
 <p id="error" class="error" hidden></p>

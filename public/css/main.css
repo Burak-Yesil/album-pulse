@@ -30,3 +30,7 @@ li a:hover {
 body {
     text-align: center;
 }
+
+.error {
+    color: red;
+}
