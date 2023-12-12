@@ -35,6 +35,16 @@ import bcrypt from 'bcrypt';
         });
     }
 
+    if (searchForm) {
+        searchForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+            checkExists(searchInput.value);
+            if (errorP.innerText === '') {
+                document.getElementById('search-form').submit();
+            }
+        });
+    }
+
     /**
      * Checks if the user exists in the database during login.
      */

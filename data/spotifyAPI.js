@@ -162,6 +162,9 @@ const albumArtist = 'Nicki Minaj';
 const albumInfo = await spotifyAPI.getReccomendations(albumName, albumArtist, 3);
 console.log(albumInfo);
 
+const albumss = await spotifyAPI.getAlbum("hello");
+console.log(albumss);
+
 
   
 //the specs, important ones to keep note of : name, images
