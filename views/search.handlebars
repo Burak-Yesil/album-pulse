@@ -1,0 +1,10 @@
+<form id="search-form" action="/albumsearch" method="post"> 
+    <label for="searchInput"> Search Album: </label>
+    <input type="search" name="searchInput" id="searchInput" placeholder="Search...">
+    <button type="submit">Search</button>
+</form>
+<ul class="search-results">
+    {{#each albumresults}}
+    <li>{{this}}</li>
+    {{/each}}
+</ul>
