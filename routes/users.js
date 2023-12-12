@@ -103,7 +103,7 @@ router
         try{
             // TODO: 
             const user = req.session.user
-            return res.render('user', {user: JSON.stringify(user)})
+            return res.render('user', {title: user.userName})
         }catch(e){
             // TODO: Revise later
             return res.status(404).json({ error: e.message });

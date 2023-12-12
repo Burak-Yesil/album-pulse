@@ -10,9 +10,10 @@ import bcrypt from 'bcrypt';
     let errorP = document.getElementById('error');
     let loginForm = document.getElementById('login-form');
     let registerForm = document.getElementById('registration-form');
+    let searchForm = document.getElementById('search-form');
 
     if (registerForm) {
-        registrationForm.addEventListener('submit', (event) => {
+        registerForm.addEventListener('submit', (event) => {
             console.log('entered registration clientside validation.');
             event.preventDefault();
             checkUser(user.value);

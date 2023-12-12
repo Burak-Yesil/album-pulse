@@ -22,7 +22,6 @@ export const loginUser = async (userName, password) => {
     const user = await usersCollection.findOne({ 'userName': userName }) //TODO: Make sure the schema is good
     if (!user) throw new Error("Either the email address or password is invalid")
     let validPassword = await bcrypt.compare(password, user.password)
-
     if (validPassword) {
         return {
             userName: user.userName

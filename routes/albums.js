@@ -3,10 +3,11 @@
 import { Router } from 'express';
 const router = Router();
 import helpers from '../helpers.js';
-import { topRanked, mostFrequent } from '../data/musicData.js';
+import { spotifyAPI } from '../data/spotifyAPI.js'
+import { topRanked, mostFrequent, getRankings } from '../data/musicData.js';
 // TODO: Import data functions
 
-// Specific Album Page
+// Search for Album Page
 router
     .route('/albumsearch')
     .get(async (req, res) => {
@@ -14,12 +15,27 @@ router
             // TODO: Input validation
             // TODO: Take user input (album name) upon hitting submit button -> Query API
             // TODO: Show all rankings
+            res.render('search', {title: 'Search'});
         } catch (e) {
             // TODO: Revise later
             console.log(e)
             return res.status(404).json({ error: e.message });
         }
+    })
+    .post(async (req, res) =>{
+        try{
+            // TODO: Input validation -> Post comment to ranking
+            let searchFor = req.body.searchInput;
+            const searchedAlbums = await spotifyAPI.getAlbum(searchFor);
+            res.render('search', {title: 'Search Results', albumresults: searchedAlbums });
+        }catch(e){
+            // TODO: Revise later
+            console.log(e)
+            return res.status(404).json({ error: e.message });
+        }
     });
+
+
 
 // Most Frequently Ranked Albums List
 router

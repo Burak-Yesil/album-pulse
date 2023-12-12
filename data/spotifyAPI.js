@@ -1,9 +1,8 @@
-const spotifyAPI = (function() {
+export const spotifyAPI = (function() {
     
     //our specific client id and secret!!
     const clientId = '0e5c2d2170cc49219d0d64b2e38ae77b';
     const clientSecret = '40891fae309f4b5892e1812e9f5d547c';
-
 
     //generates token for us, the token changes every hour so it needs to go through the spotify api everytime
     const getToken = async () => {
