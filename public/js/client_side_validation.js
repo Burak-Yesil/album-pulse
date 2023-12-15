@@ -5,6 +5,8 @@ let errorP = document.getElementById('error');
 let user = document.getElementById('user');
 let pass = document.getElementById('pass');
 let confirmPass = document.getElementById('confirm-pass');
+let searchForm = document.getElementById('search-form');
+let searchInput = document.getElementById('searchInput');
 
 let registerForm = document.getElementById('register-form');
 if (registerForm) {
@@ -12,7 +14,13 @@ if (registerForm) {
         console.log('entered registration clientside validation.');
         event.preventDefault();
         checkUser(user.value);
-        checkPass(pass.value, confirmPass.value);
+        checkPass(pass.value);
+        checkPass(confirmPass.value);
+        if (pass.value != confirmPass.value) {
+            errorP.hidden = false;
+            errorP.innerText = "Passwords must match.";
+    
+        } 
         if (errorP.innerText === '') {
             document.getElementById('register-form').submit();
         }
@@ -33,10 +41,26 @@ if (loginForm) {
     });
 }
 
+if (searchForm) {
+    searchForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+        checkSearch(searchInput.value);
+        if (errorP.innerText === '') {
+            document.getElementById('search-form').submit();
+        }
+    });
+}
 
 /**
 * Checks if the username is valid during login & registration.
 */
+const checkSearch = (search) => {
+    if(search.length > 250){
+        errorP.hidden = false;
+        errorP.innerText = 'exceeded character limit';
+    }
+}
+
 const checkUser = (user) => {
     if (user.length < 5) {
         errorP.hidden = false;
@@ -70,11 +94,6 @@ const checkPass = (password) => {
     else if (!password.match(/[!@#$%^&*]/)) {
         errorP.hidden = false;
         errorP.innerText = "Password must contain at least one special character.";
-    }
-    else if (confirmPass && password != confirmPassword) {
-        errorP.hidden = false;
-        errorP.innerText = "Passwords must match.";
-
     } else {
         errorP.innerText = ''
     }
