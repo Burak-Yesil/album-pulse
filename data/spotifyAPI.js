@@ -127,9 +127,9 @@ export const spotifyAPI = (function() {
   })();
 
 
-export const getAlbumObject = async(albumName) => {
+export const getAlbumObject = async(albumID) => {
     const token = await spotifyAPI.getToken();
-    const result = await fetch(`https://api.spotify.com/v1/search?q=${encodeURIComponent(albumName)}&type=album`, {
+    const result = await fetch(`https://api.spotify.com/v1/search?q=${encodeURIComponent(albumID)}&type=album`, {
           method: 'GET',
           headers: { 'Authorization': 'Bearer ' + token }
     });

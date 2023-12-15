@@ -3,7 +3,7 @@
 import { Router } from 'express';
 const router = Router();
 import helpers from '../helpers.js';
-import { spotifyAPI } from '../data/spotifyAPI.js'
+import { spotifyAPI, getAlbumObject } from '../data/spotifyAPI.js'
 import { topRanked, mostFrequent, getRankings } from '../data/musicData.js';
 
 // Search for Album Page
@@ -64,5 +64,19 @@ router
             return res.status(404).json({ error: e.message });
         }
     });
+
+router.route('/album/:obj')
+    .get(async (req, res) => {
+        try {
+            const albumId = req.params.id;
+            const albumDetails = await getAlbumObject(albumId);
+
+            res.render('albumDetails', { title: 'Album Details', albumDetails: albumDetails });
+        } catch (e) {
+            console.log(e);
+            return res.status(404).json({ error: e.message });
+        }
+    });
+
 
 export default router;
