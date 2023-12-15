@@ -25,35 +25,10 @@ router
         try{
             // TODO: Input validation -> Post comment to ranking
             // let searchFor = req.body.searchInput;
-            return res.redirect('/searchresults');
-        }catch(e){
-            // TODO: Revise later
-            console.log(e)
-            return res.status(404).json({ error: e.message });
-        }
-    });
-
-router
-    .route('/searchresults')
-    .get(async (req, res) => {
-        try {
-            // TODO: Input validation
-            // TODO: Take user input (album name) upon hitting submit button -> Query API
-            // TODO: Show all rankings
+            // return res.redirect('/searchresults');
             let searchFor = req.body.searchInput;
             const searchedAlbums = await spotifyAPI.getAlbum(searchFor);
             res.render('search', {title: 'Search Results', albumresults: searchedAlbums });
-        } catch (e) {
-            // TODO: Revise later
-            console.log(e)
-            return res.status(404).json({ error: e.message });
-        }
-    })
-    .post(async (req, res) =>{
-        try{
-            // TODO: Input validation -> Post comment to ranking
-            // let searchFor = req.body.searchInput;
-            return res.redirect('/searchresults');
         }catch(e){
             // TODO: Revise later
             console.log(e)
