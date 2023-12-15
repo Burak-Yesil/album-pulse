@@ -3,12 +3,17 @@ header {
     text-align: center;
 }
 
-ul {
+
+ul{
+    list-style-type: none;
+}
+/* sorry i commented whoevers style out for now because its making the search part ugly. -sanya 
+/* ul {
     list-style-type: none;
     margin: 0;
     padding: 0;
     overflow: hidden;
-    background-color: #333;
+    background-color: rgb(170, 144, 144);
 }
 
 li {
@@ -16,8 +21,6 @@ li {
 }
 
 li a {
-    display: block;
-    color: white;
     text-align: center;
     padding: 14px 16px;
     text-decoration: none;
@@ -25,7 +28,7 @@ li a {
 
 li a:hover {
     background-color: #111;
-}
+} */
 
 body {
     text-align: center;

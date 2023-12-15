@@ -160,10 +160,10 @@ export const getAlbumObject = async(albumName) => {
 const albumName = "Pink Friday 2"; // Replace with the desired album name
 const albumArtist = 'Nicki Minaj';
 const albumInfo = await spotifyAPI.getReccomendations(albumName, albumArtist, 3);
-console.log(albumInfo);
+// console.log(albumInfo);
 
-const albumss = await spotifyAPI.getAlbum("hello");
-console.log(albumss);
+// const albumss = await spotifyAPI.getAlbum("hello");
+// console.log(albumss);
 
 
   

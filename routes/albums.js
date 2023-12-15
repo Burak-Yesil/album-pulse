@@ -5,7 +5,6 @@ const router = Router();
 import helpers from '../helpers.js';
 import { spotifyAPI } from '../data/spotifyAPI.js'
 import { topRanked, mostFrequent, getRankings } from '../data/musicData.js';
-// TODO: Import data functions
 
 // Search for Album Page
 router
@@ -42,9 +41,7 @@ router
             // TODO: Take user input (album name) upon hitting submit button -> Query API
             // TODO: Show all rankings
             let searchFor = req.body.searchInput;
-            //console.log(searchFor);
             const searchedAlbums = await spotifyAPI.getAlbum(searchFor);
-            //console.log(searchedAlbums);
             res.render('search', {title: 'Search Results', albumresults: searchedAlbums });
         } catch (e) {
             // TODO: Revise later

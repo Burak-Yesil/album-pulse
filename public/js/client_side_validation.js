@@ -41,15 +41,16 @@ if (loginForm) {
     });
 }
 
-if (searchForm) {
-    searchForm.addEventListener('submit', (event) => {
-        event.preventDefault();
-        checkSearch(searchInput.value);
-        if (errorP.innerText === '') {
-            document.getElementById('search-form').submit();
-        }
-    });
-}
+// if (searchForm) {
+//     searchForm.addEventListener('submit', (event) => {
+//         event.preventDefault();
+//         checkSearch(searchInput.value);
+//         if (errorP.innerText === '') {
+//             document.getElementById('search-form').submit();
+//         }
+//     });
+
+
 
 /**
 * Checks if the username is valid during login & registration.

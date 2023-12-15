@@ -62,7 +62,6 @@ router
     .route('/register')
     .get(async (req, res) =>{
         try {
-            console.log('register get route');
             return res.render("register", {
                 title: "Register",
             })
@@ -74,7 +73,6 @@ router
         async (req, res) =>{
             //TODO Input Validation
             try{
-                console.log('register post route');
                 const user = await userData.registerUser(req.body.user, req.body.pass, req.body.confirmPass);
                 return res.redirect('/login');
             }catch(e){

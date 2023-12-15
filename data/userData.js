@@ -4,7 +4,6 @@ import bcrypt from 'bcrypt'
 export const registerUser = async (userName, password, confirmPassword) => {
     //Do Input Validation:
     //Check if user exists, passwords match, etc.
-    console.log("entered register")
     const usersCollection = await users();
     password = await bcrypt.hash(password, 10)
 
