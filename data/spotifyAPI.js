@@ -70,7 +70,7 @@ export const spotifyAPI = (function() {
       });
 
       const data = await result.json();
-      const albums = data.albums.items.map(album => album.name); 
+      const albums = data.albums.items.map(album => album.name + " by " + album.artists[0].name); 
       return albums;
   }
 
