@@ -28,7 +28,7 @@ router
             // return res.redirect('/searchresults');
             let searchFor = req.body.searchInput;
             const searchedAlbums = await spotifyAPI.getAlbum(searchFor);
-            res.render('search', {title: 'Search Results', albumresults: searchedAlbums });
+            res.render('search', {title: 'Search Results', albumresults: searchedAlbums});
         }catch(e){
             // TODO: Revise later
             console.log(e)
@@ -65,13 +65,15 @@ router
         }
     });
 
-router.route('/album/:obj')
+router.route('/album/:id')
     .get(async (req, res) => {
         try {
             const albumId = req.params.id;
-            const albumDetails = await getAlbumObject(albumId);
+            let albumDetails = await getAlbumObject(albumId);
+            let name = albumDetails.albumName;
+            let total = albumDetails.totalTracks
 
-            res.render('albumDetails', { title: 'Album Details', albumDetails: albumDetails });
+            res.render('albumDetails', { title: name, albumDetails: total + " tracks"});
         } catch (e) {
             console.log(e);
             return res.status(404).json({ error: e.message });

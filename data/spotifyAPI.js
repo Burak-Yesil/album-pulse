@@ -70,7 +70,7 @@ export const spotifyAPI = (function() {
       });
 
       const data = await result.json();
-      const albums = data.albums.items.map(album => album.name + " by " + album.artists[0].name); 
+      const albums = data.albums.items.map(album => [album.name, album.artists[0].name, album.id]); 
       return albums;
   }
 
@@ -129,13 +129,11 @@ export const spotifyAPI = (function() {
 
 export const getAlbumObject = async(albumID) => {
     const token = await spotifyAPI.getToken();
-    const result = await fetch(`https://api.spotify.com/v1/search?q=${encodeURIComponent(albumID)}&type=album`, {
+    const result = await fetch(`https://api.spotify.com/v1/albums/${encodeURIComponent(albumID)}`, {
           method: 'GET',
           headers: { 'Authorization': 'Bearer ' + token }
     });
-    const data = await result.json();
-    const firstAlbum=data.albums.items[0];
-
+    const firstAlbum = await result.json();
     const name = firstAlbum.name;
     const artistName = firstAlbum.artists[0].name;
     const genres = firstAlbum.genres;
@@ -161,6 +159,8 @@ const albumName = "Pink Friday 2"; // Replace with the desired album name
 const albumArtist = 'Nicki Minaj';
 const albumInfo = await spotifyAPI.getReccomendations(albumName, albumArtist, 3);
 // console.log(albumInfo);
+// const alb = await getAlbumObject('7D8GwKhqPfHGG9zmz8U6Eq');
+// console.log(alb);
 
 // const albumss = await spotifyAPI.getAlbum("hello");
 // console.log(albumss);
