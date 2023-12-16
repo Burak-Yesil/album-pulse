@@ -51,11 +51,12 @@ router
         }
     )
 
-router.route('/logout').get(async (req, res) => {
-    //code here for GET
-    req.session.destroy();
-    return res.render('logout', { title: "Logout" });
-});
+router
+    .route('/logout')
+    .get(async (req, res) => {
+        req.session.destroy();
+        return res.render('logout', { title: "Logout" });
+    });
 
 // Registration
 router
