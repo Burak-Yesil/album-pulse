@@ -3,17 +3,27 @@ let isValidNumber = (number) => {
     return ((typeof number === 'number') && !isNaN(number) && isFinite(number));
 }
 
-let isValidString = (str) => {
-    return ((typeof str === 'string') && (str != null));
-}
+let isValidString = (strVal, varName) => {
+        if (!strVal) throw `Error: You must supply a ${varName}!`;
+        if (typeof strVal !== 'string') throw `Error: ${varName} must be a string!`;
+        strVal = strVal.trim();
+        if (strVal.length === 0)
+          throw `Error: ${varName} cannot be an empty string or string with just spaces`;
+        if (!isNaN(strVal))
+          throw `Error: ${strVal} is not a valid value for ${varName} as it only contains digits`;
+        return strVal;
+    }
 
 let isValidArray = (arr) => {
     return (Array.isArray(arr));
 }
 
-let isValidObject = (obj) => {
+let isValidObjects = (obj) => {
     return ((typeof obj === 'object') && (!Array.isArray(obj)) && (obj !== null));
 }
+
+
+
 
 //source: https://stackoverflow.com/questions/5778020/check-whether-an-input-string-contains-a-number-in-javascript 
 const includesNumber= (input) => {
