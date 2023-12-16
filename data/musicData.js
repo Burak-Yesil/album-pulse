@@ -157,3 +157,9 @@ export const getRecommendations = async () => {
     const random = Math.floor(Math.random() * 10);
     return top[random];
 }
+
+export const showRankings = async () => {
+    const usersCollection = await col.users();
+    const rankingsCollection = await col.rankings();
+    
+}
