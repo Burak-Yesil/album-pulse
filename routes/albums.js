@@ -14,7 +14,7 @@ router
             // TODO: Input validation
             // TODO: Take user input (album name) upon hitting submit button -> Query API
             // TODO: Show all rankings
-            res.render('search', {title: 'Search'});
+            return res.render('search', {title: 'Search'});
         } catch (e) {
             // TODO: Revise later
             console.log(e)
@@ -28,7 +28,7 @@ router
             // return res.redirect('/searchresults');
             let searchFor = req.body.searchInput;
             const searchedAlbums = await spotifyAPI.getAlbum(searchFor);
-            res.render('search', {title: 'Search Results', albumresults: searchedAlbums});
+            return res.render('search', {title: 'Search Results', albumresults: searchedAlbums});
         }catch(e){
             // TODO: Revise later
             console.log(e)
@@ -43,7 +43,7 @@ router
     .get(async (req, res) => {
         try {
             let mostFrequentAlbums = await mostFrequent();
-            res.render('frequent', { title: 'Most Frequently Ranked Albums', mostFrequent: mostFrequentAlbums });
+            return res.render('frequent', { title: 'Most Frequently Ranked Albums', mostFrequent: mostFrequentAlbums });
         } catch (e) {
             // TODO: Revise later
             console.log(e)
@@ -57,7 +57,7 @@ router
     .get(async (req, res) => {
         try {
             let topRankedAlbums = await topRanked();
-            res.render('trending', { title: 'Trending Albums', topRanked: topRankedAlbums });
+            return res.render('trending', { title: 'Trending Albums', topRanked: topRankedAlbums });
         } catch (e) {
             // TODO: Revise later
             console.log(e)
@@ -91,7 +91,7 @@ router.route('/album/:id')
             if(!cover){
                 cover = 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png';
             }
-            res.render('albumDetails', { title: name, cover: cover, total: total, artists: artists, genres: genres});
+            return res.render('albumDetails', { title: name, cover: cover, total: total, artists: artists, genres: genres});
         } catch (e) {
             console.log(e);
             return res.status(404).json({ error: e.message });
@@ -100,15 +100,19 @@ router.route('/album/:id')
     .post(async (req, res) =>{
         try{
             let name = req.session.user.userName;
-            console.log(name);
             let ranking = req.body.out_of_five;
             let review = req.body.review;
+            let review_bool = false;
+            if(review){
+                review_bool = true;
+            }
             // Note for Sanya: hey :)
             // Also, the line below just needs the album id which i think can get from req.params.id
             // and then the rankings data functions gotta be slightly changed for that (im getting an error that col.albums.findOne
             // is not a function just as a heads up)
-            // let returned = await addRanking(name, ranking, review);
-            return;
+            let returned = await addRanking(req.params.id, name, ranking, review, review_bool);
+            let url = `/user/${name}/rankings`;
+            return res.redirect(url);
         }
         catch (e) {
             console.log(e);
