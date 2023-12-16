@@ -51,7 +51,8 @@ router
     .get(async (req, res) => {
         try {
             let topRankedAlbums = await topRanked();
-            return res.render('trending', { title: 'Trending Albums', topRanked: topRankedAlbums });
+            const user = req.session.user;
+            return res.render('trending', { title: 'Trending Albums', topRanked: topRankedAlbums, userName: user.userName});
         } catch (e) {
             return res.status(400).render('error', {
                 errorMessage: e.message
