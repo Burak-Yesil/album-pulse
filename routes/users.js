@@ -17,9 +17,8 @@ router
                 title: "About" 
             })
         }catch(e){
-            return res.status(404).redirect('error', { error: e.message });  
+            return res.status(404).redirect('error', { error: e.message, status: '404' });  
         }
-        return 1
     })
 
 
@@ -31,7 +30,7 @@ router
                 title: "Login",
             })
         } catch (e) {
-            return res.status(404).redirect('error', { error: e.message });
+            return res.status(404).redirect('error', { error: e.message, status: '404' });
         }
     })
     .post(
@@ -41,13 +40,13 @@ router
                 // Input Validation
                 let username = req.body.user;
                 let password = req.body.pass;
-                if(!user || !pass){
+                if(!username || !password){
                     throw new Error('Error: Must provide username and password')
                 }
-                if(!helpers.isValidString(user) || !helpers.isValidString(password)){
+                if(!helpers.isValidString(username) || !helpers.isValidString(password)){
                     throw new Error('Error: Username and password must be valid strings')
                 }
-                if(user.length < 5){
+                if(username.length < 5){
                     throw new Error('Error: Username must be at least 5 characters long.')
                 }
                 if (password.trim().length < 8) {
@@ -82,8 +81,12 @@ router
 router
     .route('/logout')
     .get(async (req, res) => {
-        req.session.destroy();
-        return res.render('logout', { title: "Logout" });
+        try{
+            req.session.destroy();
+            return res.render('logout', { title: "Logout" });
+        } catch (e) {
+            return res.status(404).render('error', {error: e.message, status: '400'});
+        }
     });
 
 // Registration
@@ -95,7 +98,7 @@ router
                 title: "Register",
             })
         } catch (e) {
-            return res.status(404).redirect('error', { error: e.message });
+            return res.status(404).redirect('error', { error: e.message, status: 404 });
         }
     })
     .post(
@@ -108,8 +111,8 @@ router
                 username = username.toLowerCase();
                 let password = req.body.pass;
                 password = password.trim();
-                let confirmPassword = req.body.confirmPass;
-                confirmPass = confirmPass.trim();
+                let confirmPassword = req['body']['confirm-pass'];
+                confirmPassword = confirmPassword.trim();
                 if(!username || !password || !confirmPassword){
                     throw new Error('Error: Must provide username, password, and confirm your password.');
                 }
@@ -138,10 +141,10 @@ router
                     throw new Error("Confirm password must match password");
                 }
                 // Register User
-                const user = await userData.registerUser(req.body.user, req.body.pass, req.body.confirmPass);
+                const user = await userData.registerUser(username, password, confirmPassword);
                 return res.redirect('/login');
             }catch(e){
-                return res.send({registrationPosterror: e.stack})
+                return res.status(400).redirect('error', {error: e.message, status: '400'})
             }
 
         }

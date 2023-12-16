@@ -32,6 +32,7 @@ if (loginForm) {
     loginForm.addEventListener('submit', (event) => {
         console.log('entered login clientside validation.');
         // CANNOT check if the user exists during clientside. must check in the route.
+        console.log(user);
         event.preventDefault();
         checkUser(user.value);
         checkPass(pass.value);

@@ -49,4 +49,4 @@ export const validPassword = (password) => {
     
 };
 
-export default {includesNumber, validUser, validPassword, isValidArray, isValidNumber, isValidObject, isValidString};
+export default {includesNumber, validUser, validPassword, isValidArray, isValidNumber, isValidObjects, isValidString};
