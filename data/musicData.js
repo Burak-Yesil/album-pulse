@@ -18,7 +18,7 @@ export const getRankings = async (album_id) => {
     // If album exists, return its rankings and 
     const rankings_arr = []
     const albums_rankings = await rankingsCollection.find({albumId: album_id}).toArray();
-    console.log(albums_rankings);
+    //console.log(albums_rankings);
     // for (let i in rankingsCollection) {
     //     let curr = i;
     //     if (curr.albumId == album_id) {
@@ -92,31 +92,30 @@ export const findUser = async (username) => {
  * If there are <10 albums, then it returns all of them.
  */
 export const topRanked = async () => {
-    const albums = await col.albums;
-    const rankings = await col.rankings;
+    /*const rankings = await col.rankings;
     if (albums.length == 0) {
         return ['There are currently no albums in the database. You should add some!'];
     }
     else if (albums.length < 10) {
         return albums;
-    }
+    }*/
 
+    if (rankings.length == 0) {
+        return ['There are currently no albums in the database. You should add some!'];
+    }
     const albumRankings = {}; // albums and all of their rankings
 
-    for (let a in albums) {
-        let curr = albums[a];
-        let currRankings = [];
-        for (let r in rankings) {
-            if (rankings[r].albumName === curr.albumName) {
-                currRankings.push(rankings[r]);
-            }
+    for (let r in rankings) {
+        if (!albumRankings[rankings[r].albumId]) {
+            albumRankings[rankings[r].albumId] = 1;
+        } else {
+            albumRankings[rankings[r].albumId] = albumRankings[rankings[r].albumId] + 1;
         }
-        let total = 0;
-        for (let k in currRankings) {
-            total += currRankings[k].rating;
-        }
-        let avg = total / currRankings.length;
-        albumRankings[curr.albumName] = avg;
+    }
+
+    for (let a in albumRankings) {
+        let avg = a / a.length;
+        albumRankings[a.albumId] = avg;
     }
     // TODO: format the data to be ready to be printed on the webpage
     const sorted = Object.keys(albumRankings).sort(function (a, b) { return albumRankings[a] - albumRankings[b] });
@@ -129,8 +128,6 @@ export const topRanked = async () => {
  * If there are <10 albums, then it returns all of them.
  */
 export const mostFrequent = async () => {
-    const albums = await col.albums;
-    const rankings = await col.rankings;
     if (albums.length == 0) {
         return ['There are currently no albums in the database. You should add some!'];
     }
