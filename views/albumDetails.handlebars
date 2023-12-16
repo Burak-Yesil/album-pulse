@@ -9,11 +9,13 @@
     <label for="total">Total Tracks</label>
     <p id="total">{{total}}</p>
     <p>Submit a Ranking</p>
-    <label for="out-of-five">Ranking 1-5</label>
-    <input type="text" id="out-of-five"></input><br>
-    <label for="review">Review (Optional)</label>
-    <input type="text" id="review"></input><br>
-    <button type="submit">Submit</button>
+    <form id="ranking" method="POST">
+        <label for="out_of_five">Ranking 1-5</label>
+        <input type="text" name='out_of_five' id="out_of_five"/>
+        <label for="review">Review (Optional)</label>
+        <input type="text" name="review" id="review"/>
+        <button type="submit">Submit</button>
+    </form>
     <script>
             let data = {{{genres}}};
             let list = document.getElementById("genres-details");
