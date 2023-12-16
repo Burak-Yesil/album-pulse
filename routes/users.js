@@ -131,6 +131,15 @@ router
         }
     })
 
+router
+    .route('/user/:username/rankings')
+    .get(async (req,res) => {
+        try{
+            return res.render('personal_rankings');
+        } catch (e){
+            return res.status(404).json({error: e.message});
+        }
+    })
 // Edit/Delete ranking
 router
     .route('/:userid/:rankingid')

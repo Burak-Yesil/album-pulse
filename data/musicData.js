@@ -1,41 +1,41 @@
-import * as col from '../config/mongoCollections.js';
+import {users, rankings} from '../config/mongoCollections.js';
 import * as spotify from './spotifyAPI.js';
 import { validUser, validPassword } from '../helpers.js';
 
-export const getRankings = async (name) => {
+export const getRankings = async (album_id) => {
     // checks if album has been ranked yet. If yes, returns rankings and information for that album. 
     // If not, finds album from spotifyAPI and returns that there are no rankings
-    validUser(name);
-    name = name.trim();
-    const album = await col.albums.findOne({ name });
-    const albums = await col.albums();
-    const { ranks } = await col.rankings();
+    album_id = album_id.trim();
+    const rankingsCollection = await rankings();
+    const album = await rankingsCollection.findOne({ albumId: album_id });
+    let album_name = spotify.getAlbumObject(album_id)['name'];
+    
     if (!album) {
-        // can't find album in collection, so look with API
-        album = spotify.getAlbumObject(name);
-        const addAlbum = await albums.insertOne(album);
-        if (!album) { throw 'Album could not be found.'; }
-        return { album: album, ranking: {} };
+        // const addAlbum = await albums.insertOne(album);
+        if (!album_name) { throw 'Album could not be found.'; }
+        return { albumName: album_name, album_rankings: ['No rankings yet - add one!'] };
     }
     // If album exists, return its rankings and 
-    const rankings = {}
-    for (let i in ranks) {
-        let curr = ranks[i];
-        if (curr.hasOwnProperty("albumName") && curr["albumName"] === album.albumName) {
-            rankings.push(curr);
-        }
-    }
+    const rankings_arr = []
+    const albums_rankings = await rankingsCollection.find({albumId: album_id}).toArray();
+    console.log(albums_rankings);
+    // for (let i in rankingsCollection) {
+    //     let curr = i;
+    //     if (curr.albumId == album_id) {
+    //         rankings_arr.push(curr);
+    //     }
+    // }
     // const rankings = album.rankings;
     // I don't think each album is going to hold all of its rankings
-    return { album, rankings };
+    return { albumName: album_name, rankings: albums_rankings };
 }
 
-export const addRanking = async (name, rating, review) => {
+export const addRanking = async (albumid, username, rating, review, review_bool) => {
     // lets user add ranking and then adds ranking to the rankings database
     // also adds ranking to the array of rankings in the album object; edits albums database
 
-    validUser(name);
-    name = name.trim();
+    validUser(username);
+    username = username.trim();
     if (!rating) throw 'Rating must be provided.';
     if (rating < 1 || rating > 5) {
         throw 'Rating must be an integer between 1 and 5.';
@@ -44,27 +44,34 @@ export const addRanking = async (name, rating, review) => {
     // TODO: word limit for reviews?
 
     let newRanking = {
-        albumName: name,
+        albumId: albumid,
+        userName: username,
         rating: rating,
-        review: review
+        review: review,
+        review_provided: review_bool
     }
 
     // add ranking to collection of all album rankings 
-    const rankingcol = await col.rankings();
+    const rankingcol = await rankings();
     const addRanking = await rankingcol.insertOne(newRanking);
 
     // find all rankings for this album
-    const obj = await getRankings(name);
-    const album = obj.album;  // the album object in the collection
-    const rankings = obj.rankings; // array of rankings for specific album
+    const obj = await getRankings(albumid);
+    const album_name = obj.albumName;  // the album object in the collection
+    const rankings_obj = obj.rankings; // array of rankings for specific album
 
-    const numberOfRankings = rankings.length();
-    let total = 0;
-    for (i = 0; i < numberOfRankings; i++) {
-        total += rankings[i].rating;
-    }
-    const avg = total / numberOfRankings;
-    album.avgranking = avg;
+    return {successful: true};
+    // Unecessary for this part: can use this code when calculating trending albums tho
+    // let total = 0;
+    // for (i = 0; i < rankings.length; i++) {
+    //     total += rankings[i].rating;
+    // }
+    // const avg = total / rankings.length;
+
+    // let album = {
+        
+    // }
+    // album.avgranking = avg;
 }
 
 /**
