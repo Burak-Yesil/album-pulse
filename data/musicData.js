@@ -81,7 +81,7 @@ export const findUser = async (username) => {
     validUser(username);
     username = username.trim();
     const usersCollection = await users();
-    const user = await usersCollection.findOne({ 'userName': userName });
+    const user = await usersCollection.findOne({ 'userName': username });
     if (!user) throw "User not found.";
     return user; // TODO: do we want to return anything specific?
 }

@@ -17,7 +17,7 @@ router
                 title: "About" 
             })
         }catch(e){
-            return res.status(404).json({ error: e.message });  
+            return res.status(404).redirect('error', { error: e.message });  
         }
         return 1
     })
@@ -31,18 +31,46 @@ router
                 title: "Login",
             })
         } catch (e) {
-            return res.status(404).json({ error: e.message });
+            return res.status(404).redirect('error', { error: e.message });
         }
     })
     .post(
         async (req, res) =>{
             //TODO Input Validation
             try{
+                // Input Validation
                 let username = req.body.user;
                 let password = req.body.pass;
-                let confirmPassword = req.body.confirmPass;
-                const person = await userData.loginUser(username, password, confirmPassword);
-                req.session.user = person
+                if(!user || !pass){
+                    throw new Error('Error: Must provide username and password')
+                }
+                if(!helpers.isValidString(user) || !helpers.isValidString(password)){
+                    throw new Error('Error: Username and password must be valid strings')
+                }
+                if(user.length < 5){
+                    throw new Error('Error: Username must be at least 5 characters long.')
+                }
+                if (password.trim().length < 8) {
+                    throw new Error('Error: Password must be at least 8 characters')
+                }
+                else if (password.split(" ").length > 1) {
+                    throw new Error('Error: Password must not have spaces')
+                }
+                else if (!password.match(/[A-Z]/)) {
+                    throw new Error("Password must contain at least one uppercase character.")
+                }
+                else if (!password.match(/[0-9]/)) {
+                    throw new Error("Password must contain at least one number.")
+                }
+                else if (!password.match(/[!@#$%^&*]/)) {
+                    throw new Error("Password must contain at least one special character.")
+                }
+
+                // Log in User
+                username = username.trim();
+                password = password.trim();
+                const person = await userData.loginUser(username, password);
+                req.session.user = person;
                 let url = '/user/' + username;
                 return res.redirect(url);
             }catch(e){
@@ -67,13 +95,49 @@ router
                 title: "Register",
             })
         } catch (e) {
-            return res.status(404).json({ error: e.message });
+            return res.status(404).redirect('error', { error: e.message });
         }
     })
     .post(
         async (req, res) =>{
             //TODO Input Validation
             try{
+                // Input Validation
+                let username = req.body.user;
+                username = username.trim();
+                username = username.toLowerCase();
+                let password = req.body.pass;
+                password = password.trim();
+                let confirmPassword = req.body.confirmPass;
+                confirmPass = confirmPass.trim();
+                if(!username || !password || !confirmPassword){
+                    throw new Error('Error: Must provide username, password, and confirm your password.');
+                }
+                if(!helpers.isValidString(username) || !helpers.isValidString(password) || !helpers.isValidString(confirmPassword)){
+                    throw new Error('Error: Username, password, and confirm password must all be valid strings');
+                }
+                if(username.length < 5){
+                    throw new Error('Error: Username must be at least 5 characters long.');
+                }
+                if (password.trim().length < 8) {
+                    throw new Error("Password must be at least 8 characters long.");
+                }
+                else if (password.split(" ").length > 1) {
+                    throw new Error("Password cannot have spaces.");
+                }
+                else if (!password.match(/[A-Z]/)) {
+                    throw new Error("Password must contain at least one uppercase character.");
+                }
+                else if (!password.match(/[0-9]/)) {
+                    throw new Error("Password must contain at least one number.");
+                }
+                else if (!password.match(/[!@#$%^&*]/)) {
+                    throw new Error("Password must contain at least one special character.");
+                }
+                if(password != confirmPassword){
+                    throw new Error("Confirm password must match password");
+                }
+                // Register User
                 const user = await userData.registerUser(req.body.user, req.body.pass, req.body.confirmPass);
                 return res.redirect('/login');
             }catch(e){
