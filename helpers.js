@@ -18,7 +18,7 @@ let isValidArray = (arr) => {
     return (Array.isArray(arr));
 }
 
-let isValidObjects = (obj) => {
+let isValidObject = (obj) => {
     return ((typeof obj === 'object') && (!Array.isArray(obj)) && (obj !== null));
 }
 
