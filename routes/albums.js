@@ -70,10 +70,13 @@ router.route('/album/:id')
         try {
             const albumId = req.params.id;
             let albumDetails = await getAlbumObject(albumId);
-            let name = albumDetails.albumName;
-            let total = albumDetails.totalTracks
-
-            res.render('albumDetails', { title: name, albumDetails: total + " tracks"});
+            let name = albumDetails.albumName; // string
+            let artists = albumDetails.artistNames; // array or string
+            let genres = albumDetails.genres; // array
+            genres = JSON.stringify(genres); // array -> string format to put in HTML :D
+            let total = albumDetails.totalTracks; // int
+            let cover = albumDetails.albumCover[1].url; // string
+            res.render('albumDetails', { title: name, cover: cover, total: total, artists: artists, genres: genres});
         } catch (e) {
             console.log(e);
             return res.status(404).json({ error: e.message });

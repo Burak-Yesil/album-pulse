@@ -136,15 +136,25 @@ export const getAlbumObject = async(albumID) => {
     const firstAlbum = await result.json();
     const name = firstAlbum.name;
     const artistName = firstAlbum.artists[0].name;
-    const genres = firstAlbum.genres;
+    // const genres = firstAlbum.genres;
     const totalTracks = firstAlbum.total_tracks;
     const albumType = firstAlbum.album_type;
     const albumCover = firstAlbum.images;
+
+    // getting artist genre
+    let artist_genre;
+    let artist_id = firstAlbum.artists[0].id;
+    const res = await fetch(`https://api.spotify.com/v1/artists/${encodeURIComponent(artist_id)}`, {
+          method: 'GET',
+          headers: { 'Authorization': 'Bearer ' + token }
+    });
+    const artist_info = await res.json();
+    artist_genre = artist_info.genres;
     
     return {
       albumName: name,
       artistNames: artistName,
-      genres: genres,
+      genres: artist_genre,
       totalTracks: totalTracks,
       albumType: albumType,
       albumCover: albumCover,

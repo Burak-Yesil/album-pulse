@@ -1,4 +1,26 @@
 <div>
-    hi
-    {{albumDetails}}
+    <img id="cover" src="{{cover}}"></img><br>
+    <label for="artists-details">Artists</label>
+    <p id="artist">{{artists}}</p>
+    <label for="genres-details">Genres</label>
+    <ul id="genres-details">
+        
+    </ul>
+    <label for="total">Total Tracks</label>
+    <p id="total">{{total}}</p>
+    <p>Submit a Ranking</p>
+    <label for="out-of-five">Ranking 1-5</label>
+    <input type="text" id="out-of-five"></input><br>
+    <label for="review">Review (Optional)</label>
+    <input type="text" id="review"></input><br>
+    <button type="submit">Submit</button>
+    <script>
+            let data = {{{genres}}};
+            let list = document.getElementById("genres-details");
+            for (i = 0; i < data.length; ++i) {
+                let li = document.createElement('li');
+                li.innerText = data[i];
+                list.appendChild(li);
+            }
+    </script>
 </div>
