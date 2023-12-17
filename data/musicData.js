@@ -1,7 +1,7 @@
 import {users, rankings, albums} from '../config/mongoCollections.js';
 import * as spotify from './spotifyAPI.js';
 import {ObjectId} from 'mongodb';
-import { validUser, validPassword, validAlbumId , validRating, validComments, validReview, validReviewBool, validRankingsId, validComment } from '../helpers.js';
+import { validUser, validPassword, validAlbumId , validRating, validComments, validReview, validReviewBool, validComment } from '../helpers.js';
 
 /**
  * Checks if album has been ranked yet. If yes, returns rankings and information for that album. 
@@ -285,7 +285,6 @@ export const allAlbumRankings = async (albumId)=>{
 }
 
 export const editRanking = async (rankingId, rating, review)=>{
-    validRankingsId(rankingId);
     validRating(rating);
     validReview(review);
 
@@ -324,7 +323,6 @@ export const editRanking = async (rankingId, rating, review)=>{
 }
 
 export const addComment= async (rankingId, commentMessage) =>{
-    validRankingsId(rankingId);
     validComment(commentMessage);
 
     rankingId=rankingId.trim();
@@ -357,9 +355,9 @@ export const addComment= async (rankingId, commentMessage) =>{
 };
 
 export const getRankingById = async (id)=>{
-    validRankingsId(id);
+
     id=id.trim();
-    
+
     const rankingcol = await rankings();
     const ranking = await rankingcol.findOne({_id: new ObjectId(id)});
 

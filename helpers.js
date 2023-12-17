@@ -92,14 +92,6 @@ export const validComments = (comments) =>{
     }
 }
 
-export const validRankingsId= (id) =>{
-    if (!id) throw new Error('Error: You must provide an id to search for');
-    if (typeof id !== 'string') throw new Error('Error: id must be a string');
-    id = id.trim();
-    if (id.length === 0)
-      throw new Error('Error: id cannot be an empty string or just spaces');
-    if (!ObjectId.isValid(id)) throw new Error('Error: invalid object ID');
-  }
 
 
 
