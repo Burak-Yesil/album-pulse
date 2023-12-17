@@ -22,9 +22,16 @@ router
     .post(async (req, res) =>{
         try{
             //let searchFor = helpers.isValidString(req.body.searchInput, "searchInput");
+            //Input Validation 
+            // 1-100 characters, check if its a string
             let searchFor = req.body.searchInput;
+            searchFor = searchFor.trim();
+            if(searchFor.length < 1 || searchFor.length > 100){
+                throw new Error('Search input must be between 1 and 100 characters');
+            }
+
+            // Generate search results
             const searchedAlbums = await spotifyAPI.getAlbum(searchFor);
-            console.log(searchedAlbums);
             if(searchedAlbums.length === 0){
                 return res.render('search', {title: 'Search Results', error: 'No album found for this search term.'});
             }
@@ -53,9 +60,15 @@ router
             // Input validation
             let album_name = req['body']['album-name-rec'];
             let artist = req['body']['artist-rec'];
+            album_name = album_name.trim();
+            artist = artist.trim();
+            if(album_name.length < 1 || artist.length < 1 || album_name.length > 100 || album_name.length > 100){
+                throw new Error('Album name and artist name must be betweem 1 and 100 characters');
+            }
+
+            // Generate Recommendations
             let gen_recommendations = await spotifyAPI.getReccomendations(album_name, artist, 5);
             return res.render('recommendations', {recommendations: gen_recommendations});
-            // Generate recommendations
         } catch (e) {
             return res.status(400).render('error', {error: e.message, status: 400});
         }
@@ -135,9 +148,30 @@ router.route('/album/:id')
     })
     .post(async (req, res) =>{
         try{
+            // Input Validation
             let name = req.session.user.userName;
             let ranking = req.body.out_of_five;
+            ranking = ranking.trim();
+            if(!ranking || ranking.length === 0){
+                throw new Error('Ranking is a necessary field and cannot be empty/only spaces');
+            }
+            let ranking_arr = ranking.split(" ");
+            if(ranking_arr.length > 1){
+                throw new Error('Ranking cannot have spaces between multiple numbers');
+            }
+            let ranking_number = Number(ranking);
+            if(ranking_number === NaN){
+                throw new Error('Ranking must be a number');
+            }
+            if(!Number.isInteger(ranking_number)){
+                throw new Error('Ranking must be a valid integer');
+            }
+            if(ranking_number < 1 || ranking_number > 5){
+                throw new Error('Ranking must be between 1-5')
+            }
+
             let review = req.body.review;
+            review = review.trim();
             let review_bool = false;
             if(review){
                 review_bool = true;
@@ -151,7 +185,7 @@ router.route('/album/:id')
         }
         catch (e) {
             console.log(e);
-            return res.status(404).json({ error: e.message });
+            return res.status(404).render('error', { error: e.message });
         }
     });
 
