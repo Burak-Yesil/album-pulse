@@ -9,8 +9,8 @@ export const spotifyAPI = (function() {
         const result = await fetch('https://accounts.spotify.com/api/token', {
             method: 'POST',
             headers: {
-                'Content-Type' : 'application/x-www-form-urlencoded', 
-                'Authorization' : 'Basic ' + btoa( clientId + ':' + clientSecret)
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': 'Basic ' + btoa(clientId + ':' + clientSecret)
             },
             body: 'grant_type=client_credentials'
         });
@@ -61,18 +61,17 @@ export const spotifyAPI = (function() {
       }
   }
   
-  
-  const getAlbum = async (albumName) => {
-      const token = await spotifyAPI.getToken();
-      const result = await fetch(`https://api.spotify.com/v1/search?q=${encodeURIComponent(albumName)}&type=album`, {
-          method: 'GET',
-          headers: { 'Authorization': 'Bearer ' + token }
-      });
+    const getAlbum = async (albumName) => {
+        const token = await spotifyAPI.getToken();
+        const result = await fetch(`https://api.spotify.com/v1/search?q=${encodeURIComponent(albumName)}&type=album`, {
+            method: 'GET',
+            headers: { 'Authorization': 'Bearer ' + token }
+        });
 
-      const data = await result.json();
-      const albums = data.albums.items.map(album => [album.name, album.artists[0].name, album.id]); 
-      return albums;
-  }
+        const data = await result.json();
+        const albums = data.albums.items.map(album => [album.name, album.artists[0].name, album.id]);
+        return albums;
+    }
 
   const getAlbumInfo = async (albumName) => {
     const token = await getToken();
@@ -127,11 +126,11 @@ export const spotifyAPI = (function() {
   })();
 
 
-export const getAlbumObject = async(albumID) => {
+export const getAlbumObject = async (albumID) => {
     const token = await spotifyAPI.getToken();
     const result = await fetch(`https://api.spotify.com/v1/albums/${encodeURIComponent(albumID)}`, {
-          method: 'GET',
-          headers: { 'Authorization': 'Bearer ' + token }
+        method: 'GET',
+        headers: { 'Authorization': 'Bearer ' + token }
     });
     const firstAlbum = await result.json();
     const name = firstAlbum.name;
@@ -145,20 +144,20 @@ export const getAlbumObject = async(albumID) => {
     let artist_genre;
     let artist_id = firstAlbum.artists[0].id;
     const res = await fetch(`https://api.spotify.com/v1/artists/${encodeURIComponent(artist_id)}`, {
-          method: 'GET',
-          headers: { 'Authorization': 'Bearer ' + token }
+        method: 'GET',
+        headers: { 'Authorization': 'Bearer ' + token }
     });
     const artist_info = await res.json();
     artist_genre = artist_info.genres;
-    
+
     return {
-      albumName: name,
-      artistNames: artistName,
-      genres: artist_genre,
-      totalTracks: totalTracks,
-      albumType: albumType,
-      albumCover: albumCover,
-      avgranking: null
+        albumName: name,
+        artistNames: artistName,
+        genres: artist_genre,
+        totalTracks: totalTracks,
+        albumType: albumType,
+        albumCover: albumCover,
+        avgranking: null
     }
 }
 
