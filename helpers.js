@@ -87,7 +87,7 @@ export const validReviewBool= (reviewBool) =>{
 
 export const validComments = (comments) =>{
     if(!Array.isArray(comments)) throw new Error('comments should be stored in an array');
-    for(i=0; i<comments.length; i++){
+    for(let i=0; i<comments.length; i++){
         validComment(comments[i]);
     }
 }
