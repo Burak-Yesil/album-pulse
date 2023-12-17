@@ -201,7 +201,8 @@ router.route('/album/:id')
         try {
             const albumId = req.params.id;
             let rankings = await allAlbumRankings(albumId);
-            return res.render('albumRankings', { title: 'Rankings', albumName: rankings.albumName, rankings: rankings.rankings});
+            let user = req.session.user;
+            return res.render('albumRankings', { title: 'Rankings', albumName: rankings.albumName, albumId: albumId, rankings: rankings.rankings, userName: user.userName});
         } catch (e) {
             console.log(e);
             return res.status(404).json({ error: e.message });
