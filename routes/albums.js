@@ -11,28 +11,22 @@ router
     .route('/albumsearch')
     .get(async (req, res) => {
         try {
-            // TODO: Input validation
-            // TODO: Take user input (album name) upon hitting submit button -> Query API
-            // TODO: Show all rankings
             return res.render('search', {title: 'Search'});
         } catch (e) {
-            // TODO: Revise later
-            console.log(e)
-            return res.status(404).json({ error: e.message });
-        }
+            return res.status(400).render('register', {
+                error: e.message
+              });        
+            }
     })
     .post(async (req, res) =>{
         try{
-            // TODO: Input validation -> Post comment to ranking
-            // let searchFor = req.body.searchInput;
-            // return res.redirect('/searchresults');
-            let searchFor = req.body.searchInput;
+            let searchFor = helpers.isValidString(req.body.searchInput, "searchInput");
             const searchedAlbums = await spotifyAPI.getAlbum(searchFor);
             return res.render('search', {title: 'Search Results', albumresults: searchedAlbums});
         }catch(e){
-            // TODO: Revise later
-            console.log(e)
-            return res.status(404).json({ error: e.message });
+            return res.status(400).render('register', {
+                error: e.message
+              });        
         }
     });
 
@@ -45,9 +39,9 @@ router
             let mostFrequentAlbums = await mostFrequent();
             return res.render('frequent', { title: 'Most Frequently Ranked Albums', mostFrequent: mostFrequentAlbums });
         } catch (e) {
-            // TODO: Revise later
-            console.log(e)
-            return res.status(404).json({ error: e.message });
+            return res.status(400).render('register', {
+                error: e.message
+              });
         }
     });
 
@@ -57,11 +51,12 @@ router
     .get(async (req, res) => {
         try {
             let topRankedAlbums = await topRanked();
-            return res.render('trending', { title: 'Trending Albums', topRanked: topRankedAlbums });
+            const user = req.session.user;
+            return res.render('trending', { title: 'Trending Albums', topRanked: topRankedAlbums, userName: user.userName});
         } catch (e) {
-            // TODO: Revise later
-            console.log(e)
-            return res.status(404).json({ error: e.message });
+            return res.status(400).render('error', {
+                errorMessage: e.message
+              });
         }
     });
 
@@ -69,6 +64,8 @@ router.route('/album/:id')
     .get(async (req, res) => {
         try {
             const albumId = req.params.id;
+            //ToDo: Add validation for album id 
+            
             let albumDetails = await getAlbumObject(albumId);
             let name = albumDetails.albumName; // string
             if(!name){
