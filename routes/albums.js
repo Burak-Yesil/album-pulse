@@ -4,7 +4,7 @@ import { Router } from 'express';
 const router = Router();
 import helpers from '../helpers.js';
 import { spotifyAPI, getAlbumObject } from '../data/spotifyAPI.js'
-import { topRanked, mostFrequent, getRankings, addRanking, allAlbumRankings, getRankingById, trending} from '../data/musicData.js';
+import { topRanked, mostFrequent, getRankings, addRanking, allAlbumRankings, getRankingById, trending, getavg} from '../data/musicData.js';
 
 // Search for Album Page
 router
@@ -63,7 +63,6 @@ router
     .get(async (req, res) => {
         try {
             let mostFrequentAlbums = await mostFrequent();
-            console.log(mostFrequentAlbums);
             // let albumNames = [];
             // for (let i = 0; i < mostFrequentAlbums.length; i++) {
             //     albumNames.push(mostFrequentAlbums[i].albumName);
@@ -105,6 +104,7 @@ router.route('/album/:id')
             //ToDo: Add validation for album id 
             
             let albumDetails = await getAlbumObject(albumId);
+            let avg = await getavg(albumId);
             let name = albumDetails.albumName; // string
             if(!name){
                 name = 'N/A'
@@ -126,7 +126,7 @@ router.route('/album/:id')
             if(!cover){
                 cover = 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png';
             }
-            return res.render('albumDetails', { title: name, cover: cover, total: total, artists: artists, genres: genres, album_id: req.params.id});
+            return res.render('albumDetails', { title: name, cover: cover, total: total, artists: artists, genres: genres, album_id: req.params.id, avg:avg});
         } catch (e) {
             console.log(e);
             return res.status(404).json({ error: e.message });

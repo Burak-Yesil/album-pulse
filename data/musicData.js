@@ -349,3 +349,13 @@ export const trending = async() => {
     return albumObjects;
 
 }
+
+export const getavg = async(albumid) => {
+    let albumcol = await albums();
+    let album = await albumcol.findOne({ albumId: albumid });
+    if(!album){
+        return 'No Ratings Yet';
+    }
+    let avg = album.avgRanking;
+    return avg.toString();
+}
