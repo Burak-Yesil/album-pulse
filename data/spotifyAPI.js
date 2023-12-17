@@ -131,7 +131,15 @@ export const getAlbumObject = async (albumID) => {
         method: 'GET',
         headers: { 'Authorization': 'Bearer ' + token }
     });
+    // if(typeof(result) != 'array'){
+    //   throw new Error('Invalid album ID');
+    // }
+
     const firstAlbum = await result.json();
+    if(firstAlbum['error']){
+      throw new Error('Invalid album ID');
+    }
+    
     const name = firstAlbum.name;
     const artistName = firstAlbum.artists[0].name;
     // const genres = firstAlbum.genres;
