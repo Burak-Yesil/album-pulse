@@ -1,1 +1,18 @@
-<p>Your Rankings (TODO)</p>
+<h2>Your Rankings</h2>
+{{#if userRankings}}
+  <ul>
+    {{#each userRankings.rankings}}
+      <li>
+        <strong>{{this.albumName}}</strong>
+        <p>Rating: {{this.rating}}</p>
+        {{#if this.review_provided}}
+          <p>Review: {{this.review}}</p>
+        {{else}}
+          <p>No review provided</p>
+        {{/if}}
+      </li>
+    {{/each}}
+  </ul>
+{{else}}
+  <p>No rankings yet. Start ranking some albums!</p>
+{{/if}}
