@@ -32,7 +32,7 @@ router
                 title: "Login",
             })
         } catch (e) {
-            return res.status(404).render('error', { error: e.message, status: 404, username: req.session.user.userName });
+            return res.status(404).render('error', { error: e.message, status: 404 });
         }
     })
     .post(
@@ -100,7 +100,7 @@ router
                 title: "Register",
             })
         } catch (e) {
-            return res.status(404).render('error', { error: e.message, status: 404, username: req.session.user.userName});
+            return res.status(404).render('error', { error: e.message, status: 404});
         }
     })
     .post(
@@ -146,7 +146,7 @@ router
                 const user = await userData.registerUser(username, password, confirmPassword);
                 return res.redirect('/login');
             }catch(e){
-                return res.status(400).render('error', {error: e.message, status: 400, username: req.session.user.userName})
+                return res.status(400).render('error', {error: e.message, status: 400})
             }
 
         }

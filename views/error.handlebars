@@ -2,4 +2,9 @@
 <br>
 <p>Status: {{status}}</p>
 
-<a href="/user/{{username}}">Back to User Page</a>
+{{#if username}}
+    <a href="/user/{{username}}">Back to User Page</a>
+{{else}}
+    <a href="/login">Back to Login</a>
+    <a href="/register">Back to Register</a>
+{{/if}}
