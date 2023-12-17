@@ -233,7 +233,7 @@ router
     })
 
 router
-    .route('/user/rankings/:rankingid')
+    .route('/user/:userid/rankings/:rankingid')
     .get(async (req,res) => {
         try{
             const rankingid = req.params.rankingid;

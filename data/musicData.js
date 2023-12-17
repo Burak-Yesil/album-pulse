@@ -82,7 +82,7 @@ export const addRanking = async (albumid, username, rating, review, review_bool,
         const addAlb = await albumcol.insertOne(newalb);
     } else {
         let newrank = (alb.avgRanking + rating)/2
-        alb.avgRanking = newrank;
+        await albumcol.updateOne({ albumId: albumid }, { $set: { avgRanking: newrank } });
     }
 
 
@@ -214,6 +214,7 @@ export const showRankings = async (username) => {
     
     const formattedRankings = userRankings.map(ranking => ({
         id: ranking._id,
+        userName: ranking.userName,
         albumId: ranking.albumId,
         albumName: ranking.albumName, 
         rating: ranking.rating,
@@ -234,8 +235,9 @@ export const allAlbumRankings = async (albumId)=>{
     if (albumRankings.length === 0){
         return {albumName: albumname, rankings: ['No rankings for this album yet, add one!!']};
     }
-
+    console.log(albumRankings);
     const formattedRankings = albumRankings.map(ranking=>({
+        id: ranking._id.toString(),
         userName:ranking.userName,
         rating:ranking.rating,
         review: ranking.review,
@@ -308,4 +310,34 @@ export const getRankingById = async (id)=>{
     const ranking = await rankingcol.findOne({_id: new ObjectId(id)});
 
     return ranking;
+}
+
+export const trending = async() => {
+    let albcol = await albums();
+
+    albcol = await albcol.find({}).toArray()
+
+    if (albcol.countDocuments == 0) {
+        return ['There are currently no albums in the database. You should add some!'];
+    }
+    const albumRankings = {}; // key:album, value:avg ranking
+
+    for (let r in albcol) {
+        if (!albumRankings[albcol[r].albumId]) {
+            albumRankings[albcol[r].albumId] = albcol[r].avgRanking;
+        }
+    }
+
+    let sorted = Object.keys(albumRankings).sort(function (a, b) { return albumRankings[a] - albumRankings[b] });
+    sorted = sorted.slice(0, 5);
+    const albumObjects = [];
+    for (let i = 0; i < sorted.length; i++) {
+        const albumObject = await spotify.getAlbumObject(sorted[i]);
+        albumObjects.push({
+            albumId: sorted[i],
+            albumName: albumObject.albumName
+        });
+    }
+    return albumObjects;
+
 }

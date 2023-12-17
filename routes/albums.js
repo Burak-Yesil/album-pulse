@@ -4,7 +4,7 @@ import { Router } from 'express';
 const router = Router();
 import helpers from '../helpers.js';
 import { spotifyAPI, getAlbumObject } from '../data/spotifyAPI.js'
-import { topRanked, mostFrequent, getRankings, addRanking, allAlbumRankings, getRankingById} from '../data/musicData.js';
+import { topRanked, mostFrequent, getRankings, addRanking, allAlbumRankings, getRankingById, trending} from '../data/musicData.js';
 
 // Search for Album Page
 router
@@ -21,7 +21,8 @@ router
     })
     .post(async (req, res) =>{
         try{
-            let searchFor = helpers.isValidString(req.body.searchInput, "searchInput");
+            //let searchFor = helpers.isValidString(req.body.searchInput, "searchInput");
+            let searchFor = req.body.searchInput;
             const searchedAlbums = await spotifyAPI.getAlbum(searchFor);
             return res.render('search', {title: 'Search Results', albumresults: searchedAlbums});
         }catch(e){
@@ -82,10 +83,10 @@ router
     .route('/trending')
     .get(async (req, res) => {
         try {
-            let topRankedAlbums = await topRanked();
+            let topRankedAlbums = await trending();
             let albumNames = [];
             for (let i = 0; i < topRankedAlbums.length; i++) {
-                albumNames.push(topRankedAlbums[i][0]);
+                albumNames.push(topRankedAlbums[i].albumName);
             }
             console.log('albumNames: ', albumNames);
             const user = req.session.user;
@@ -161,26 +162,27 @@ router.route('/album/:id')
         try {
             const albumId = req.params.id;
             let rankings = await allAlbumRankings(albumId);
-            return res.render('albumRankings', { title: "Rankings:", rankings});
+            console.log(rankings);
+            return res.render('albumRankings', { title: 'Rankings', albumName: rankings.albumName, rankings: rankings.rankings});
         } catch (e) {
             console.log(e);
             return res.status(404).json({ error: e.message });
         }
     });
 
-
-    router.route('/user/:userId/ranking/:rankingId')
-    .get(async (req, res) => {
-        try {
-            const albumId = req.params.userId;
-            const rankingId = req.params.rankingId;
-            const ranking = getRankingById(rankingId)
-            return res.render('allAlbumRanking', { title: "Rankings", ranking});
-        } catch (e) {
-            console.log(e);
-            return res.status(404).json({ error: e.message });
-        }
-    });
+    // I made a function for this already in users.js - Kena
+    // router.route('/user/:userId/ranking/:rankingId')
+    // .get(async (req, res) => {
+    //     try {
+    //         const albumId = req.params.userId;
+    //         const rankingId = req.params.rankingId;
+    //         const ranking = getRankingById(rankingId)
+    //         return res.render('allAlbumRanking', { title: "Rankings", ranking});
+    //     } catch (e) {
+    //         console.log(e);
+    //         return res.status(404).json({ error: e.message });
+    //     }
+    // });
 
 
 
