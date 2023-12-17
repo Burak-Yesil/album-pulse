@@ -168,7 +168,8 @@ const albumName = "Pink Friday 2"; // Replace with the desired album name
 const albumArtist = 'Nicki Minaj';
 const albumInfo = await getAlbumObject('5eA2VJ0yeiU4kXz1zvuMro');
 const currentAlbumName= albumInfo.albumName;
-console.log(currentAlbumName)
+
+// console.log(currentAlbumName)
 // const alb = await getAlbumObject('7D8GwKhqPfHGG9zmz8U6Eq');
 // console.log(alb);
 

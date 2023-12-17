@@ -4,7 +4,8 @@
     <button type="submit">Search</button>
 </form>
 <ul class="search-results">
-    {{#each albumresults}}
-    <li><a href="/album/{{this.[2]}}">{{this.[0]}} by {{this.[1]}}</a></li>
-    {{/each}}
+        {{#each albumresults}}
+        <li><a href="/album/{{this.[2]}}">{{this.[0]}} by {{this.[1]}}</a></li>
+        {{/each}}
+    
 </ul>
