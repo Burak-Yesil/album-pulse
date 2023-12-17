@@ -3,6 +3,7 @@ import { Router } from 'express';
 
 import {userData} from '../data/index.js'
 import helpers from '../helpers.js';
+import { showRankings } from '../data/musicData.js';
 
 // TODO: Import data functions
 const router = Router();
@@ -66,7 +67,7 @@ router
                 }
 
                 // Log in User
-                username = username.trim();
+                username = username.trim().toLowerCase();
                 password = password.trim();
                 const person = await userData.loginUser(username, password);
                 req.session.user = person;
@@ -202,7 +203,9 @@ router
     .route('/user/:username/rankings')
     .get(async (req,res) => {
         try{
-            return res.render('personal_rankings');
+            const username = req.params.username;
+            const userRankings= await showRankings(username);
+            return res.render('personal_rankings', {userRankings: userRankings});
         } catch (e){
             return res.status(404).json({error: e.message});
         }

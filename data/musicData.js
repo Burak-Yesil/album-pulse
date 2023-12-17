@@ -8,12 +8,24 @@ export const getRankings = async (album_id) => {
     album_id = album_id.trim();
     const rankingsCollection = await rankings();
     const album = await rankingsCollection.findOne({ albumId: album_id });
-    let album_name = spotify.getAlbumObject(album_id)['name'];
-    
+    console.log(album_id)
+    const albumObject = await spotify.getAlbumObject(album_id);
+    const currAlbumName= albumObject.albumName;
+    console.log(albumObject)
+    //console.log(album_name)
+
     if (!album) {
+        try{
+            if (!currAlbumName) { 
+                throw 'Album could not be found.'; 
+            }
+            return { albumName: currAlbumName, album_rankings: ['No rankings yet - add one!'] };
+        }
+        catch (error) {
+            throw error
+        }
         // const addAlbum = await albums.insertOne(album);
-        if (!album_name) { throw 'Album could not be found.'; }
-        return { albumName: album_name, album_rankings: ['No rankings yet - add one!'] };
+        
     }
     // If album exists, return its rankings and 
     const rankings_arr = []
@@ -27,7 +39,7 @@ export const getRankings = async (album_id) => {
     // }
     // const rankings = album.rankings;
     // I don't think each album is going to hold all of its rankings
-    return { albumName: album_name, rankings: albums_rankings };
+    return { albumName: currAlbumName, rankings: albums_rankings };
 }
 
 export const addRanking = async (albumid, username, rating, review, review_bool) => {
@@ -43,8 +55,13 @@ export const addRanking = async (albumid, username, rating, review, review_bool)
     if (review && typeof review !== 'string') throw 'Review must be a string, if provided.';
     // TODO: word limit for reviews?
 
+    let albumObject = await spotify.getAlbumObject(albumid);
+    const currAlbumName=albumObject.albumName
+    console.log(currAlbumName)
+
     let newRanking = {
         albumId: albumid,
+        albumName: currAlbumName,
         userName: username,
         rating: rating,
         review: review,
@@ -162,8 +179,23 @@ export const getRecommendations = async () => {
     return top[random];
 }
 
-export const showRankings = async () => {
-    const usersCollection = await col.users();
-    const rankingsCollection = await col.rankings();
+export const showRankings = async (username) => {
+    validUser(username);
+    const usersCollection = await users();
+    const rankingsCollection = await rankings();
+    const user = await usersCollection.findOne({ 'userName': username });
+    const userRankings = await rankingsCollection.find({userName: username}).toArray();
+    if (userRankings.length===0){
+        return {username: username, rankings: ['No rankings yet.']};
+    }
     
+    const formattedRankings = userRankings.map(ranking => ({
+        albumId: ranking.albumId,
+        albumName: ranking.albumName, 
+        rating: ranking.rating,
+        review: ranking.review,
+        review_provided: ranking.review_provided
+    }));
+    return {username: username, rankings: formattedRankings};
+
 }
