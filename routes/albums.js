@@ -126,7 +126,8 @@ router.route('/album/:id')
             if(!cover){
                 cover = 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png';
             }
-            return res.render('albumDetails', { title: name, cover: cover, total: total, artists: artists, genres: genres, album_id: req.params.id, avg:avg});
+            const user = req.session.user;
+            return res.render('albumDetails', { title: name, cover: cover, total: total, artists: artists, genres: genres, album_id: req.params.id, avg:avg, userName: user.userName});
         } catch (e) {
             console.log(e);
             return res.status(404).json({ error: e.message });
