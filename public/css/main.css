@@ -17,6 +17,10 @@ li {
     font-style: italic;
 }
 
+textarea{
+    background-color: bisque;
+}
+
 ul[id="genres-details"] {
     border-radius: 12px;
     padding: 10px;
