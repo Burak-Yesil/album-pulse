@@ -119,8 +119,9 @@ router.route('/album/:id')
         try {
             const albumId = req.params.id;
             //ToDo: Add validation for album id 
-            
+
             let albumDetails = await getAlbumObject(albumId);
+
             let avg = await getavg(albumId);
             let name = albumDetails.albumName; // string
             if(!name){
@@ -147,7 +148,7 @@ router.route('/album/:id')
             return res.render('albumDetails', { title: name, cover: cover, total: total, artists: artists, genres: genres, album_id: req.params.id, avg:avg, userName: user.userName});
         } catch (e) {
             console.log(e);
-            return res.status(404).json({ error: e.message });
+            return res.status(404).render('error', { error: e.message, status: 404});
         }
     })
     .post(async (req, res) =>{
