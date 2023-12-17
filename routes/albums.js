@@ -161,6 +161,7 @@ router.route('/album/:id')
         try {
             const albumId = req.params.id;
             let rankings = await allAlbumRankings(albumId);
+            console.log(rankings);
             return res.render('albumRankings', { title: 'Rankings', albumName: rankings.albumName, rankings: rankings.rankings});
         } catch (e) {
             console.log(e);
@@ -168,19 +169,19 @@ router.route('/album/:id')
         }
     });
 
-
-    router.route('/user/:userId/ranking/:rankingId')
-    .get(async (req, res) => {
-        try {
-            const albumId = req.params.userId;
-            const rankingId = req.params.rankingId;
-            const ranking = getRankingById(rankingId)
-            return res.render('allAlbumRanking', { title: "Rankings", ranking});
-        } catch (e) {
-            console.log(e);
-            return res.status(404).json({ error: e.message });
-        }
-    });
+    // I made a function for this already in users.js - Kena
+    // router.route('/user/:userId/ranking/:rankingId')
+    // .get(async (req, res) => {
+    //     try {
+    //         const albumId = req.params.userId;
+    //         const rankingId = req.params.rankingId;
+    //         const ranking = getRankingById(rankingId)
+    //         return res.render('allAlbumRanking', { title: "Rankings", ranking});
+    //     } catch (e) {
+    //         console.log(e);
+    //         return res.status(404).json({ error: e.message });
+    //     }
+    // });
 
 
 

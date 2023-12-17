@@ -3,7 +3,7 @@
   <ul>
     {{#each userRankings.rankings}}
       <li>
-        <a href='/user/rankings/{{this.id}}'><strong>{{this.albumName}}</strong></a>
+        <a href='/user/{{this.userName}}/rankings/{{this.id}}'><strong>{{this.albumName}}</strong></a>
         <p>Rating: {{this.rating}}</p>
         {{#if this.review_provided}}
           <p>Review: {{this.review}}</p>

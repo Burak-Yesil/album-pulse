@@ -214,6 +214,7 @@ export const showRankings = async (username) => {
     
     const formattedRankings = userRankings.map(ranking => ({
         id: ranking._id,
+        userName: ranking.userName,
         albumId: ranking.albumId,
         albumName: ranking.albumName, 
         rating: ranking.rating,
@@ -234,8 +235,9 @@ export const allAlbumRankings = async (albumId)=>{
     if (albumRankings.length === 0){
         return {albumName: albumname, rankings: ['No rankings for this album yet, add one!!']};
     }
-
+    console.log(albumRankings);
     const formattedRankings = albumRankings.map(ranking=>({
+        id: ranking._id.toString(),
         userName:ranking.userName,
         rating:ranking.rating,
         review: ranking.review,

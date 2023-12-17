@@ -4,15 +4,16 @@
   {{#if rankings.length}}
     <ul>
       {{#each rankings}}
-        <li>
-          <strong>{{userName}}</strong>
-          <p>Rating: {{rating}}</p>
-          {{#if review_provided}}
-            <p>Review: {{review}}</p>
-          {{else}}
-            <p>No review provided</p>
-          {{/if}}
-        </li>
+          <li>
+            <a href="/user/{{userName}}/rankings/{{id}}"><strong>{{userName}}</strong></a>
+            <p>Rating: {{rating}}</p>
+            {{#if review_provided}}
+              <p>Review: {{review}}</p>
+            {{else}}
+              <p>No review provided</p>
+            {{/if}}
+          </li>
+        </a>
       {{/each}}
     </ul>
   {{else}}
