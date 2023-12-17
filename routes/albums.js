@@ -137,12 +137,11 @@ router.route('/album/:id')
             if(review){
                 review_bool = true;
             }
-            // Note for Sanya: hey :)
-            // Also, the line below just needs the album id which i think can get from req.params.id
-            // and then the rankings data functions gotta be slightly changed for that (im getting an error that col.albums.findOne
-            // is not a function just as a heads up)
+
+            //The addRanking function checks to see if a user already submitted a ranking
             let returned = await addRanking(req.params.id, name, ranking, review, review_bool);
             let url = `/user/${name}/rankings`;
+            req.session.data = { rankingAlreadyExists: returned.rankingAlreadyExists };
             return res.redirect(url);
         }
         catch (e) {

@@ -46,10 +46,19 @@ export const addRanking = async (albumid, username, rating, review, review_bool,
 
     validUser(username);
     username = username.trim();
+
+    //Checking to see if user already left a Ranking if so we just return
+    const rankingcol = await rankings();
+    const rankingAlreadyExists = await rankingcol.findOne({"albumId":albumid, "userName":username})
+    if (rankingAlreadyExists) return {successful: true, rankingAlreadyExists: true, info:"ranking for this album already exists"};
+
+
+
     if (!rating) throw 'Rating must be provided.';
     if (rating < 1 || rating > 5) {
         throw 'Rating must be an integer between 1 and 5.';
     }
+
     if (review && typeof review !== 'string') throw 'Review must be a string, if provided.';
     // TODO: word limit for reviews?
 
@@ -67,7 +76,6 @@ export const addRanking = async (albumid, username, rating, review, review_bool,
     }
 
     // add ranking to collection of all album rankings 
-    const rankingcol = await rankings();
     const addRanking = await rankingcol.insertOne(newRanking);
 
     const albumcol = await albums();
@@ -100,18 +108,7 @@ export const addRanking = async (albumid, username, rating, review, review_bool,
     const album_name = obj.albumName;  // the album object in the collection
     const rankings_obj = obj.rankings; // array of rankings for specific album
 
-    return {successful: true};
-    // Unecessary for this part: can use this code when calculating trending albums tho
-    // let total = 0;
-    // for (i = 0; i < rankings.length; i++) {
-    //     total += rankings[i].rating;
-    // }
-    // const avg = total / rankings.length;
-
-    // let album = {
-        
-    // }
-    // album.avgranking = avg;
+    return {successful: true, rankingAlreadyExists: true};
 }
 
 /**

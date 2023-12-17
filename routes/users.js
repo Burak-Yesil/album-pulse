@@ -204,8 +204,10 @@ router
     .get(async (req,res) => {
         try{
             const username = req.params.username;
+            const rankingAlreadyExists = req.session.data.rankingAlreadyExists; //Need to add the ability to display messaeg if ranking already exists
+            delete req.session.data;
             const userRankings= await showRankings(username);
-            return res.render('personal_rankings', {userRankings: userRankings});
+            return res.render('personal_rankings', {userRankings:userRankings, rankingAlreadyExists: rankingAlreadyExists});
         } catch (e){
             return res.status(404).json({error: e.message});
         }
