@@ -24,7 +24,13 @@ router
             //let searchFor = helpers.isValidString(req.body.searchInput, "searchInput");
             let searchFor = req.body.searchInput;
             const searchedAlbums = await spotifyAPI.getAlbum(searchFor);
-            return res.render('search', {title: 'Search Results', albumresults: searchedAlbums});
+            console.log(searchedAlbums);
+            if(searchedAlbums.length === 0){
+                return res.render('search', {title: 'Search Results', error: 'No album found for this search term.'});
+            }
+            else{
+                return res.render('search', {title: 'Search Results', albumresults: searchedAlbums});
+            }
         }catch(e){
             return res.status(400).render('error', {
                 error: e.message,
@@ -47,8 +53,6 @@ router
             // Input validation
             let album_name = req['body']['album-name-rec'];
             let artist = req['body']['artist-rec'];
-            album_name = helpers.titleCase(album_name);
-            artist = helpers.titleCase(artist);
             let gen_recommendations = await spotifyAPI.getReccomendations(album_name, artist, 5);
             return res.render('recommendations', {recommendations: gen_recommendations});
             // Generate recommendations

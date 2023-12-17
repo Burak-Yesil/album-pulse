@@ -31,7 +31,7 @@ router
                 title: "Login",
             })
         } catch (e) {
-            return res.status(404).redirect('error', { error: e.message, status: '404' });
+            return res.status(404).render('error', { error: e.message, status: '404' });
         }
     })
     .post(
@@ -161,7 +161,7 @@ router
                 title: "About",
             })
         } catch (e) {
-            return res.status(404).json({ error: e.message });
+            return res.status(404).render('error', { error: e.message, status: 404 });
         }
     });
 
@@ -171,33 +171,36 @@ router
     .get(async (req, res) =>{
         try{
             // TODO: 
-            const user = req.session.user
-            return res.render('user', {title: user.userName, username: user.userName})
+            const user = req.params.username
+            if(req.session.user.userName != user){
+                throw new Error('Cannot access another users private page');
+            }
+            return res.render('user', {title: user, username: user});
         }catch(e){
             // TODO: Revise later
-            return res.status(404).json({ error: e.message });
+            return res.status(404).render('error', { error: e.message, status: 404});
         }
     })
-    .post(async (req, res) =>{
-        try{
-            // TODO: Fetch the album that user searched up once Submit button is pressed
-            // Cont. Once name is fetched, query spotify api
-            // Cont. Once album is found, then allow ranking -> get ranking
-        }catch(e){
-            // TODO: Revise later
-            console.log(e)
-            return res.status(404).json({ error: e.message });
-        }
-    })
-    .put(async (req, res) =>{
-        try{
-            // TODO: "Delete" user account -> actually just update name to "Deleted User (some number)" and terminated to = true
-        }catch(e){
-            // TODO: Revise later
-            console.log(e)
-            return res.status(404).json({ error: e.message });
-        }
-    })
+    // .post(async (req, res) =>{
+    //     try{
+    //         // TODO: Fetch the album that user searched up once Submit button is pressed
+    //         // Cont. Once name is fetched, query spotify api
+    //         // Cont. Once album is found, then allow ranking -> get ranking
+    //     }catch(e){
+    //         // TODO: Revise later
+    //         console.log(e)
+    //         return res.status(404).render({ error: e.message });
+    //     }
+    // })
+    // .put(async (req, res) =>{
+    //     try{
+    //         // TODO: "Delete" user account -> actually just update name to "Deleted User (some number)" and terminated to = true
+    //     }catch(e){
+    //         // TODO: Revise later
+    //         console.log(e)
+    //         return res.status(404).json({ error: e.message });
+    //     }
+    // })
 
 router
     .route('/user/:username/rankings')
@@ -209,28 +212,7 @@ router
             const userRankings= await showRankings(username);
             return res.render('personal_rankings', {userRankings:userRankings, rankingAlreadyExists: rankingAlreadyExists});
         } catch (e){
-            return res.status(404).json({error: e.message});
-        }
-    })
-// Edit/Delete ranking
-router
-    .route('/:userid/:rankingid')
-    .put(async (req, res) =>{
-        try{
-            // TODO: Edit ranking
-        }catch(e){
-            // TODO: Revise later
-            console.log(e)
-            return res.status(404).json({ error: e.message });
-        }
-    })
-    .delete(async (req, res) =>{ //Deletes an individual review 
-        try{
-            // TODO: 
-        }catch(e){
-            // TODO: Revise later
-            console.log(e)
-            return res.status(404).json({ error: e.message });
+            return res.status(404).render('error', {error: e.message, status: 404});
         }
     })
 
@@ -242,35 +224,71 @@ router
             const userRankings= await getRankingById(rankingid);
             return res.render('rankinginfo', {userRankings: userRankings});
         } catch (e){
-            return res.status(404).json({error: e.message});
+            return res.status(404).render('error', {error: e.message, status: 404});
         }
     })
+    .put(async (req, res) => {
+        try{
 
+        } catch (e) {
+
+        }
+    })
+    .delete(async (req, res) => {
+        try{
+
+        } catch (e) {
+            
+        }
+    });
+
+
+// Edit/Delete ranking
+// router
+//     .route('/:userid/:rankingid')
+//     .put(async (req, res) =>{
+//         try{
+//             // TODO: Edit ranking
+//         }catch(e){
+//             // TODO: Revise later
+//             console.log(e)
+//             return res.status(404).json({ error: e.message });
+//         }
+//     })
+//     .delete(async (req, res) =>{ //Deletes an individual review 
+//         try{
+//             // TODO: 
+//         }catch(e){
+//             // TODO: Revise later
+//             console.log(e)
+//             return res.status(404).json({ error: e.message });
+//         }
+//     })
 
 // Comments
-router
-    .route('/:rankingid')
-    .post(async (req, res) =>{
-        try{
-            // TODO: Input validation -> Post comment to ranking
-        }catch(e){
-            // TODO: Revise later
-            console.log(e)
-            return res.status(404).json({ error: e.message });
-        }
-    })
+// router
+//     .route('/:rankingid')
+//     .post(async (req, res) =>{
+//         try{
+//             // TODO: Input validation -> Post comment to ranking
+//         }catch(e){
+//             // TODO: Revise later
+//             console.log(e)
+//             return res.status(404).json({ error: e.message });
+//         }
+//     })
 
 // Comments Cont.
-router
-    .route('/:commentid')
-    .delete(async (req, res) =>{
-        try{
-            // TODO: Input validation -> Delete comment to ranking
-        }catch(e){
-            // TODO: Revise later
-            console.log(e)
-            return res.status(404).json({ error: e.message });
-        }
-    })
+// router
+//     .route('/:commentid')
+//     .delete(async (req, res) =>{
+//         try{
+//             // TODO: Input validation -> Delete comment to ranking
+//         }catch(e){
+//             // TODO: Revise later
+//             console.log(e)
+//             return res.status(404).json({ error: e.message });
+//         }
+//     })
 
 export default router;
