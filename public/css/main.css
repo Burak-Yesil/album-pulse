@@ -1,39 +1,60 @@
 header {
     padding: 10px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-weight: bold;
     text-align: center;
 }
-
-
-ul{
-    list-style-type: none;
-}
-/* sorry i commented whoevers style out for now because its making the search part ugly. -sanya 
-/* ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    background-color: rgb(170, 144, 144);
+    
+ul {
+    border-radius: 12px;
+    padding: 10px; 
+    text-align: left; 
+    list-style-type: circle; 
 }
 
 li {
-    float: left;
+    background-color: bisque;
+    font-style: italic;
 }
 
-li a {
-    text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;
+ul[id="genres-details"]{
+    border-radius: 12px;
+    padding: 10px; 
+    list-style-type: none;
+    text-align: center; 
 }
 
-li a:hover {
-    background-color: #111;
-} */
+a{
+    color: rgb(212, 57, 109);
+}
 
 body {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    background-color: pink;
     text-align: center;
+    margin-top: 12px;
+    margin-bottom: 12px;
+    margin-left: 12px;
+    margin-right: 12px;
 }
 
-.error {
-    color: red;
+
+button{
+    background-color: palevioletred;
+    border-radius: 12px;
+    font-style: bold;
+}
+
+label{
+    font-style: bold;
+}
+
+input[type="text"]{
+    background-color: bisque;
+    border-radius: 12px;
+}
+
+input[type="password"]{
+    background-color: bisque;
+    border-radius: 12px;
 }

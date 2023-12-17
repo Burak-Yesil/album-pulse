@@ -6,8 +6,8 @@ const db = await dbConnection();
 await db.dropDatabase();
 
 // users
-const patrick = await registerUser('PatrickHill', 'Patrick1!', 'Patrick1!');
-const melissa = await registerUser('MelissaOzcan', 'Melissa1!', 'Melissa1!');
+const patrick = await registerUser('patrickhill', 'Patrick1!', 'Patrick1!');
+const melissa = await registerUser('melissaozcan', 'Melissa1!', 'Melissa1!');
 
 // album ids
 const pinkFriday2 = '2bYCNZfxZrTUv1CHXkz2d2';

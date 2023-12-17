@@ -1,17 +1,13 @@
 /** Client-side validation for login and registration forms. */
-console.log('entered client side validation.');
-
 let errorP = document.getElementById('error');
 let user = document.getElementById('user');
 let pass = document.getElementById('pass');
 let confirmPass = document.getElementById('confirm-pass');
-let searchForm = document.getElementById('search-form');
 let searchInput = document.getElementById('searchInput');
 
 let registerForm = document.getElementById('register-form');
 if (registerForm) {
     registerForm.addEventListener('submit', (event) => {
-        console.log('entered registration clientside validation.');
         event.preventDefault();
         checkUser(user.value);
         checkPass(pass.value);
@@ -19,7 +15,6 @@ if (registerForm) {
         if (pass.value != confirmPass.value) {
             errorP.hidden = false;
             errorP.innerText = "Passwords must match.";
-    
         } 
         if (errorP.innerText === '') {
             document.getElementById('register-form').submit();
@@ -30,7 +25,6 @@ if (registerForm) {
 let loginForm = document.getElementById('login-form');
 if (loginForm) {
     loginForm.addEventListener('submit', (event) => {
-        console.log('entered login clientside validation.');
         // CANNOT check if the user exists during clientside. must check in the route.
         console.log(user);
         event.preventDefault();
@@ -42,20 +36,17 @@ if (loginForm) {
     });
 }
 
-// if (searchForm) {
-//     searchForm.addEventListener('submit', (event) => {
-//         event.preventDefault();
-//         checkSearch(searchInput.value);
-//         if (errorP.innerText === '') {
-//             document.getElementById('search-form').submit();
-//         }
-//     });
+let searchForm = document.getElementById('search-form');
+if (searchForm) {
+    searchForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+        checkSearch(searchInput.value);
+        if (errorP.innerText === '') {
+            document.getElementById('search-form').submit();
+        }
+    });
+}
 
-
-
-/**
-* Checks if the username is valid during login & registration.
-*/
 const checkSearch = (search) => {
     if(search.length > 250){
         errorP.hidden = false;
@@ -63,6 +54,9 @@ const checkSearch = (search) => {
     }
 }
 
+/**
+* Checks if the username is valid during login & registration.
+*/
 const checkUser = (user) => {
     if (user.length < 5) {
         errorP.hidden = false;
@@ -75,7 +69,6 @@ const checkUser = (user) => {
 /**
 * Checks if the password is valid during login & registration.
 */
-
 const checkPass = (password) => {
     if (password.trim().length < 8) {
         errorP.hidden = false;
