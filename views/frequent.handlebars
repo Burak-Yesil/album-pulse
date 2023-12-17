@@ -2,7 +2,7 @@
 <p>Most Frequently Ranked Albums on AlbumPulse:</p>
 <ul class="most_frequent">
     {{#each mostFrequent}}
-    <li><a href='/album/{{this.albumId}}'><strong>{{this.albumName}}</strong></a></li>
+        <li><a href="/album/{{this.albumId}}"><strong>{{this.albumName}}</strong></a></li>
     {{/each}}
 </ul>
 <p id="error">{{error}}</p>

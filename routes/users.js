@@ -223,7 +223,7 @@ router
             const userRankings= await getRankingById(rankingid);
             const cookieUserName= req.session.user.userName
             const canEditRanking = cookieUserName === req.params.userid
-            return res.render('rankinginfo', {userRankings: userRankings, canEditRanking, userName: userId});
+            return res.render('rankinginfo', {userRanking: userRanking, canEditRanking, userName: userId, rankingid});
         } catch (e){
             return res.status(404).render('error', {error: e.message, status: 404, username: req.session.user.userName});
         }
@@ -244,52 +244,35 @@ router
     });
 
 
-// Edit/Delete ranking
-// router
-//     .route('/:userid/:rankingid')
-//     .put(async (req, res) =>{
-//         try{
-//             // TODO: Edit ranking
-//         }catch(e){
-//             // TODO: Revise later
-//             console.log(e)
-//             return res.status(404).json({ error: e.message });
-//         }
-//     })
-//     .delete(async (req, res) =>{ //Deletes an individual review 
-//         try{
-//             // TODO: 
-//         }catch(e){
-//             // TODO: Revise later
-//             console.log(e)
-//             return res.status(404).json({ error: e.message });
-//         }
-//     })
+router
+.route('/user/:userid/rankings/:rankingid/edit')
+.get(async (req,res) => {
+    try{
+        const rankingid = req.params.rankingid;
+        const userId = req.params.userid;
+        const userRanking= await getRankingById(rankingid);
+        const cookieUserName= req.session.user.userName
+        const canEditRanking = cookieUserName === req.params.userid
+        return res.render('editOrCommentRanking', {userRanking: userRanking, canEditRanking, userName: userId, rankingid});
+    } catch (e){
+        return res.status(404).render('error', {error: e.message, status: 404});
+    }
+})
 
-// Comments
-// router
-//     .route('/:rankingid')
-//     .post(async (req, res) =>{
-//         try{
-//             // TODO: Input validation -> Post comment to ranking
-//         }catch(e){
-//             // TODO: Revise later
-//             console.log(e)
-//             return res.status(404).json({ error: e.message });
-//         }
-//     })
+router
+    .route('/user/:userid/rankings/:rankingid/comment')
+    .get(async (req,res) => {
+        try{
+            const rankingid = req.params.rankingid;
+            const userId = req.params.userid;
+            const userRanking = await getRankingById(rankingid);
+            const cookieUserName= req.session.user.userName
+            const canEditRanking = cookieUserName === req.params.userid
+            return res.render('editOrCommentRanking', {userRanking: userRanking, canEditRanking, userName: userId, rankingid});
+        } catch (e){
+            return res.status(404).render('error', {error: e.message, status: 404});
+        }
+    })
 
-// Comments Cont.
-// router
-//     .route('/:commentid')
-//     .delete(async (req, res) =>{
-//         try{
-//             // TODO: Input validation -> Delete comment to ranking
-//         }catch(e){
-//             // TODO: Revise later
-//             console.log(e)
-//             return res.status(404).json({ error: e.message });
-//         }
-//     })
 
 export default router;
