@@ -173,6 +173,7 @@ router
         try{
             // TODO: 
             const user = req.params.username
+            user = user.toLowerCase();
             if(req.session.user.userName != user){
                 throw new Error('Cannot access another users private page');
             }
@@ -188,6 +189,7 @@ router
     .get(async (req,res) => {
         try{
             const username = req.params.username;
+            username = username.toLowerCase();
             if(username != req.session.user.userName){
                 throw new Error('Cannot view other users personal rankings page');
             }
@@ -217,6 +219,7 @@ router
 
             const rankingid = req.params.rankingid;
             const userId = req.params.userid;
+            userId = userId.toLowerCase();
             const userRankings= await getRankingById(rankingid);
             const cookieUserName= req.session.user.userName
             const canEditRanking = cookieUserName === req.params.userid
