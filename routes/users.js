@@ -217,7 +217,7 @@ router
                 return res.render('personal_rankings');
             }
             else{
-                return res.render('personal_rankings', {userRankings:userRankings, rankingAlreadyExists: rankingAlreadyExists});
+                return res.render('personal_rankings', {userRankings:userRankings, rankingAlreadyExists: rankingAlreadyExists, userName: username});
             }
         } catch (e){
             return res.status(404).render('error', {error: e.message, status: 404});
