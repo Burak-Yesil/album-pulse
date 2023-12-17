@@ -4,7 +4,7 @@ import { Router } from 'express';
 const router = Router();
 import helpers from '../helpers.js';
 import { spotifyAPI, getAlbumObject } from '../data/spotifyAPI.js'
-import { topRanked, mostFrequent, getRankings, addRanking } from '../data/musicData.js';
+import { topRanked, mostFrequent, getRankings, addRanking, allAlbumRankings, getRankingById} from '../data/musicData.js';
 
 // Search for Album Page
 router
@@ -142,6 +142,36 @@ router.route('/album/:id')
             return res.status(404).json({ error: e.message });
         }
     });
+
+
+    //Album specific rankings
+    router.route('/album/:id/rankings')
+    .get(async (req, res) => {
+        try {
+            const albumId = req.params.id;
+            
+            let rankings = await allAlbumRankings(albumId);
+            return res.render('allAlbumRanking', { title: "Rankings:", rankings});
+        } catch (e) {
+            console.log(e);
+            return res.status(404).json({ error: e.message });
+        }
+    });
+
+
+    router.route('/user/:userId/ranking/:rankingId')
+    .get(async (req, res) => {
+        try {
+            const albumId = req.params.userId;
+            const rankingId = req.params.rankingId;
+            const ranking = getRankingById(rankingId)
+            return res.render('allAlbumRanking', { title: "Rankings", ranking});
+        } catch (e) {
+            console.log(e);
+            return res.status(404).json({ error: e.message });
+        }
+    });
+
 
 
 export default router;
