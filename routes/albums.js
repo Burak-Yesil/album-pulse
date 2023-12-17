@@ -62,12 +62,13 @@ router
     .get(async (req, res) => {
         try {
             let mostFrequentAlbums = await mostFrequent();
-            let albumNames = [];
-            for (let i = 0; i < mostFrequentAlbums.length; i++) {
-                albumNames.push(mostFrequentAlbums[i].albumName);
-            }
-            console.log('albumNames: ', albumNames);
-            return res.render('frequent', { title: 'Most Frequently Ranked Albums', mostFrequent: albumNames });
+            console.log(mostFrequentAlbums);
+            // let albumNames = [];
+            // for (let i = 0; i < mostFrequentAlbums.length; i++) {
+            //     albumNames.push(mostFrequentAlbums[i].albumName);
+            // }
+            // console.log('albumNames: ', albumNames);
+            return res.render('frequent', { title: 'Most Frequently Ranked Albums', mostFrequent: mostFrequentAlbums });
         } catch (e) {
             return res.status(400).render('error', {
                 error: e.message,
@@ -124,7 +125,7 @@ router.route('/album/:id')
             if(!cover){
                 cover = 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png';
             }
-            return res.render('albumDetails', { title: name, cover: cover, total: total, artists: artists, genres: genres});
+            return res.render('albumDetails', { title: name, cover: cover, total: total, artists: artists, genres: genres, album_id: req.params.id});
         } catch (e) {
             console.log(e);
             return res.status(404).json({ error: e.message });
@@ -159,9 +160,8 @@ router.route('/album/:id')
     .get(async (req, res) => {
         try {
             const albumId = req.params.id;
-            
             let rankings = await allAlbumRankings(albumId);
-            return res.render('allAlbumRanking', { title: "Rankings:", rankings});
+            return res.render('albumRankings', { title: "Rankings:", rankings});
         } catch (e) {
             console.log(e);
             return res.status(404).json({ error: e.message });

@@ -2,7 +2,7 @@
 <p>Most Frequently Ranked Albums on AlbumPulse:</p>
 <ul class="most_frequent">
     {{#each mostFrequent}}
-    <li>{{this}}</li>
+    <li><a href='/album/{{this.albumId}}'><strong>{{this.albumName}}</strong></a></li>
     {{/each}}
 </ul>
 <!--it should have the username itself in the url, not :username. update route or change this??-->
