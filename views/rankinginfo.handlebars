@@ -1,1 +1,11 @@
-{{{ userRankings }}}
+<strong>{{userRankings.albumName}}</strong></a>
+        <p>Rating: {{userRankings.rating}}</p>
+        {{#if userRankings.review_provided}}
+          <p>Review: {{userRankings.review}}</p>
+        {{else}}
+          <p>No review provided</p>
+        {{/if}}
+
+<p>
+    <a href="/album/{{userRankings.albumId}}"> View Album Info</a>
+</p>

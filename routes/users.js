@@ -3,7 +3,7 @@ import { Router } from 'express';
 
 import {userData} from '../data/index.js'
 import helpers from '../helpers.js';
-import { showRankings} from '../data/musicData.js';
+import { showRankings, getRankingById} from '../data/musicData.js';
 
 // TODO: Import data functions
 const router = Router();
@@ -18,7 +18,7 @@ router
                 title: "About" 
             })
         }catch(e){
-            return res.status(404).redirect('error', { error: e.message, status: '404' });  
+            return res.status(404).render('error', { error: e.message, status: '404' });  
         }
     })
 
@@ -99,7 +99,7 @@ router
                 title: "Register",
             })
         } catch (e) {
-            return res.status(404).redirect('error', { error: e.message, status: 404 });
+            return res.status(404).render('error', { error: e.message, status: 404 });
         }
     })
     .post(
@@ -145,7 +145,7 @@ router
                 const user = await userData.registerUser(username, password, confirmPassword);
                 return res.redirect('/login');
             }catch(e){
-                return res.status(400).redirect('error', {error: e.message, status: '400'})
+                return res.status(400).render('error', {error: e.message, status: '400'})
             }
 
         }

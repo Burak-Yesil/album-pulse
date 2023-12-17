@@ -10,13 +10,13 @@ export const registerUser = async (username, password, confirmPassword) => {
     password = password.trim();
     confirmPassword = confirmPassword.trim();
     if(!username || !password || !confirmPassword){
-        throw new Error('Error: Must provide username, password, and confirm your password.');
+        throw new Error('Must provide username, password, and confirm your password.');
     }
     if(!helpers.isValidString(username) || !helpers.isValidString(password) || !helpers.isValidString(confirmPassword)){
-        throw new Error('Error: Username, password, and confirm password must all be valid strings');
+        throw new Error('Username, password, and confirm password must all be valid strings');
     }
     if(username.length < 5){
-        throw new Error('Error: Username must be at least 5 characters long.');
+        throw new Error('Username must be at least 5 characters long.');
     }
     if (password.trim().length < 8) {
         throw new Error("Password must be at least 8 characters long.");
@@ -40,13 +40,13 @@ export const registerUser = async (username, password, confirmPassword) => {
     const usersCollection = await users();
     const exists = await usersCollection.findOne({userName: username});
     if(exists){
-        throw new Error("Error: Username or password is invalid");
+        throw new Error("Either username or password is invalid");
     }
 
     password = await bcrypt.hash(password, 10)
 
     const doc = {
-        username,
+        userName: username,
         password,
     }
 
@@ -82,7 +82,7 @@ export const loginUser = async (username, password) => {
 
     const usersCollection = await users();
     const user = await usersCollection.findOne({ 'userName': username }) //TODO: Make sure the schema is good
-    if (!user) throw new Error("Either the email address or password is invalid")
+    if (!user) throw new Error("Either username or password is invalid")
     let validPassword = await bcrypt.compare(password, user.password)
     if (validPassword) {
         return {
