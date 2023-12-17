@@ -1,0 +1,17 @@
+{{#if eq mode "edit" }}
+    <form id="edit-form" method="POST">
+        <label for="edit-ranking">Ranking</label>
+        <input type="text" id="edit-ranking"/><br>
+        <label for="edit-review">Ranking</label>
+        <input type="text" id="edit-review"/><br>
+        <button type="submit">Submit</button>
+    </form>
+{{else}}
+    {{#if eq mode "comment"}}  
+        <form id="comment-form">
+            <label for="comment">Comment</label>
+            <input type="text" id="comment"/><br>
+            <button type="submit">Submit</button>
+        </form>
+    {{/if}}
+{{/if}}
