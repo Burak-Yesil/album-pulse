@@ -36,16 +36,16 @@ if (loginForm) {
     });
 }
 
-let searchForm = document.getElementById('search-form');
-if (searchForm) {
-    searchForm.addEventListener('submit', (event) => {
-        event.preventDefault();
-        checkSearch(searchInput.value);
-        if (errorP.innerText === '') {
-            document.getElementById('search-form').submit();
-        }
-    });
-}
+// let searchForm = document.getElementById('search-form');
+// if (searchForm) {
+//     searchForm.addEventListener('submit', (event) => {
+//         event.preventDefault();
+//         checkSearch(searchInput.value);
+//         if (errorP.innerText === '') {
+//             document.getElementById('search-form').submit();
+//         }
+//     });
+// }
 
 const checkSearch = (search) => {
     if(search.length > 250){
