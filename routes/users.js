@@ -3,7 +3,7 @@ import { Router } from 'express';
 
 import {userData} from '../data/index.js'
 import helpers from '../helpers.js';
-import { showRankings, getRankingById} from '../data/musicData.js';
+import { showRankings, getRankingById, deleteRanking} from '../data/musicData.js';
 import {users} from '../config/mongoCollections.js';
 
 // TODO: Import data functions
@@ -227,13 +227,6 @@ router
         } catch (e){
             return res.status(404).render('error', {error: e.message, status: 404, username: req.session.user.userName});
         }
-    })
-    .delete(async (req, res) => {
-        try{
-
-        } catch (e) {
-            
-        }
     });
 
 
@@ -248,6 +241,20 @@ router
         const cookieUserName= req.session.user.userName
         const canEditRanking = cookieUserName === req.params.userid
         return res.render('editOrCommentRanking', {userRanking: userRanking, canEditRanking, userName: userId, rankingid});
+    } catch (e){
+        return res.status(404).render('error', {error: e.message, status: 404});
+    }
+})
+
+router
+.route('/user/:userid/rankings/:rankingid/delete')
+.get(async (req,res) => {
+    try{
+        const rankingid = req.params.rankingid;
+        let userId = req.params.userid;
+        userId = userId.toLowerCase();
+        deleteRanking(rankingid);
+        return res.render('deleted', {username: userId}); 
     } catch (e){
         return res.status(404).render('error', {error: e.message, status: 404});
     }
