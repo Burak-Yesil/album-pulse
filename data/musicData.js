@@ -189,9 +189,9 @@ export const showRankings = async (username) => {
 
 }
 
-export const allAlbumRankings = async (albumname)=>{
+export const allAlbumRankings = async (albumId)=>{
     const rankingsCollection = await rankings();
-    const albumRankings = await rankingsCollection.find({albumName: albumname}).toArray();
+    const albumRankings = await rankingsCollection.find({albumId: albumId}).toArray();
 
     if (albumRankings.length === 0){
         return {albumName: albumname, rankings: ['No rankings for this album yet, add one!!']};
