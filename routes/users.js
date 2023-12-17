@@ -207,10 +207,18 @@ router
     .get(async (req,res) => {
         try{
             const username = req.params.username;
+            if(username != req.session.user.userName){
+                throw new Error('Cannot view other users personal rankings page');
+            }
             const rankingAlreadyExists = req.session.data?.rankingAlreadyExists || false;        //Need to add the ability to display messaeg if ranking already exists
             delete req.session.data;
             const userRankings= await showRankings(username);
-            return res.render('personal_rankings', {userRankings:userRankings, rankingAlreadyExists: rankingAlreadyExists});
+            if(userRankings.rankings[0] === 'No rankings yet.'){
+                return res.render('personal_rankings');
+            }
+            else{
+                return res.render('personal_rankings', {userRankings:userRankings, rankingAlreadyExists: rankingAlreadyExists});
+            }
         } catch (e){
             return res.status(404).render('error', {error: e.message, status: 404});
         }
