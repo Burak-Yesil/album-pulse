@@ -198,7 +198,7 @@ router
                 return res.render('personal_rankings');
             }
             else{
-                return res.render('personal_rankings', {userRankings:userRankings, rankingAlreadyExists: rankingAlreadyExists});
+                return res.render('personal_rankings', {userRankings:userRankings, rankingAlreadyExists: rankingAlreadyExists, userName: username});
             }
         } catch (e){
             return res.status(404).render('error', {error: e.message, status: 404, username: req.session.user.userName});
@@ -218,7 +218,9 @@ router
             const rankingid = req.params.rankingid;
             const userId = req.params.userid;
             const userRankings= await getRankingById(rankingid);
-            return res.render('rankinginfo', {userRankings: userRankings, userName: userId});
+            const cookieUserName= req.session.user.userName
+            const canEditRanking = cookieUserName === req.params.userid
+            return res.render('rankinginfo', {userRankings: userRankings, canEditRanking, userName: userId});
         } catch (e){
             return res.status(404).render('error', {error: e.message, status: 404, username: req.session.user.userName});
         }

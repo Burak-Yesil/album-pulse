@@ -5,6 +5,18 @@ header {
     text-align: center;
 }
 
+h1 {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-weight: bold;
+    font-size: 24px;
+}
+
+h2 {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-weight: bold;
+    font-size: 20px;
+}
+
 ul {
     border-radius: 12px;
     padding: 10px;
@@ -19,6 +31,7 @@ li {
 
 textarea{
     background-color: bisque;
+    border-radius: 12px;
 }
 
 ul[id="genres-details"] {
@@ -30,6 +43,11 @@ ul[id="genres-details"] {
 
 a {
     color: rgb(212, 57, 109);
+}
+
+a:hover {
+    color: rgb(212, 57, 109);
+    text-decoration: none;
 }
 
 body {
@@ -48,6 +66,12 @@ button {
     font-weight: bold;
 }
 
+button:hover {
+    background-color: rgb(212, 57, 109);
+    color: white;
+    cursor: pointer;
+}
+
 label {
     font-weight: bold;
 }
@@ -61,3 +85,4 @@ input[type="password"] {
     background-color: bisque;
     border-radius: 12px;
 }
+
