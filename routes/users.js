@@ -220,7 +220,7 @@ router
             const rankingid = req.params.rankingid;
             let userId = req.params.userid;
             userId = userId.toLowerCase();
-            const userRankings= await getRankingById(rankingid);
+            const userRanking= await getRankingById(rankingid);
             const cookieUserName= req.session.user.userName
             const canEditRanking = cookieUserName === req.params.userid
             return res.render('rankinginfo', {userRanking: userRanking, canEditRanking, userName: userId, rankingid});
