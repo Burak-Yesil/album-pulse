@@ -1,5 +1,6 @@
 import {users, rankings} from '../config/mongoCollections.js';
 import * as spotify from './spotifyAPI.js';
+import {ObjectId} from 'mongodb';
 import { validUser, validPassword } from '../helpers.js';
 
 export const getRankings = async (album_id) => {
@@ -179,6 +180,7 @@ export const showRankings = async (username) => {
     }
     
     const formattedRankings = userRankings.map(ranking => ({
+        id: ranking._id,
         albumId: ranking.albumId,
         albumName: ranking.albumName, 
         rating: ranking.rating,
@@ -205,4 +207,11 @@ export const allAlbumRankings = async (albumId)=>{
     }));
 
     return {albumName: albumname, rankings: formattedRankings};
+}
+
+export const getRankingById = async (id)=>{
+    const rankingcol = await rankings();
+    const ranking = await rankingcol.findOne({_id: new ObjectId(id)});
+
+    return ranking;
 }

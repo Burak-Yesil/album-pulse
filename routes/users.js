@@ -3,7 +3,7 @@ import { Router } from 'express';
 
 import {userData} from '../data/index.js'
 import helpers from '../helpers.js';
-import { showRankings} from '../data/musicData.js';
+import { showRankings, getRankingById} from '../data/musicData.js';
 
 // TODO: Import data functions
 const router = Router();
