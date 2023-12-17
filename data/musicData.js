@@ -1,13 +1,14 @@
 import {users, rankings, albums} from '../config/mongoCollections.js';
 import * as spotify from './spotifyAPI.js';
 import {ObjectId} from 'mongodb';
-import { validUser, validPassword, validAlbumId , validRating, validComments, validReview, validReviewBool, validComment } from '../helpers.js';
+import { validUser, validPassword, validAlbumId , validRating, validComments, validComment, validReview } from '../helpers.js';
 
 /**
  * Checks if album has been ranked yet. If yes, returns rankings and information for that album. 
  * If not, finds album from spotifyAPI and returns that there are no rankings
  */
 export const getRankings = async (album_id) => {
+    validAlbumId(album_id)
     album_id = album_id.trim();
     const rankingsCollection = await rankings();
     const album = await rankingsCollection.findOne({ albumId: album_id });
@@ -52,20 +53,16 @@ export const addRanking = async (albumid, username, rating, review, review_bool,
 
     validUser(username);
     validRating(rating);
-    validReviewBool(review_bool);
-    
-    if(review_bool===true){
-        validReview(review);
-        review=review.trim();
-    }
-
     validComments(comments);
+    validReview(review);
 
     albumid=albumid.trim();
     username=username.trim();
     rating=rating.trim();
+    review=review.trim();
+
     if(comments.length!==0){
-        for(i==0; i<comments.length; i++){
+        for(let i=0; i<comments.length; i++){
             comments[i]=comments[i].trim();
         }
     }
@@ -241,6 +238,7 @@ export const getRecommendations = async () => {
 
 export const showRankings = async (username) => {
     validUser(username);
+    username=username.trim();
     const usersCollection = await users();
     const rankingsCollection = await rankings();
     const user = await usersCollection.findOne({ 'userName': username });

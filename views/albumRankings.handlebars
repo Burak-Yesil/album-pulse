@@ -1,23 +1,26 @@
 <div id="album-rankings">
-  <h2>Album Rankings: {{albumName}}</h2>
+    <h2>Album Rankings: {{albumName}}</h2>
 
-  {{#if rankings.length}}
+    {{#if rankings.length}}
     <ul>
-      {{#each rankings}}
-          <li>
+        {{#each rankings}}
+        <li>
             <a href="/user/{{userName}}/rankings/{{id}}"><strong>{{userName}}</strong></a>
             <p>Rating: {{rating}}</p>
             {{#if review_provided}}
-              <p>Review: {{review}}</p>
+            <p>Review: {{review}}</p>
             {{else}}
-              <p>No review provided</p>
+            <p>No review provided</p>
             {{/if}}
-          </li>
+        </li>
         </a>
-      {{/each}}
+        {{/each}}
     </ul>
-  {{else}}
+    {{else}}
     <p>No rankings yet. Be the first to add one!</p>
-  {{/if}}
-  </form>
+    {{/if}}
+    </form>
+
+    <a href="/album/{{albumId}}">Back to album page</a>
+    <a href="/user/{{userName}}">Back to user page</a>
 </div>
