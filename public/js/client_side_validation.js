@@ -98,15 +98,15 @@ const checkSearch = (search) => {
 
 
 const checkNum = (rank) => {
-    if(typeof(parseInt(rank)) !== 'number'){
+    if(!(Number.isInteger(Number(rank)))){
         errorP.hidden = false;
         errorP.innerText = 'rank must be an int between 1 and 5';
     }
-    if(parseInt(rank) < 1){
+    if(Number(rank) < 1){
         errorP.hidden = false;
         errorP.innerText = 'rank must be an int between 1 and 5';
     }
-    if(parseInt(rank) > 5){
+    if(Number(rank) > 5){
         errorP.hidden = false;
         errorP.innerText = 'rank must be an int between 1 and 5';
     }

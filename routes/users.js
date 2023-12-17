@@ -4,6 +4,7 @@ import { Router } from 'express';
 import {userData} from '../data/index.js'
 import helpers from '../helpers.js';
 import { showRankings, getRankingById} from '../data/musicData.js';
+import {users} from '../config/mongoCollections.js';
 
 // TODO: Import data functions
 const router = Router();
@@ -18,7 +19,7 @@ router
                 title: "About" 
             })
         }catch(e){
-            return res.status(404).render('error', { error: e.message, status: '404' });  
+            return res.status(404).render('error', { error: e.message, status: 404, username: req.session.user.userName });  
         }
     })
 
@@ -31,7 +32,7 @@ router
                 title: "Login",
             })
         } catch (e) {
-            return res.status(404).render('error', { error: e.message, status: '404' });
+            return res.status(404).render('error', { error: e.message, status: 404, username: req.session.user.userName });
         }
     })
     .post(
@@ -86,7 +87,7 @@ router
             req.session.destroy();
             return res.render('logout', { title: "Logout" });
         } catch (e) {
-            return res.status(404).render('error', {error: e.message, status: '400'});
+            return res.status(404).render('error', {error: e.message, status: 400, username: req.session.user.userName});
         }
     });
 
@@ -99,7 +100,7 @@ router
                 title: "Register",
             })
         } catch (e) {
-            return res.status(404).render('error', { error: e.message, status: 404 });
+            return res.status(404).render('error', { error: e.message, status: 404, username: req.session.user.userName});
         }
     })
     .post(
@@ -145,7 +146,7 @@ router
                 const user = await userData.registerUser(username, password, confirmPassword);
                 return res.redirect('/login');
             }catch(e){
-                return res.status(400).render('error', {error: e.message, status: '400'})
+                return res.status(400).render('error', {error: e.message, status: 400, username: req.session.user.userName})
             }
 
         }
@@ -161,11 +162,11 @@ router
                 title: "About",
             })
         } catch (e) {
-            return res.status(404).render('error', { error: e.message, status: 404 });
+            return res.status(404).render('error', { error: e.message, status: 404, username: req.session.user.userName });
         }
     });
 
-// Create ranking / Delete user
+// Show user profile
 router
     .route('/user/:username') 
     .get(async (req, res) =>{
@@ -178,29 +179,9 @@ router
             return res.render('user', {title: user, username: user});
         }catch(e){
             // TODO: Revise later
-            return res.status(404).render('error', { error: e.message, status: 404});
+            return res.status(404).render('error', { error: e.message, status: 404, username: req.session.user.userName});
         }
     })
-    // .post(async (req, res) =>{
-    //     try{
-    //         // TODO: Fetch the album that user searched up once Submit button is pressed
-    //         // Cont. Once name is fetched, query spotify api
-    //         // Cont. Once album is found, then allow ranking -> get ranking
-    //     }catch(e){
-    //         // TODO: Revise later
-    //         console.log(e)
-    //         return res.status(404).render({ error: e.message });
-    //     }
-    // })
-    // .put(async (req, res) =>{
-    //     try{
-    //         // TODO: "Delete" user account -> actually just update name to "Deleted User (some number)" and terminated to = true
-    //     }catch(e){
-    //         // TODO: Revise later
-    //         console.log(e)
-    //         return res.status(404).json({ error: e.message });
-    //     }
-    // })
 
 router
     .route('/user/:username/rankings')
@@ -217,10 +198,10 @@ router
                 return res.render('personal_rankings');
             }
             else{
-                return res.render('personal_rankings', {userRankings:userRankings, rankingAlreadyExists: rankingAlreadyExists});
+                return res.render('personal_rankings', {userRankings:userRankings, rankingAlreadyExists: rankingAlreadyExists, userName: username});
             }
         } catch (e){
-            return res.status(404).render('error', {error: e.message, status: 404});
+            return res.status(404).render('error', {error: e.message, status: 404, username: req.session.user.userName});
         }
     })
 
@@ -228,6 +209,12 @@ router
     .route('/user/:userid/rankings/:rankingid')
     .get(async (req,res) => {
         try{
+            const usersCollection = await users();
+            const exists = await usersCollection.findOne({userName: req.params.userid});
+            if(!exists){
+                throw new Error("Ranking does not exist");
+            }
+
             const rankingid = req.params.rankingid;
             const userId = req.params.userid;
             const userRanking= await getRankingById(rankingid);
@@ -235,7 +222,7 @@ router
             const canEditRanking = cookieUserName === req.params.userid
             return res.render('rankinginfo', {userRanking: userRanking, canEditRanking, userName: userId, rankingid});
         } catch (e){
-            return res.status(404).render('error', {error: e.message, status: 404});
+            return res.status(404).render('error', {error: e.message, status: 404, username: req.session.user.userName});
         }
     })
     .put(async (req, res) => {
