@@ -161,7 +161,7 @@ router.route('/album/:id')
         try {
             const albumId = req.params.id;
             let rankings = await allAlbumRankings(albumId);
-            return res.render('albumRankings', { title: "Rankings:", rankings});
+            return res.render('albumRankings', { title: 'Rankings', albumName: rankings.albumName, rankings: rankings.rankings});
         } catch (e) {
             console.log(e);
             return res.status(404).json({ error: e.message });
