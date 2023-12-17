@@ -4,16 +4,18 @@ let user = document.getElementById('user');
 let pass = document.getElementById('pass');
 let confirmPass = document.getElementById('confirm-pass');
 let searchInput = document.getElementById('searchInput');
+let namerec = document.getElementById('album-name-rec');
+let artistrec = document.getElementById('artist-rec');
 
 let registerForm = document.getElementById('register-form');
 if (registerForm) {
     registerForm.addEventListener('submit', (event) => {
         event.preventDefault();
         errorP.innerText = '';
-        checkUser(user.value);
-        checkPass(pass.value);
-        checkPass(confirmPass.value);
-        if (pass.value != confirmPass.value) {
+        checkUser(user.value.trim());
+        checkPass(pass.value.trim());
+        checkPass(confirmPass.value.trim());
+        if (pass.value.trim() != confirmPass.value.trim()) {
             errorP.hidden = false;
             errorP.innerText = "Passwords must match.";
         } 
@@ -29,8 +31,8 @@ if (loginForm) {
         // CANNOT check if the user exists during clientside. must check in the route.
         event.preventDefault();
         errorP.innerText = '';
-        checkUser(user.value);
-        checkPass(pass.value);
+        checkUser(user.value.trim());
+        checkPass(pass.value.trim());
         if (errorP.innerText === '') {
             document.getElementById('login-form').submit();
         }
@@ -49,14 +51,27 @@ if (searchForm) {
     });
 }
 
+let recForm = document.getElementById('recommendations-form');
+if(recForm) {
+    recForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+        errorP.innerText = '';
+        checkSearch(namerec.value.trim());
+        checkSearch(artistrec.value.trim());
+        if(errorP.innerText === ''){
+            document.getElementById('recommendations-form').submit();
+        }
+    });
+}
+
 const checkSearch = (search) => {
-    if(search.length > 100){
+    if(search.trim().length > 100){
         errorP.hidden = false;
         errorP.innerText = 'exceeded character limit';
     }
-    if(search.length === 0){
+    if(search.trim().length === 0){
         errorP.hidden = false; 
-        errorP.innerText = 'enter an album to search for';
+        errorP.innerText = 'search fields cannot be empty';
     }
 }
 

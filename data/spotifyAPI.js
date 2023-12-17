@@ -32,7 +32,6 @@ export const spotifyAPI = (function() {
           albums = albums.filter(album => album.artists.some(albumArtist => albumArtist.name === artist));
   
           if (albums.length === 0) {
-              console.error(`No matching albums found for the specified artist '${artist}'.`);
               return null;
           }
   
