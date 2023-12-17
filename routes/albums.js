@@ -30,6 +30,29 @@ router
         }
     });
 
+router
+    .route('/recommendations')
+    .get(async (req, res) =>{
+        try{
+            return res.render('recommendations');
+        } catch (e){
+            return res.status(404).render('error', {error: e.message});
+        }
+    })
+    .post(async (req, res) =>{
+        try{
+            // Input validation
+            let album_name = req['body']['album-name-rec'];
+            let artist = req['body']['artist-rec'];
+            album_name = helpers.titleCase(album_name);
+            artist = helpers.titleCase(artist);
+            let gen_recommendations = await spotifyAPI.getReccomendations(album_name, artist, 5);
+            return res.render('recommendations', {recommendations: gen_recommendations});
+            // Generate recommendations
+        } catch (e) {
+            return res.status(400).render('error', {error: e.message});
+        }
+    })
 
 // Most Frequently Ranked Albums List
 router
@@ -39,8 +62,9 @@ router
             let mostFrequentAlbums = await mostFrequent();
             return res.render('frequent', { title: 'Most Frequently Ranked Albums', mostFrequent: mostFrequentAlbums });
         } catch (e) {
-            return res.status(400).render('register', {
-                error: e.message
+            return res.status(400).render('error', {
+                error: e.message,
+                status: 400
               });
         }
     });

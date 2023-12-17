@@ -1,0 +1,14 @@
+<section>
+    <form id="recommendations-form" method="POST">
+        <label for="album-name-rec">Album Name</label>
+        <input type="text" id="album-name-rec" name="album-name-rec"/><br>
+        <label for="artist-rec">Artist</label>
+        <input type="text" id="artist-rec" name="artist-rec"/><br>
+        <button type="submit">Submit</button>
+    </form>
+    <ul id="recommendations">
+        {{#each recommendations}}
+            <li>{{this}}</li>
+        {{/each}}
+    </ul>
+</section>
