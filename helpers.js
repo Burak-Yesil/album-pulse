@@ -22,7 +22,13 @@ let isValidObject = (obj) => {
     return ((typeof obj === 'object') && (!Array.isArray(obj)) && (obj !== null));
 }
 
-
+function titleCase(str) {
+    str = str.toLowerCase().split(' ');
+    for (var i = 0; i < str.length; i++) {
+      str[i] = str[i].charAt(0).toUpperCase() + str[i].slice(1); 
+    }
+    return str.join(' ');
+}
 
 
 //source: https://stackoverflow.com/questions/5778020/check-whether-an-input-string-contains-a-number-in-javascript 
@@ -49,4 +55,4 @@ export const validPassword = (password) => {
     
 };
 
-export default {includesNumber, validUser, validPassword, isValidArray, isValidNumber, isValidObject, isValidString};
+export default {includesNumber, validUser, validPassword, isValidArray, isValidNumber, isValidObject, isValidString, titleCase};

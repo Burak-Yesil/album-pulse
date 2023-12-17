@@ -155,8 +155,14 @@ export const mostFrequent = async () => {
         }
     }
     // TODO: format the data to appear nicely on the page (maybe {author, album}?)
-    const sorted = Object.keys(albumRankings).sort(function (a, b) { return albumRankings[a] - albumRankings[b] });
-    return sorted.slice(0, 5);
+    let sorted = Object.keys(albumRankings).sort(function (a, b) { return albumRankings[a] - albumRankings[b] });
+    sorted = sorted.slice(0, 5);
+    const albumNames = [];
+    for (let i = 0; i < sorted.length; i++) {
+        const albumObject = await spotify.getAlbumObject(sorted[i]);
+        albumNames.push(albumObject.albumName);
+    }
+    return albumNames;
 }
 
 
