@@ -221,8 +221,9 @@ router
     .get(async (req,res) => {
         try{
             const rankingid = req.params.rankingid;
+            const userId = req.params.userid;
             const userRankings= await getRankingById(rankingid);
-            return res.render('rankinginfo', {userRankings: userRankings});
+            return res.render('rankinginfo', {userRankings: userRankings, userName: userId});
         } catch (e){
             return res.status(404).render('error', {error: e.message, status: 404});
         }
