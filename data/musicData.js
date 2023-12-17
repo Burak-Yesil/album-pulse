@@ -1,4 +1,4 @@
-import {users, rankings} from '../config/mongoCollections.js';
+import {users, rankings, albums} from '../config/mongoCollections.js';
 import * as spotify from './spotifyAPI.js';
 import {ObjectId} from 'mongodb';
 import { validUser, validPassword } from '../helpers.js';
@@ -70,6 +70,21 @@ export const addRanking = async (albumid, username, rating, review, review_bool)
     // add ranking to collection of all album rankings 
     const rankingcol = await rankings();
     const addRanking = await rankingcol.insertOne(newRanking);
+
+    const albumcol = await albums();
+    const alb = await albumcol.findOne({albumId: albumid});
+    if(!alb){
+        let newalb = {
+            albumId : albumid,
+            albumName: currAlbumName,
+            avgRanking: rating
+        }
+        const addAlb = await albumcol.insertOne(newalb);
+    } else {
+        let newrank = (alb.avgRanking + rating)/2
+        alb.avgRanking = newrank;
+    }
+
 
     // find all rankings for this album
     const obj = await getRankings(albumid);
