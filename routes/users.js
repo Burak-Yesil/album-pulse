@@ -207,7 +207,7 @@ router
     .get(async (req,res) => {
         try{
             const username = req.params.username;
-            const rankingAlreadyExists = req.session.data.rankingAlreadyExists; //Need to add the ability to display messaeg if ranking already exists
+            const rankingAlreadyExists = req.session.data?.rankingAlreadyExists || false;        //Need to add the ability to display messaeg if ranking already exists
             delete req.session.data;
             const userRankings= await showRankings(username);
             return res.render('personal_rankings', {userRankings:userRankings, rankingAlreadyExists: rankingAlreadyExists});
