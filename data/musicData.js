@@ -9,7 +9,6 @@ export const getRankings = async (album_id) => {
     album_id = album_id.trim();
     const rankingsCollection = await rankings();
     const album = await rankingsCollection.findOne({ albumId: album_id });
-    console.log(album_id)
     const albumObject = await spotify.getAlbumObject(album_id);
     const currAlbumName= albumObject.albumName;
 
@@ -77,11 +76,21 @@ export const addRanking = async (albumid, username, rating, review, review_bool,
         let newalb = {
             albumId : albumid,
             albumName: currAlbumName,
-            avgRanking: rating
+            avgRanking: parseInt(rating)
         }
         const addAlb = await albumcol.insertOne(newalb);
     } else {
-        let newrank = (alb.avgRanking + rating)/2
+        let allrankings = await allAlbumRankings(albumid);
+        let rnks = allrankings.rankings;
+        let ratings = []
+        for(let r in rnks){
+            ratings.push(r.rating);
+        }
+        let tot = 0;
+        for(let rat in ratings){
+            tot += parseInt(rat);
+        }
+        let newrank = tot/ratings.length;
         await albumcol.updateOne({ albumId: albumid }, { $set: { avgRanking: newrank } });
     }
 
@@ -235,7 +244,6 @@ export const allAlbumRankings = async (albumId)=>{
     if (albumRankings.length === 0){
         return {albumName: albumname, rankings: ['No rankings for this album yet, add one!!']};
     }
-    console.log(albumRankings);
     const formattedRankings = albumRankings.map(ranking=>({
         id: ranking._id.toString(),
         userName:ranking.userName,
