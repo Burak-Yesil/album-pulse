@@ -62,7 +62,8 @@ export const validAlbumId = (albumId) =>{
 }
 
 export const validRating= (rating) =>{
-    if(typeof rating !== 'number') throw new Error('invalid rating: rating must be a number');
+    rating=Number(rating);
+    if(rating === NaN) throw new Error('invalid rating: rating must be a number');
     if(rating >5 || rating <1) throw new Error('invalid rating: must be a number between 1-5')
 }
 
