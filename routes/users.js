@@ -66,7 +66,7 @@ router
                 }
 
                 // Log in User
-                username = username.trim();
+                username = username.trim().toLowerCase();
                 password = password.trim();
                 const person = await userData.loginUser(username, password);
                 req.session.user = person;
