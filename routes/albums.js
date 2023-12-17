@@ -21,7 +21,8 @@ router
     })
     .post(async (req, res) =>{
         try{
-            let searchFor = helpers.isValidString(req.body.searchInput, "searchInput");
+            //let searchFor = helpers.isValidString(req.body.searchInput, "searchInput");
+            let searchFor = req.body.searchInput;
             const searchedAlbums = await spotifyAPI.getAlbum(searchFor);
             return res.render('search', {title: 'Search Results', albumresults: searchedAlbums});
         }catch(e){

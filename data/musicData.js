@@ -82,7 +82,7 @@ export const addRanking = async (albumid, username, rating, review, review_bool)
         const addAlb = await albumcol.insertOne(newalb);
     } else {
         let newrank = (alb.avgRanking + rating)/2
-        alb.avgRanking = newrank;
+        await albumcol.updateOne({ albumId: albumid }, { $set: { avgRanking: newrank } });
     }
 
 
