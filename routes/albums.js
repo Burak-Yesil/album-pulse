@@ -4,7 +4,7 @@ import { Router } from 'express';
 const router = Router();
 import helpers from '../helpers.js';
 import { spotifyAPI, getAlbumObject } from '../data/spotifyAPI.js'
-import { topRanked, mostFrequent, getRankings, addRanking, allAlbumRankings, getRankingById} from '../data/musicData.js';
+import { topRanked, mostFrequent, getRankings, addRanking, allAlbumRankings, getRankingById, trending} from '../data/musicData.js';
 
 // Search for Album Page
 router
@@ -82,10 +82,10 @@ router
     .route('/trending')
     .get(async (req, res) => {
         try {
-            let topRankedAlbums = await topRanked();
+            let topRankedAlbums = await trending();
             let albumNames = [];
             for (let i = 0; i < topRankedAlbums.length; i++) {
-                albumNames.push(topRankedAlbums[i][0]);
+                albumNames.push(topRankedAlbums[i].albumName);
             }
             console.log('albumNames: ', albumNames);
             const user = req.session.user;
