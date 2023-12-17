@@ -68,7 +68,11 @@ router
 
             // Generate Recommendations
             let gen_recommendations = await spotifyAPI.getReccomendations(album_name, artist, 5);
-            return res.render('recommendations', {recommendations: gen_recommendations});
+            if(!gen_recommendations){
+                return res.render('recommendations', {title: 'Search Results', error: 'No matching results found.'});
+            }
+            return res.render('recommendations', {title: 'Recommendations', recommendations: gen_recommendations});
+            // Generate recommendations
         } catch (e) {
             return res.status(400).render('error', {error: e.message, status: 400});
         }

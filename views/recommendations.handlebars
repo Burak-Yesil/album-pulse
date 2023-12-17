@@ -6,6 +6,7 @@
         <input type="text" id="artist-rec" name="artist-rec"/><br>
         <button type="submit">Submit</button>
     </form>
+    <p id="error">{{error}}</p>
     <ul id="recommendations">
         {{#each recommendations}}
             <li>{{this}}</li>
