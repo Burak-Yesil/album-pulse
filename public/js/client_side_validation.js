@@ -37,21 +37,26 @@ if (loginForm) {
     });
 }
 
-// let searchForm = document.getElementById('search-form');
-// if (searchForm) {
-//     searchForm.addEventListener('submit', (event) => {
-//         event.preventDefault();
-//         checkSearch(searchInput.value);
-//         if (errorP.innerText === '') {
-//             document.getElementById('search-form').submit();
-//         }
-//     });
-// }
+let searchForm = document.getElementById('search-form');
+if (searchForm) {
+    searchForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+        errorP.innerText = '';
+        checkSearch(searchInput.value.trim());
+        if (errorP.innerText === '') {
+            document.getElementById('search-form').submit();
+        }
+    });
+}
 
 const checkSearch = (search) => {
-    if(search.length > 250){
+    if(search.length > 100){
         errorP.hidden = false;
         errorP.innerText = 'exceeded character limit';
+    }
+    if(search.length === 0){
+        errorP.hidden = false; 
+        errorP.innerText = 'enter an album to search for';
     }
 }
 
