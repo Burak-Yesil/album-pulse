@@ -84,12 +84,12 @@ router
     .get(async (req, res) => {
         try {
             let mostFrequentAlbums = await mostFrequent();
-            // let albumNames = [];
-            // for (let i = 0; i < mostFrequentAlbums.length; i++) {
-            //     albumNames.push(mostFrequentAlbums[i].albumName);
-            // }
-            // console.log('albumNames: ', albumNames);
-            return res.render('frequent', { title: 'Most Frequently Ranked Albums', mostFrequent: mostFrequentAlbums });
+            if(mostFrequentAlbums.length === 0){
+                return res.render('frequent', {error: 'No rankings added to Album Pulse yet, be the first!', username: req.session.user.userName})
+            }
+            else{
+                return res.render('frequent', { title: 'Most Frequently Ranked Albums', mostFrequent: mostFrequentAlbums, username: req.session.user.userName });
+            }
         } catch (e) {
             return res.status(400).render('error', {
                 error: e.message,
@@ -104,9 +104,13 @@ router
     .get(async (req, res) => {
         try {
             let topRankedAlbums = await trending();
-        
-            const user = req.session.user;
-            return res.render('trending', { title: 'Trending Albums', topRanked: topRankedAlbums, userName: user.userName});
+            if(topRankedAlbums.length === 0){
+                return res.render('trending', {error: 'No rankings added to Album Pulse yet, be the first!', userName: req.session.user.userName})
+            }
+            else{
+                const user = req.session.user;
+                return res.render('trending', { title: 'Trending Albums', topRanked: topRankedAlbums, userName: user.userName});
+            }
         } catch (e) {
             return res.status(400).render('error', {
                 errorMessage: e.message

@@ -46,11 +46,11 @@ body {
 button {
     background-color: palevioletred;
     border-radius: 12px;
-    font-style: bold;
+    font-weight: bold;
 }
 
 label {
-    font-style: bold;
+    font-weight: bold;
 }
 
 input[type="text"] {
