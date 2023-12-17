@@ -4,15 +4,18 @@ let user = document.getElementById('user');
 let pass = document.getElementById('pass');
 let confirmPass = document.getElementById('confirm-pass');
 let searchInput = document.getElementById('searchInput');
+let namerec = document.getElementById('album-name-rec');
+let artistrec = document.getElementById('artist-rec');
 
 let registerForm = document.getElementById('register-form');
 if (registerForm) {
     registerForm.addEventListener('submit', (event) => {
         event.preventDefault();
-        checkUser(user.value);
-        checkPass(pass.value);
-        checkPass(confirmPass.value);
-        if (pass.value != confirmPass.value) {
+        errorP.innerText = '';
+        checkUser(user.value.trim());
+        checkPass(pass.value.trim());
+        checkPass(confirmPass.value.trim());
+        if (pass.value.trim() != confirmPass.value.trim()) {
             errorP.hidden = false;
             errorP.innerText = "Passwords must match.";
         } 
@@ -26,31 +29,49 @@ let loginForm = document.getElementById('login-form');
 if (loginForm) {
     loginForm.addEventListener('submit', (event) => {
         // CANNOT check if the user exists during clientside. must check in the route.
-        console.log(user);
         event.preventDefault();
-        checkUser(user.value);
-        checkPass(pass.value);
+        errorP.innerText = '';
+        checkUser(user.value.trim());
+        checkPass(pass.value.trim());
         if (errorP.innerText === '') {
             document.getElementById('login-form').submit();
         }
     });
 }
 
-// let searchForm = document.getElementById('search-form');
-// if (searchForm) {
-//     searchForm.addEventListener('submit', (event) => {
-//         event.preventDefault();
-//         checkSearch(searchInput.value);
-//         if (errorP.innerText === '') {
-//             document.getElementById('search-form').submit();
-//         }
-//     });
-// }
+let searchForm = document.getElementById('search-form');
+if (searchForm) {
+    searchForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+        errorP.innerText = '';
+        checkSearch(searchInput.value.trim());
+        if (errorP.innerText === '') {
+            document.getElementById('search-form').submit();
+        }
+    });
+}
+
+let recForm = document.getElementById('recommendations-form');
+if(recForm) {
+    recForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+        errorP.innerText = '';
+        checkSearch(namerec.value.trim());
+        checkSearch(artistrec.value.trim());
+        if(errorP.innerText === ''){
+            document.getElementById('recommendations-form').submit();
+        }
+    });
+}
 
 const checkSearch = (search) => {
-    if(search.length > 250){
+    if(search.trim().length > 100){
         errorP.hidden = false;
         errorP.innerText = 'exceeded character limit';
+    }
+    if(search.trim().length === 0){
+        errorP.hidden = false; 
+        errorP.innerText = 'search fields cannot be empty';
     }
 }
 
@@ -58,12 +79,13 @@ const checkSearch = (search) => {
 * Checks if the username is valid during login & registration.
 */
 const checkUser = (user) => {
-    if (user.length < 5) {
+    if (user.trim().length < 5) {
         errorP.hidden = false;
-        errorP.innerText = 'Username must be at least 5 characters long';
-    } else {
-        errorP.innerText = '';
-    }
+        errorP.innerText += "Username must be at least 5 characters long";
+    } else if (user.split(" ").length > 1) {
+        errorP.hidden = false;
+        errorP.innerText += "Username cannot have spaces.";
+    } 
 }
 
 /**
@@ -72,24 +94,22 @@ const checkUser = (user) => {
 const checkPass = (password) => {
     if (password.trim().length < 8) {
         errorP.hidden = false;
-        errorP.innerText = "Password must be at least 8 characters long.";
+        errorP.innerText += "Password must be at least 8 characters long.";
     }
     else if (password.split(" ").length > 1) {
         errorP.hidden = false;
-        errorP.innerText = "Password cannot have spaces.";
+        errorP.innerText += "Password cannot have spaces.";
     }
     else if (!password.match(/[A-Z]/)) {
         errorP.hidden = false;
-        errorP.innerText = "Password must contain at least one uppercase character.";
+        errorP.innerText += "Password must contain at least one uppercase character.";
     }
     else if (!password.match(/[0-9]/)) {
         errorP.hidden = false;
-        errorP.innerText = "Password must contain at least one number.";
+        errorP.innerText += "Password must contain at least one number.";
     }
     else if (!password.match(/[!@#$%^&*]/)) {
         errorP.hidden = false;
-        errorP.innerText = "Password must contain at least one special character.";
-    } else {
-        errorP.innerText = ''
-    }
+        errorP.innerText += "Password must contain at least one special character.";
+    } 
 }
