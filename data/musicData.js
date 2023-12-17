@@ -109,17 +109,8 @@ export const findUser = async (username) => {
  * If there are <5 albums, then it returns all of them.
  */
 export const topRanked = async () => {
-    /*const rankings = await col.rankings;
-    if (albums.length == 0) {
-        return ['There are currently no albums in the database. You should add some!'];
-    }
-    else if (albums.length < 10) {
-        return albums;
-    }*/
-
     let rankingsCollection = await rankings();
     rankingsCollection = await rankingsCollection.find({}).toArray()
-    console.log(rankingsCollection);
 
     if (rankingsCollection.countDocuments == 0) {
         return ['There are currently no albums in the database. You should add some!'];
@@ -149,24 +140,20 @@ export const topRanked = async () => {
  * If there are <5 albums, then it returns all of them.
  */
 export const mostFrequent = async () => {
-    if (albums.length == 0) {
+    let rankingsCollection = await rankings();
+    rankingsCollection = await rankingsCollection.find({}).toArray()
+
+    if (rankingsCollection.countDocuments == 0) {
         return ['There are currently no albums in the database. You should add some!'];
     }
-    else if (albums.length < 5) {
-        return albums;
-    }
-
     const albumRankings = {}; // key:album, value:number of rankings
 
-    for (let a in albums) {
-        let curr = albums[a];
-        let currRankings = [];
-        for (let r in rankings) {
-            if (rankings[r].albumName === curr.albumName) {
-                currRankings.push(rankings[r]);
-            }
+    for (let r in rankingsCollection) {
+        if (!albumRankings[rankingsCollection[r].albumId]) {
+            albumRankings[rankingsCollection[r].albumId] = 1;
+        } else {
+            albumRankings[rankingsCollection[r].albumId] = albumRankings[rankingsCollection[r].albumId] + 1;
         }
-        albumRankings[curr.albumName] = currRankings.length;
     }
     // TODO: format the data to appear nicely on the page (maybe {author, album}?)
     const sorted = Object.keys(albumRankings).sort(function (a, b) { return albumRankings[a] - albumRankings[b] });
