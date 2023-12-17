@@ -74,16 +74,6 @@ export const validComment= (comment)=>{
     if(comment.length<5) throw new Error('invalid comment: comment must be at least 5 characters')
 }
 
-export const validReview= (review)=>{
-    if(typeof review !== 'string') throw new Error('invalid review: review must be of type string');
-    if(review.trim().length==0) throw new Error('invalid review: review cannot be empty')
-    review=review.trim();
-    if(review.length<5) throw new Error('invalid review: review must be at least 5 characters')
-}
-
-export const validReviewBool= (reviewBool) =>{
-    if (typeof reviewBool !== 'boolean') throw new Error('review boolean should be of type boolean');
-}
 
 export const validComments = (comments) =>{
     if(!Array.isArray(comments)) throw new Error('comments should be stored in an array');
@@ -92,7 +82,12 @@ export const validComments = (comments) =>{
     }
 }
 
+export const validReview= (review) => {
+    review=review.trim();
+    if(review.length>250) throw new Error('review length must be less than 250 characters')
+}
 
 
 
-export default {includesNumber, validUser, validPassword, isValidArray, isValidNumber, isValidObject, isValidString, titleCase, validAlbumId, validRating, validComments, validReview, validReviewBool};
+
+export default {includesNumber, validUser, validPassword, isValidArray, isValidNumber, isValidObject, isValidString, titleCase, validAlbumId, validRating, validComments, validReview};
