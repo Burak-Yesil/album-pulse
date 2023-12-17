@@ -1,11 +1,12 @@
 import {users, rankings, albums} from '../config/mongoCollections.js';
 import * as spotify from './spotifyAPI.js';
 import {ObjectId} from 'mongodb';
-import { validUser, validPassword } from '../helpers.js';
+import { validUser, validPassword, validAlbumId , validRating, validComments, validReview, validReviewBool, validRankingsId, validComment } from '../helpers.js';
 
 export const getRankings = async (album_id) => {
     // checks if album has been ranked yet. If yes, returns rankings and information for that album. 
     // If not, finds album from spotifyAPI and returns that there are no rankings
+    validAlbumId(album_id);
     album_id = album_id.trim();
     const rankingsCollection = await rankings();
     const album = await rankingsCollection.findOne({ albumId: album_id });
@@ -15,7 +16,7 @@ export const getRankings = async (album_id) => {
     if (!album) {
         try{
             if (!currAlbumName) { 
-                throw 'Album could not be found.'; 
+                throw new Error('Album could not be found.'); 
             }
             return { albumName: currAlbumName, album_rankings: ['No rankings yet - add one!'] };
         }
@@ -44,8 +45,28 @@ export const addRanking = async (albumid, username, rating, review, review_bool,
     // lets user add ranking and then adds ranking to the rankings database
     // also adds ranking to the array of rankings in the album object; edits albums database
 
+    //input validation!!!
+
+    validAlbumId(albumid);
     validUser(username);
-    username = username.trim();
+    validRating(rating);
+    validReviewBool(review_bool);
+    
+    if(review_bool===true){
+        validReview(review);
+        review=review.trim();
+    }
+
+    validComments(comments);
+
+    albumid=albumid.trim();
+    username=username.trim();
+    rating=rating.trim();
+    if(comments.length!==0){
+        for(i==0; i<comments.length; i++){
+            comments[i]=comments[i].trim();
+        }
+    }
 
     //Checking to see if user already left a Ranking if so we just return
     const rankingcol = await rankings();
@@ -232,6 +253,7 @@ export const showRankings = async (username) => {
 }
 
 export const allAlbumRankings = async (albumId)=>{
+    validAlbumId(albumId);
     const rankingsCollection = await rankings();
     const albumRankings = await rankingsCollection.find({albumId: albumId}).toArray();
 
@@ -253,6 +275,14 @@ export const allAlbumRankings = async (albumId)=>{
 }
 
 export const editRanking = async (rankingId, rating, review)=>{
+    validRankingsId(rankingId);
+    validRating(rating);
+    validReview(review);
+
+    rankingId=rankingId.trim();
+    rating=rating.trim();
+    review=review.trim();
+
     const rankingCollection= await rankings();
     const existingRanking = await rankingCollection.findOne({_id: new ObjectId(rankingId)});
     if (!existingRanking) throw 'Error: ranking not found';
@@ -284,6 +314,12 @@ export const editRanking = async (rankingId, rating, review)=>{
 }
 
 export const addComment= async (rankingId, commentMessage) =>{
+    validRankingsId(rankingId);
+    validComment(commentMessage);
+
+    rankingId=rankingId.trim();
+    commentMessage=commentMessage.trim()
+
     const rankingCollection = await rankings();
     const existingRanking = await rankingCollection.findOne({_id: new ObjectId(rankingId)});
     if(!existingRanking) throw 'Error: ranking not found';
@@ -311,6 +347,9 @@ export const addComment= async (rankingId, commentMessage) =>{
 };
 
 export const getRankingById = async (id)=>{
+    validRankingsId(id);
+    id=id.trim();
+    
     const rankingcol = await rankings();
     const ranking = await rankingcol.findOne({_id: new ObjectId(id)});
 
@@ -329,6 +368,8 @@ export const trending = async() => {
 }
 
 export const getavg = async(albumid) => {
+    validAlbumId(albumid);
+    albumid=albumid.trim();
     let albumcol = await albums();
     let album = await albumcol.findOne({ albumId: albumid });
     if(!album){
