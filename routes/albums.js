@@ -13,8 +13,9 @@ router
         try {
             return res.render('search', {title: 'Search'});
         } catch (e) {
-            return res.status(400).render('register', {
-                error: e.message
+            return res.status(404).render('error', {
+                error: e.message,
+                status: 404
               });        
             }
     })
@@ -24,8 +25,9 @@ router
             const searchedAlbums = await spotifyAPI.getAlbum(searchFor);
             return res.render('search', {title: 'Search Results', albumresults: searchedAlbums});
         }catch(e){
-            return res.status(400).render('register', {
-                error: e.message
+            return res.status(400).render('error', {
+                error: e.message,
+                status: 400
               });        
         }
     });
@@ -50,7 +52,7 @@ router
             return res.render('recommendations', {recommendations: gen_recommendations});
             // Generate recommendations
         } catch (e) {
-            return res.status(400).render('error', {error: e.message});
+            return res.status(400).render('error', {error: e.message, status: 400});
         }
     })
 
