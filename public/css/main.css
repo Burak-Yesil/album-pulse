@@ -4,12 +4,12 @@ header {
     font-weight: bold;
     text-align: center;
 }
-    
+
 ul {
     border-radius: 12px;
-    padding: 10px; 
-    text-align: left; 
-    list-style-type: circle; 
+    padding: 10px;
+    text-align: left;
+    list-style-type: circle;
 }
 
 li {
@@ -17,14 +17,14 @@ li {
     font-style: italic;
 }
 
-ul[id="genres-details"]{
+ul[id="genres-details"] {
     border-radius: 12px;
-    padding: 10px; 
+    padding: 10px;
     list-style-type: none;
-    text-align: center; 
+    text-align: center;
 }
 
-a{
+a {
     color: rgb(212, 57, 109);
 }
 
@@ -38,23 +38,22 @@ body {
     margin-right: 12px;
 }
 
-
-button{
+button {
     background-color: palevioletred;
     border-radius: 12px;
     font-style: bold;
 }
 
-label{
+label {
     font-style: bold;
 }
 
-input[type="text"]{
+input[type="text"] {
     background-color: bisque;
     border-radius: 12px;
 }
 
-input[type="password"]{
+input[type="password"] {
     background-color: bisque;
     border-radius: 12px;
 }
