@@ -1,11 +1,13 @@
 import {users, rankings, albums} from '../config/mongoCollections.js';
 import * as spotify from './spotifyAPI.js';
 import {ObjectId} from 'mongodb';
-import { validUser, validPassword } from '../helpers.js';
+import { validUser, validPassword, validAlbumId , validRating, validComments, validReview, validReviewBool, validRankingsId, validComment } from '../helpers.js';
 
+/**
+ * Checks if album has been ranked yet. If yes, returns rankings and information for that album. 
+ * If not, finds album from spotifyAPI and returns that there are no rankings
+ */
 export const getRankings = async (album_id) => {
-    // checks if album has been ranked yet. If yes, returns rankings and information for that album. 
-    // If not, finds album from spotifyAPI and returns that there are no rankings
     album_id = album_id.trim();
     const rankingsCollection = await rankings();
     const album = await rankingsCollection.findOne({ albumId: album_id });
@@ -15,7 +17,7 @@ export const getRankings = async (album_id) => {
     if (!album) {
         try{
             if (!currAlbumName) { 
-                throw 'Album could not be found.'; 
+                throw new Error('Album could not be found.'); 
             }
             return { albumName: currAlbumName, album_rankings: ['No rankings yet - add one!'] };
         }
@@ -40,19 +42,38 @@ export const getRankings = async (album_id) => {
     return { albumName: currAlbumName, rankings: albums_rankings };
 }
 
+/**
+ * lets user add ranking and then adds ranking to the rankings database
+ * also adds ranking to the array of rankings in the album object; edits albums database
+*/
 export const addRanking = async (albumid, username, rating, review, review_bool, comments =[]) => {
     // lets user add ranking and then adds ranking to the rankings database
     // also adds ranking to the array of rankings in the album object; edits albums database
 
     validUser(username);
-    username = username.trim();
+    validRating(rating);
+    validReviewBool(review_bool);
+    
+    if(review_bool===true){
+        validReview(review);
+        review=review.trim();
+    }
+
+    validComments(comments);
+
+    albumid=albumid.trim();
+    username=username.trim();
+    rating=rating.trim();
+    if(comments.length!==0){
+        for(i==0; i<comments.length; i++){
+            comments[i]=comments[i].trim();
+        }
+    }
 
     //Checking to see if user already left a Ranking if so we just return
     const rankingcol = await rankings();
     const rankingAlreadyExists = await rankingcol.findOne({"albumId":albumid, "userName":username})
     if (rankingAlreadyExists) return {successful: true, rankingAlreadyExists: true, info:"ranking for this album already exists"};
-
-
 
     if (!rating) throw 'Rating must be provided.';
     if (rating < 1 || rating > 5) {
@@ -63,7 +84,7 @@ export const addRanking = async (albumid, username, rating, review, review_bool,
     // TODO: word limit for reviews?
 
     let albumObject = await spotify.getAlbumObject(albumid);
-    const currAlbumName=albumObject.albumName
+    const currAlbumName = albumObject.albumName;
 
     let newRanking = {
         albumId: albumid,
@@ -75,33 +96,43 @@ export const addRanking = async (albumid, username, rating, review, review_bool,
         comments: comments
     }
 
-    // add ranking to collection of all album rankings 
     const addRanking = await rankingcol.insertOne(newRanking);
 
     const albumcol = await albums();
     const alb = await albumcol.findOne({albumId: albumid});
-    if(!alb){
+    if (!alb) {
         let newalb = {
-            albumId : albumid,
+            albumId: albumid,
             albumName: currAlbumName,
             avgRanking: parseInt(rating)
         }
         const addAlb = await albumcol.insertOne(newalb);
-    } else {
-        let allrankings = await allAlbumRankings(albumid);
-        let rnks = allrankings.rankings;
-        let ratings = []
-        for(let r in rnks){
-            ratings.push(r.rating);
+    }
+    else {
+        let rankingsCol = await rankings();
+        let rnksCursor = await rankingsCol.find({ albumId: albumid });
+        let rnks = await rnksCursor.toArray();
+
+        let ratings = [];
+
+        for (let r of rnks) {
+            if (r.albumId === albumid) {
+                ratings.push(r.rating);
+            }
         }
+
         let tot = 0;
-        for(let rat in ratings){
+        for (let rat of ratings) {
             tot += parseInt(rat);
         }
-        let newrank = tot/ratings.length;
+
+        let newrank = 0;
+        if (ratings.length > 0) {
+            newrank = tot / ratings.length;
+        }
+
         await albumcol.updateOne({ albumId: albumid }, { $set: { avgRanking: newrank } });
     }
-
 
     // find all rankings for this album
     const obj = await getRankings(albumid);
@@ -150,7 +181,7 @@ export const topRanked = async () => {
         albumRankings[a.albumId] = avg;
     }
     // TODO: format the data to be ready to be printed on the webpage
-    let sorted = Object.keys(albumRankings).sort(function (a, b) { return albumRankings[a] - albumRankings[b] });
+    let sorted = Object.keys(albumRankings).sort(function (a, b) { return albumRankings[b] - albumRankings[a] });
     sorted = sorted.slice(0, 5);
     const albumObjects = [];
     for (let i = 0; i < sorted.length; i++) {
@@ -185,7 +216,7 @@ export const mostFrequent = async () => {
         }
     }
     // TODO: format the data to appear nicely on the page (maybe {author, album}?)
-    let sorted = Object.keys(albumRankings).sort(function (a, b) { return albumRankings[a] - albumRankings[b] });
+    let sorted = Object.keys(albumRankings).sort(function (a, b) { return albumRankings[b] - albumRankings[a] });
     sorted = sorted.slice(0, 5);
     const albumObjects = [];
     for (let i = 0; i < sorted.length; i++) {
@@ -232,6 +263,7 @@ export const showRankings = async (username) => {
 }
 
 export const allAlbumRankings = async (albumId)=>{
+    validAlbumId(albumId);
     const rankingsCollection = await rankings();
     const albumRankings = await rankingsCollection.find({albumId: albumId}).toArray();
 
@@ -253,6 +285,14 @@ export const allAlbumRankings = async (albumId)=>{
 }
 
 export const editRanking = async (rankingId, rating, review)=>{
+    validRankingsId(rankingId);
+    validRating(rating);
+    validReview(review);
+
+    rankingId=rankingId.trim();
+    rating=rating.trim();
+    review=review.trim();
+
     const rankingCollection= await rankings();
     const existingRanking = await rankingCollection.findOne({_id: new ObjectId(rankingId)});
     if (!existingRanking) throw 'Error: ranking not found';
@@ -284,6 +324,12 @@ export const editRanking = async (rankingId, rating, review)=>{
 }
 
 export const addComment= async (rankingId, commentMessage) =>{
+    validRankingsId(rankingId);
+    validComment(commentMessage);
+
+    rankingId=rankingId.trim();
+    commentMessage=commentMessage.trim()
+
     const rankingCollection = await rankings();
     const existingRanking = await rankingCollection.findOne({_id: new ObjectId(rankingId)});
     if(!existingRanking) throw 'Error: ranking not found';
@@ -311,6 +357,9 @@ export const addComment= async (rankingId, commentMessage) =>{
 };
 
 export const getRankingById = async (id)=>{
+    validRankingsId(id);
+    id=id.trim();
+    
     const rankingcol = await rankings();
     const ranking = await rankingcol.findOne({_id: new ObjectId(id)});
 
@@ -329,6 +378,8 @@ export const trending = async() => {
 }
 
 export const getavg = async(albumid) => {
+    validAlbumId(albumid);
+    albumid=albumid.trim();
     let albumcol = await albums();
     let album = await albumcol.findOne({ albumId: albumid });
     if(!album){
