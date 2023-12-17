@@ -60,7 +60,12 @@ router
     .get(async (req, res) => {
         try {
             let mostFrequentAlbums = await mostFrequent();
-            return res.render('frequent', { title: 'Most Frequently Ranked Albums', mostFrequent: mostFrequentAlbums });
+            let albumNames = [];
+            for (let i = 0; i < mostFrequentAlbums.length; i++) {
+                albumNames.push(mostFrequentAlbums[i].albumName);
+            }
+            console.log('albumNames: ', albumNames);
+            return res.render('frequent', { title: 'Most Frequently Ranked Albums', mostFrequent: albumNames });
         } catch (e) {
             return res.status(400).render('error', {
                 error: e.message,
@@ -75,8 +80,13 @@ router
     .get(async (req, res) => {
         try {
             let topRankedAlbums = await topRanked();
+            let albumNames = [];
+            for (let i = 0; i < topRankedAlbums.length; i++) {
+                albumNames.push(topRankedAlbums[i][0]);
+            }
+            console.log('albumNames: ', albumNames);
             const user = req.session.user;
-            return res.render('trending', { title: 'Trending Albums', topRanked: topRankedAlbums, userName: user.userName});
+            return res.render('trending', { title: 'Trending Albums', topRanked: albumNames, userName: user.userName});
         } catch (e) {
             return res.status(400).render('error', {
                 errorMessage: e.message

@@ -129,8 +129,17 @@ export const topRanked = async () => {
         albumRankings[a.albumId] = avg;
     }
     // TODO: format the data to be ready to be printed on the webpage
-    const sorted = Object.keys(albumRankings).sort(function (a, b) { return albumRankings[a] - albumRankings[b] });
-    return sorted.slice(0, 5);
+    let sorted = Object.keys(albumRankings).sort(function (a, b) { return albumRankings[a] - albumRankings[b] });
+    sorted = sorted.slice(0, 5);
+    const albumObjects = [];
+    for (let i = 0; i < sorted.length; i++) {
+        const albumObject = await spotify.getAlbumObject(sorted[i]);
+        albumObjects.push({
+            albumId: sorted[i],
+            albumName: albumObject.albumName
+        });
+    }
+    return albumObjects;
 }
 
 /**
@@ -157,12 +166,15 @@ export const mostFrequent = async () => {
     // TODO: format the data to appear nicely on the page (maybe {author, album}?)
     let sorted = Object.keys(albumRankings).sort(function (a, b) { return albumRankings[a] - albumRankings[b] });
     sorted = sorted.slice(0, 5);
-    const albumNames = [];
+    const albumObjects = [];
     for (let i = 0; i < sorted.length; i++) {
         const albumObject = await spotify.getAlbumObject(sorted[i]);
-        albumNames.push(albumObject.albumName);
+        albumObjects.push({
+            albumId: sorted[i],
+            albumName: albumObject.albumName
+        });
     }
-    return albumNames;
+    return albumObjects;
 }
 
 
