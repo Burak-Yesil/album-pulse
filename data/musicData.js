@@ -41,7 +41,7 @@ export const getRankings = async (album_id) => {
     return { albumName: currAlbumName, rankings: albums_rankings };
 }
 
-export const addRanking = async (albumid, username, rating, review, review_bool) => {
+export const addRanking = async (albumid, username, rating, review, review_bool, comments =[]) => {
     // lets user add ranking and then adds ranking to the rankings database
     // also adds ranking to the array of rankings in the album object; edits albums database
 
@@ -56,7 +56,6 @@ export const addRanking = async (albumid, username, rating, review, review_bool)
 
     let albumObject = await spotify.getAlbumObject(albumid);
     const currAlbumName=albumObject.albumName
-    console.log(currAlbumName)
 
     let newRanking = {
         albumId: albumid,
@@ -64,7 +63,8 @@ export const addRanking = async (albumid, username, rating, review, review_bool)
         userName: username,
         rating: rating,
         review: review,
-        review_provided: review_bool
+        review_provided: review_bool,
+        comments: comments
     }
 
     // add ranking to collection of all album rankings 
@@ -271,9 +271,37 @@ export const editRanking = async (rankingId, rating, review)=>{
         albumName: result.value.albumName,
         rating: result.value.rating,
         review: result.value.review,
-        review_provided: result.value.review_provided
+        review_provided: result.value.review_provided,
+        comments: result.value.comments
     };
 }
+
+export const addComment= async (rankingId, commentMessage) =>{
+    const rankingCollection = await rankings();
+    const existingRanking = await rankingCollection.findOne({_id: new ObjectId(rankingId)});
+    if(!existingRanking) throw 'Error: ranking not found';
+    const updatedRanking = {
+        $push: {comments: commentMessage}
+    };
+
+    const result= await rankingCollection.findOneAndUpdate(
+        {_id: new ObjectId(rankingId)},
+        updatedRanking,
+        {returnDocument: 'after'}
+    );
+    if(!result.value) throw 'Error: update failed';
+
+    return {
+        rankingId: result.value._id.toString(),
+        userName: result.value.userName,
+        albumId: result.value.albumId,
+        albumName: result.value.albumName,
+        rating: result.value.rating,
+        review: result.value.review,
+        review_provided: result.value.review_provided,
+        comments: result.value.comments
+    };
+};
 
 export const getRankingById = async (id)=>{
     const rankingcol = await rankings();
