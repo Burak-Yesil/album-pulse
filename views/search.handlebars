@@ -3,6 +3,7 @@
     <input type="text" name="searchInput" id="searchInput" placeholder="Search...">
     <button type="submit">Search</button>
 </form>
+<p id="error">{{error}}</p>
 <ul class="search-results">
         {{#each albumresults}}
         <li><a href="/album/{{this.[2]}}">{{this.[0]}} by {{this.[1]}}</a></li>

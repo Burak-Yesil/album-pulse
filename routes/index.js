@@ -8,7 +8,7 @@ const constructorMethod = (app) => {
     app.use('/', userRoutes);
 
     app.use('*', (req, res) => {
-        res.status(404).json({ indexRouteError: 'Route Not found' });
+        res.status(404).render('error', { error: 'Route Not found', status: 404 });
     });
 };
   
