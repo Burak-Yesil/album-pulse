@@ -11,8 +11,6 @@ export const getRankings = async (album_id) => {
     console.log(album_id)
     const albumObject = await spotify.getAlbumObject(album_id);
     const currAlbumName= albumObject.albumName;
-    console.log(albumObject)
-    //console.log(album_name)
 
     if (!album) {
         try{
@@ -198,4 +196,22 @@ export const showRankings = async (username) => {
     }));
     return {username: username, rankings: formattedRankings};
 
+}
+
+export const allAlbumRankings = async (albumname)=>{
+    const rankingsCollection = await rankings();
+    const albumRankings = await rankingsCollection.find({albumName: albumname}).toArray();
+
+    if (albumRankings.length === 0){
+        return {albumName: albumname, rankings: ['No rankings for this album yet, add one!!']};
+    }
+
+    const formattedRankings = albumRankings.map(ranking=>({
+        userName:ranking.userName,
+        rating:ranking.rating,
+        review: ranking.review,
+        review_provided: ranking.review_provided
+    }));
+
+    return {albumName: albumname, rankings: formattedRankings};
 }
