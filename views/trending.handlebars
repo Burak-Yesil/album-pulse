@@ -3,7 +3,7 @@
 <p>Trending Albums on AlbumPulse:</p>
 <ul class="top_ranked">
     {{#each topRanked}}
-    <li>{{this}}</li>
+    <li><a href = "/album/{{this.albumId}}">{{this.albumName}}: Ranking {{this.avgRanking}}</a></li>
     {{/each}}
 </ul>
 <a href="/user/{{userName}}">Back to user page</a>

@@ -83,13 +83,9 @@ router
     .get(async (req, res) => {
         try {
             let topRankedAlbums = await trending();
-            let albumNames = [];
-            for (let i = 0; i < topRankedAlbums.length; i++) {
-                albumNames.push(topRankedAlbums[i].albumName);
-            }
-            console.log('albumNames: ', albumNames);
+        
             const user = req.session.user;
-            return res.render('trending', { title: 'Trending Albums', topRanked: albumNames, userName: user.userName});
+            return res.render('trending', { title: 'Trending Albums', topRanked: topRankedAlbums, userName: user.userName});
         } catch (e) {
             return res.status(400).render('error', {
                 errorMessage: e.message
@@ -162,7 +158,6 @@ router.route('/album/:id')
         try {
             const albumId = req.params.id;
             let rankings = await allAlbumRankings(albumId);
-            console.log(rankings);
             return res.render('albumRankings', { title: 'Rankings', albumName: rankings.albumName, rankings: rankings.rankings});
         } catch (e) {
             console.log(e);

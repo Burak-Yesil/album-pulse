@@ -322,32 +322,13 @@ export const getRankingById = async (id)=>{
 
 export const trending = async() => {
     let albcol = await albums();
+    let alblist = await albcol.find({}).toArray();
 
-    albcol = await albcol.find({}).toArray()
+    let sorted = alblist.sort((a, b) => b.avgRanking - a.avgRanking);
 
-    if (albcol.countDocuments == 0) {
-        return ['There are currently no albums in the database. You should add some!'];
-    }
-    const albumRankings = {}; // key:album, value:avg ranking
+    let topFive = sorted.slice(0, 5);
 
-    for (let r in albcol) {
-        if (!albumRankings[albcol[r].albumId]) {
-            albumRankings[albcol[r].albumId] = albcol[r].avgRanking;
-        }
-    }
-
-    let sorted = Object.keys(albumRankings).sort(function (a, b) { return albumRankings[a] - albumRankings[b] });
-    sorted = sorted.slice(0, 5);
-    const albumObjects = [];
-    for (let i = 0; i < sorted.length; i++) {
-        const albumObject = await spotify.getAlbumObject(sorted[i]);
-        albumObjects.push({
-            albumId: sorted[i],
-            albumName: albumObject.albumName
-        });
-    }
-    return albumObjects;
-
+    return topFive;
 }
 
 export const getavg = async(albumid) => {
