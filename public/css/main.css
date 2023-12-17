@@ -19,6 +19,7 @@ li {
 
 textarea{
     background-color: bisque;
+    border-radius: 12px;
 }
 
 ul[id="genres-details"] {
