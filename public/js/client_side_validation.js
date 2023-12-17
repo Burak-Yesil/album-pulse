@@ -35,6 +35,8 @@ if (loginForm) {
         checkPass(pass.value.trim());
         if (errorP.innerText === '') {
             document.getElementById('login-form').submit();
+        } else{
+            errorP.innerText = 'invalid user or password';
         }
     });
 }
@@ -64,6 +66,25 @@ if(recForm) {
     });
 }
 
+let rankingForm = document.getElementById('ranking');
+let rankNum = document.getElementById('out_of_five');
+let review = document.getElementById('review');
+if(rankingForm){
+    rankingForm.addEventListener('submit', (event) => {
+        console.log("hi");
+        event.preventDefault();
+        errorP.innerText = '';
+        checkNum(rankNum.value);
+        checkReview(review.value);
+        if(errorP.innerText === ''){
+            document.getElementById('ranking').submit();
+        }
+
+    });
+}
+
+
+
 const checkSearch = (search) => {
     if(search.trim().length > 100){
         errorP.hidden = false;
@@ -75,16 +96,38 @@ const checkSearch = (search) => {
     }
 }
 
+
+const checkNum = (rank) => {
+    if(typeof(parseInt(rank)) !== 'number'){
+        errorP.hidden = false;
+        errorP.innerText = 'rank must be an int between 1 and 5';
+    }
+    if(parseInt(rank) < 1){
+        errorP.hidden = false;
+        errorP.innerText = 'rank must be an int between 1 and 5';
+    }
+    if(parseInt(rank) > 5){
+        errorP.hidden = false;
+        errorP.innerText = 'rank must be an int between 1 and 5';
+    }
+}
+
+const checkReview = (rev) => {
+    if(rev.length > 250){
+        errorP.hidden = false;
+        errorP.innerText = 'review must be under 250 characters long';
+    }
+}
 /**
 * Checks if the username is valid during login & registration.
 */
 const checkUser = (user) => {
     if (user.trim().length < 5) {
         errorP.hidden = false;
-        errorP.innerText += "Username must be at least 5 characters long";
+        errorP.innerText = "Username must be at least 5 characters long";
     } else if (user.split(" ").length > 1) {
         errorP.hidden = false;
-        errorP.innerText += "Username cannot have spaces.";
+        errorP.innerText = "Username cannot have spaces.";
     } 
 }
 
@@ -94,22 +137,22 @@ const checkUser = (user) => {
 const checkPass = (password) => {
     if (password.trim().length < 8) {
         errorP.hidden = false;
-        errorP.innerText += "Password must be at least 8 characters long.";
+        errorP.innerText = "Password must be at least 8 characters long.";
     }
     else if (password.split(" ").length > 1) {
         errorP.hidden = false;
-        errorP.innerText += "Password cannot have spaces.";
+        errorP.innerText = "Password cannot have spaces.";
     }
     else if (!password.match(/[A-Z]/)) {
         errorP.hidden = false;
-        errorP.innerText += "Password must contain at least one uppercase character.";
+        errorP.innerText = "Password must contain at least one uppercase character.";
     }
     else if (!password.match(/[0-9]/)) {
         errorP.hidden = false;
-        errorP.innerText += "Password must contain at least one number.";
+        errorP.innerText = "Password must contain at least one number.";
     }
     else if (!password.match(/[!@#$%^&*]/)) {
         errorP.hidden = false;
-        errorP.innerText += "Password must contain at least one special character.";
+        errorP.innerText = "Password must contain at least one special character.";
     } 
 }
