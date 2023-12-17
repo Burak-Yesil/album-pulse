@@ -228,13 +228,6 @@ router
             return res.status(404).render('error', {error: e.message, status: 404, username: req.session.user.userName});
         }
     })
-    .put(async (req, res) => {
-        try{
-
-        } catch (e) {
-
-        }
-    })
     .delete(async (req, res) => {
         try{
 
