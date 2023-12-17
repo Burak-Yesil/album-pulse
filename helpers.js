@@ -95,4 +95,4 @@ export const validComments = (comments) =>{
 
 
 
-export default {includesNumber, validUser, validPassword, isValidArray, isValidNumber, isValidObject, isValidString, titleCase, validAlbumId, validRating, validComments, validReview, validReviewBool, validRankingsId};
+export default {includesNumber, validUser, validPassword, isValidArray, isValidNumber, isValidObject, isValidString, titleCase, validAlbumId, validRating, validComments, validReview, validReviewBool};
