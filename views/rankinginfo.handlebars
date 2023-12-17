@@ -5,6 +5,17 @@
         {{else}}
           <p>No review provided</p>
         {{/if}}
+        {{#if canEditRanking}}
+        {{!-- Edit Ranking --}}
+          <a href="/your-edit-route" class="button-style">
+            <i class="fas fa-edit"></i> Edit
+          </a>
+        {{else}}
+        {{!-- Leave a comment --}}
+          <a href="/your-edit-route" class="button-style">
+            <i class="fas fa-edit"></i> Comment on Ranking
+          </a>
+        {{/if}}
 
 <p>
     <a href="/album/{{userRankings.albumId}}"> View Album Info</a>

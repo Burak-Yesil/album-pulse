@@ -3,16 +3,17 @@
 
     {{#if rankings.length}}
     <ul>
-        {{#each rankings}}
-        <li>
-            <a href="/user/{{userName}}/rankings/{{id}}"><strong>{{userName}}</strong></a>
+      {{#each rankings}}
+          <li>
+            <p>User: <strong>{{userName}}</strong></p>
             <p>Rating: {{rating}}</p>
             {{#if review_provided}}
             <p>Review: {{review}}</p>
             {{else}}
             <p>No review provided</p>
             {{/if}}
-        </li>
+            <a href="/user/{{userName}}/rankings/{{id}}">View Ranking Details</a>
+          </li>
         </a>
         {{/each}}
     </ul>
