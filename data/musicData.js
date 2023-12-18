@@ -58,7 +58,6 @@ export const addRanking = async (albumid, username, rating, review, review_bool,
 
     albumid=albumid.trim();
     username=username.trim();
-    rating=rating.trim();
     review=review.trim();
 
     if(comments.length!==0){

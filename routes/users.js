@@ -302,7 +302,6 @@ router
     .post(async (req, res) =>{
         try{
             let comment = req.body.comment;
-            console.log(req.body);
             comment = comment.trim();
             if(comment.length === 0){
                 throw new Error('Cannot submit empty comment');
@@ -312,7 +311,6 @@ router
             }
             let new_ranking = await addComment(req.params.rankingid, comment);
             let url = `/user/${req.params.userid}/rankings/${req.params.rankingid}`;
-            console.log(url);
             return res.redirect(url);
         } catch (e) {
             return res.status(400).render('error', {error: e.message, status: 400, username: req.session.user.userName});

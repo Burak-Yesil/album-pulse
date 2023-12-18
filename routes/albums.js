@@ -41,6 +41,7 @@ router
             }
         }catch(e){
             return res.status(400).render('error', {
+                title: 'Error',
                 error: e.message,
                 status: 400,
                 username: req.session.user.userName
@@ -52,7 +53,9 @@ router
     .route('/recommendations')
     .get(async (req, res) =>{
         try{
-            return res.render('recommendations');
+            const user = req.session.user.userName;
+            console.log(user);
+            return res.render('recommendations', { userName: user });
         } catch (e){
             return res.status(404).render('error', {error: e.message, status: 404, username: req.session.user.userName});
         }
@@ -71,9 +74,9 @@ router
             // Generate Recommendations
             let gen_recommendations = await spotifyAPI.getReccomendations(album_name, artist, 5);
             if(!gen_recommendations){
-                return res.render('recommendations', {title: 'Search Results', error: 'No matching results found.'});
+                return res.render('recommendations', {title: 'Search Results', error: 'No matching results found.', userName: req.session.user.userName});
             }
-            return res.render('recommendations', {title: 'Recommendations', recommendations: gen_recommendations});
+            return res.render('recommendations', {title: 'Recommendations', recommendations: gen_recommendations, userName: req.session.user.userName});
             // Generate recommendations
         } catch (e) {
             return res.status(400).render('error', {error: e.message, status: 400, username: req.session.user.userName});
@@ -208,6 +211,7 @@ router.route('/album/:id')
     router.route('/album/:id/rankings')
     .get(async (req, res) => {
         try {
+
             const albumId = req.params.id;
             let rankings = await allAlbumRankings(albumId);
             let user = req.session.user;
