@@ -92,21 +92,46 @@ if(recForm) {
 let rankingForm = document.getElementById('ranking');
 let rankNum = document.getElementById('out_of_five');
 let review = document.getElementById('review');
-if(rankingForm){
+if (rankingForm) {
     rankingForm.addEventListener('submit', (event) => {
-        console.log("hi");
         event.preventDefault();
         errorP.innerText = '';
         checkNum(rankNum.value);
         checkReview(review.value);
-        if(errorP.innerText === ''){
+        if (errorP.innerText === '') {
             document.getElementById('ranking').submit();
         }
 
     });
 }
 
+let editForm = document.getElementById('edit-form');
+let editRanking = document.getElementById('editRanking');
+let editReview = document.getElementById('editReview');
+if (editForm) {
+    editForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+        errorP.innerText = '';
+        checkNum(editRanking.value.trim());
+        checkReview(editReview.value.trim());
+        if (errorP.innerText === '') {
+            document.getElementById('edit-form').submit();
+        }
+    });
+}
 
+let commentForm = document.getElementById('comment-form');
+let comment = document.getElementById('comment');
+if (commentForm) {
+    commentForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+        errorP.innerText = '';
+        checkReview(comment.value);
+        if (errorP.innerText === '') {
+            document.getElementById('comment-form').submit();
+        }
+    });
+}
 
 const checkSearch = (search) => {
     if(search.trim().length > 100){
