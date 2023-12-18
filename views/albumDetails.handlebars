@@ -1,18 +1,18 @@
 <div id="album-details">
-    <img id="cover" src="{{cover}}"></img><br>
-    <label for="artists-details">Artists</label>
-    <p id="artist">{{artists}}</p>
-    <label for="genres-details">Genres</label>
+    <img id="cover" src="{{cover}}" alt="no image found"><br>
+    <label>Artists</label>
+    <p id="artists-details">{{artists}}</p>
+    <label>Genres</label>
     <ul id="genres-details">
     </ul>
-    <label for="total">Total Tracks</label>
+    <label>Total Tracks</label>
     <p id="total">{{total}}</p>
-    <label for="avg">Average Ranking:</label>
+    <label>Average Ranking:</label>
     <p id="avg">{{avg}}</p>
     <p>Submit a Ranking</p>
     <form id="ranking" method="POST">
         <label for="out_of_five">Ranking 1-5</label>
-        <input type="text" name='out_of_five' id="out_of_five" /><br>
+        <input type="text" name='out_of_five' id="out_of_five"><br>
         <label for="review">Review (Optional)</label>
         <textarea name="review" id="review"></textarea><br>
         <button type="submit">Submit</button>
