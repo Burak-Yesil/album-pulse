@@ -5,6 +5,12 @@
         {{else}}
           <p>No review provided</p>
         {{/if}}
+        <label for="comments">Comments</label>
+        <ul id="comments">
+          {{#each comments}}
+            <li>{{this}}</li>
+          {{/each}}
+        </ul>
         {{#if canEditRanking}}
         {{!-- Edit Ranking --}}
           <a href="/user/{{userName}}/rankings/{{rankingid}}/edit" class="button-style">

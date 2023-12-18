@@ -3,7 +3,7 @@ import { Router } from 'express';
 
 import {userData} from '../data/index.js'
 import helpers from '../helpers.js';
-import { showRankings, getRankingById} from '../data/musicData.js';
+import { showRankings, getRankingById, addComment} from '../data/musicData.js';
 import {users} from '../config/mongoCollections.js';
 
 // TODO: Import data functions
@@ -223,7 +223,8 @@ router
             const userRanking= await getRankingById(rankingid);
             const cookieUserName= req.session.user.userName
             const canEditRanking = cookieUserName === req.params.userid
-            return res.render('rankinginfo', {userRanking: userRanking, canEditRanking, userName: userId, rankingid});
+            let comment_arr = userRanking.comments;
+            return res.render('rankinginfo', {userRanking: userRanking, canEditRanking, userName: userId, rankingid, comments: comment_arr});
         } catch (e){
             return res.status(404).render('error', {error: e.message, status: 404, username: req.session.user.userName});
         }
@@ -244,12 +245,17 @@ router
         const rankingid = req.params.rankingid;
         let userId = req.params.userid;
         userId = userId.toLowerCase();
+        if(userId != req.session.user.userName){
+            throw new Error('Cannot edit other users rankings');
+        }
         const userRanking= await getRankingById(rankingid);
         const cookieUserName= req.session.user.userName
         const canEditRanking = cookieUserName === req.params.userid
-        return res.render('editOrCommentRanking', {userRanking: userRanking, canEditRanking, userName: userId, rankingid});
+        //return res.status(400).render('editOrComment', {mode: 'edit'})
+        //return res.render('editOrCommentRanking', {userRanking: userRanking, canEditRanking, userName: userId, rankingid});
+        return res.render('editOrComment', {edit: true})
     } catch (e){
-        return res.status(404).render('error', {error: e.message, status: 404});
+        return res.status(404).render('error', {error: e.message, status: 404, username: req.session.user.userName});
     }
 })
 
@@ -260,12 +266,35 @@ router
             const rankingid = req.params.rankingid;
             let userId = req.params.userid;
             userId = userId.toLowerCase();
+            if(userId === req.session.user.userName){
+                throw new Error('Cannot comment on your own post');
+            }
             const userRanking = await getRankingById(rankingid);
             const cookieUserName= req.session.user.userName
             const canEditRanking = cookieUserName === req.params.userid
-            return res.render('editOrCommentRanking', {userRanking: userRanking, canEditRanking, userName: userId, rankingid});
+            return res.render('editOrComment', {comment: true});
+            //return res.render('editOrCommentRanking', {userRanking: userRanking, canEditRanking, userName: userId, rankingid});
         } catch (e){
-            return res.status(404).render('error', {error: e.message, status: 404});
+            return res.status(404).render('error', {error: e.message, status: 404, username: req.session.user.userName});
+        }
+    })
+    .post(async (req, res) =>{
+        try{
+            let comment = req.body.comment;
+            console.log(req.body);
+            comment = comment.trim();
+            if(comment.length === 0){
+                throw new Error('Cannot submit empty comment');
+            }
+            if(comment.length > 250){
+                throw new Error('Exceeded comment length limit (250)');
+            }
+            let new_ranking = await addComment(req.params.rankingid, comment);
+            let url = `/user/${req.params.userid}/rankings/${req.params.rankingid}`;
+            console.log(url);
+            return res.redirect(url);
+        } catch (e) {
+            return res.status(400).render('error', {error: e.message, status: 400, username: req.session.user.userName});
         }
     })
 
