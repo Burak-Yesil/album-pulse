@@ -226,7 +226,7 @@ router.route('/album/:id')
             }
         } catch (e) {
             console.log(e);
-            return res.status(404).json({ error: e.message });
+            return res.status(404).render('error', { title: 'Title', error: e.message, status: 404, username: req.session.user.userName });
         }
     });
 

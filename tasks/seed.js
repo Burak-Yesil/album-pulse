@@ -6,7 +6,7 @@
 
 import { dbConnection, closeConnection } from '../config/mongoConnection.js';
 import { registerUser } from "../data/userData.js";
-import { addRanking } from "../data/musicData.js";
+import { addRanking, addComment, findUser, findRanking } from "../data/musicData.js";
 
 const db = await dbConnection();
 await db.dropDatabase();
@@ -48,7 +48,23 @@ await addRanking(evolutionOfXur, 'kenaw', 5, 'I love this guy', true);
 await addRanking(offSeason, 'kenaw', 4, '', false);
 await addRanking(camp, 'kenaw', 3, 'eh', true);
 
-// TODO: add comments to the rankings
+/****** comments ******/
+let phill = await findUser('patrickhill');
+let mo1 = await findRanking('melissaozcan', pinkFriday2);
+await addComment(phill._id.toString(), mo1._id.toString(), 'this is sick');
+
+let mozcan = await findUser('melissaozcan');
+let ph1 = await findRanking('patrickhill', blueSlidePark);
+await addComment(mozcan._id.toString(), ph1._id.toString(), 'i disagree');
+
+let nzaman = await findUser('nusibazaman');
+await addComment(nzaman._id.toString(), ph1._id.toString(), 'i agree');
+
+let nz1 = await findRanking('nusibazaman', offSeason);
+await addComment(mozcan._id.toString(), nz1._id.toString(), 'hot take');
+
+let kw1 = await findRanking('kenaw', camp);
+await addComment(nzaman._id.toString(), kw1._id.toString(), 'i appreciate your thoughts');
 
 console.log('Done seeding database');
 await closeConnection();

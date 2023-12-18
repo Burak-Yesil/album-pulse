@@ -235,6 +235,17 @@ export const getRecommendations = async () => {
     return top[random];
 }
 
+export const findRanking = async (username, album_id) => {
+    validUser(username);
+    username = username.trim();
+    album_id = album_id.trim();
+
+    const rankingsCollection = await rankings();
+    const ranking = await rankingsCollection.findOne({ 'userName': username, 'albumId': album_id });
+    if (!ranking) throw "Ranking not found.";
+    return ranking;
+}
+
 export const showRankings = async (username) => {
     validUser(username);
     username=username.trim();
