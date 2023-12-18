@@ -15,7 +15,8 @@ router
         } catch (e) {
             return res.status(404).render('error', {
                 error: e.message,
-                status: 404
+                status: 404,
+                username: req.session.user.userName
               });        
             }
     })
@@ -41,7 +42,8 @@ router
         }catch(e){
             return res.status(400).render('error', {
                 error: e.message,
-                status: 400
+                status: 400,
+                username: req.session.user.userName
               });        
         }
     });
@@ -52,7 +54,7 @@ router
         try{
             return res.render('recommendations');
         } catch (e){
-            return res.status(404).render('error', {error: e.message});
+            return res.status(404).render('error', {error: e.message, status: 404, username: req.session.user.userName});
         }
     })
     .post(async (req, res) =>{
@@ -74,7 +76,7 @@ router
             return res.render('recommendations', {title: 'Recommendations', recommendations: gen_recommendations});
             // Generate recommendations
         } catch (e) {
-            return res.status(400).render('error', {error: e.message, status: 400});
+            return res.status(400).render('error', {error: e.message, status: 400, username: req.session.user.userName});
         }
     })
 
@@ -93,7 +95,8 @@ router
         } catch (e) {
             return res.status(400).render('error', {
                 error: e.message,
-                status: 400
+                status: 400,
+                username: req.session.user.userName
               });
         }
     });
@@ -113,7 +116,9 @@ router
             }
         } catch (e) {
             return res.status(400).render('error', {
-                errorMessage: e.message
+                errorMessage: e.message,
+                status: 400,
+                username: req.session.user.userName
               });
         }
     });
@@ -152,7 +157,7 @@ router.route('/album/:id')
             return res.render('albumDetails', { title: name, cover: cover, total: total, artists: artists, genres: genres, album_id: req.params.id, avg:avg, userName: user.userName});
         } catch (e) {
             console.log(e);
-            return res.status(404).render('error', { error: e.message, status: 404});
+            return res.status(404).render('error', { error: e.message, status: 404, username: req.session.user.userName});
         }
     })
     .post(async (req, res) =>{
@@ -194,7 +199,7 @@ router.route('/album/:id')
         }
         catch (e) {
             console.log(e);
-            return res.status(404).render('error', { error: e.message });
+            return res.status(404).render('error', { error: e.message, status: 404, username: req.session.user.userName});
         }
     });
 

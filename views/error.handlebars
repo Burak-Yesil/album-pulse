@@ -1,4 +1,10 @@
 <p>Error: {{error}}</p>
 <br>
 <p>Status: {{status}}</p>
-<a href="/login"> Back to Log In </a>
+
+{{#if username}}
+    <a href="/user/{{username}}">Back to User Page</a>
+{{else}}
+    <a href="/login">Back to Login</a>
+    <a href="/register">Back to Register</a>
+{{/if}}

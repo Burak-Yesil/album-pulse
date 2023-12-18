@@ -1,23 +1,34 @@
-<strong>{{userRankings.albumName}}</strong></a>
-        <p>Rating: {{userRankings.rating}}</p>
-        {{#if userRankings.review_provided}}
-          <p>Review: {{userRankings.review}}</p>
+<strong>{{userRanking.albumName}}</strong></a>
+        <p>Rating: {{userRanking.rating}}</p>
+        {{#if userRanking.review_provided}}
+          <p>Review: {{userRanking.review}}</p>
         {{else}}
           <p>No review provided</p>
         {{/if}}
+        <label for="comments">Comments</label>
+        <ul id="comments">
+          {{#each comments}}
+            <li>{{this}}</li>
+          {{/each}}
+        </ul>
         {{#if canEditRanking}}
         {{!-- Edit Ranking --}}
-          <a href="/your-edit-route" class="button-style">
+          <a href="/user/{{userName}}/rankings/{{rankingid}}/edit" class="button-style">
             <i class="fas fa-edit"></i> Edit
           </a>
+          <p> 
+            <a href = '/user/{{userName}}/rankings/{{rankingid}}/delete'>
+              <button id="delete ranking"> Delete </button>
+            </a>
+          </p>
         {{else}}
         {{!-- Leave a comment --}}
-          <a href="/your-edit-route" class="button-style">
+          <a href="/user/{{userName}}/rankings/{{rankingid}}/comment" class="button-style">
             <i class="fas fa-edit"></i> Comment on Ranking
           </a>
         {{/if}}
 
 <p>
-    <a href="/album/{{userRankings.albumId}}"> View Album Info</a>
+    <a href="/album/{{userRanking.albumId}}"> View Album Info</a>
     <a href="/user/{{userName}}">Back to user page</a>
 </p>

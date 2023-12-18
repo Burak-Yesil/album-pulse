@@ -329,6 +329,7 @@ export const addComment= async (rankingId, commentMessage) =>{
     const rankingCollection = await rankings();
     const existingRanking = await rankingCollection.findOne({_id: new ObjectId(rankingId)});
     if(!existingRanking) throw 'Error: ranking not found';
+    
     const updatedRanking = {
         $push: {comments: commentMessage}
     };
@@ -338,18 +339,10 @@ export const addComment= async (rankingId, commentMessage) =>{
         updatedRanking,
         {returnDocument: 'after'}
     );
-    if(!result.value) throw 'Error: update failed';
 
-    return {
-        rankingId: result.value._id.toString(),
-        userName: result.value.userName,
-        albumId: result.value.albumId,
-        albumName: result.value.albumName,
-        rating: result.value.rating,
-        review: result.value.review,
-        review_provided: result.value.review_provided,
-        comments: result.value.comments
-    };
+    if(!result) throw 'Error: update failed';
+
+    return {updated: true};
 };
 
 export const getRankingById = async (id)=>{
@@ -383,4 +376,50 @@ export const getavg = async(albumid) => {
     }
     let avg = album.avgRanking;
     return avg.toString();
+}
+
+export const deleteRanking = async(rankingid) => {
+    let albumcol = await albums();
+    let rankcol = await rankings();
+
+    let rnk = await getRankingById(rankingid);
+    let albid = rnk.albumId;
+    let alb = await albumcol.findOne({ albid });
+
+    // in rankings, delete entire ranking from the collection 
+    let rankinginfo = await rankcol.findOneAndDelete({
+        _id: new ObjectId(rankingid)
+    });
+
+    // in albs, change average ranking of the album
+
+    let newrankings = await rankings();
+    let rnksCursor = await newrankings.find({ albumId: albid });
+    let rnks = await rnksCursor.toArray();
+    if(rnks.length === 0){
+        await albumcol.findOneAndDelete({
+            albumId: albid
+        });
+    } else {
+        let ratings = [];
+
+        for (let r of rnks) {
+            if (r.albumId === albid) {
+                ratings.push(r.rating);
+            }
+        }
+
+        let tot = 0;
+        for (let rat of ratings) {
+            tot += parseInt(rat);
+        }
+
+        let newrank = 0;
+        if (ratings.length > 0) {
+            newrank = tot / ratings.length;
+        }
+
+        await albumcol.updateOne({ albumId: albid }, { $set: { avgRanking: newrank } });
+    }
+    return;
 }

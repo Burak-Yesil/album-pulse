@@ -3,7 +3,8 @@ import { Router } from 'express';
 
 import {userData} from '../data/index.js'
 import helpers from '../helpers.js';
-import { showRankings, getRankingById} from '../data/musicData.js';
+import { showRankings, getRankingById, deleteRanking, addComment} from '../data/musicData.js';
+import {users} from '../config/mongoCollections.js';
 
 // TODO: Import data functions
 const router = Router();
@@ -18,7 +19,7 @@ router
                 title: "About" 
             })
         }catch(e){
-            return res.status(404).render('error', { error: e.message, status: '404' });  
+            return res.status(404).render('error', { error: e.message, status: 404, username: req.session.user.userName });  
         }
     })
 
@@ -31,7 +32,7 @@ router
                 title: "Login",
             })
         } catch (e) {
-            return res.status(404).render('error', { error: e.message, status: '404' });
+            return res.status(404).render('error', { error: e.message, status: 404 });
         }
     })
     .post(
@@ -86,7 +87,7 @@ router
             req.session.destroy();
             return res.render('logout', { title: "Logout" });
         } catch (e) {
-            return res.status(404).render('error', {error: e.message, status: '400'});
+            return res.status(404).render('error', {error: e.message, status: 400, username: req.session.user.userName});
         }
     });
 
@@ -99,7 +100,7 @@ router
                 title: "Register",
             })
         } catch (e) {
-            return res.status(404).render('error', { error: e.message, status: 404 });
+            return res.status(404).render('error', { error: e.message, status: 404});
         }
     })
     .post(
@@ -145,7 +146,7 @@ router
                 const user = await userData.registerUser(username, password, confirmPassword);
                 return res.redirect('/login');
             }catch(e){
-                return res.status(400).render('error', {error: e.message, status: '400'})
+                return res.status(400).render('error', {error: e.message, status: 400})
             }
 
         }
@@ -161,52 +162,34 @@ router
                 title: "About",
             })
         } catch (e) {
-            return res.status(404).render('error', { error: e.message, status: 404 });
+            return res.status(404).render('error', { error: e.message, status: 404, username: req.session.user.userName });
         }
     });
 
-// Create ranking / Delete user
+// Show user profile
 router
     .route('/user/:username') 
     .get(async (req, res) =>{
         try{
             // TODO: 
-            const user = req.params.username
+            let user = req.params.username
+            user = user.toLowerCase();
             if(req.session.user.userName != user){
                 throw new Error('Cannot access another users private page');
             }
             return res.render('user', {title: user, username: user});
         }catch(e){
             // TODO: Revise later
-            return res.status(404).render('error', { error: e.message, status: 404});
+            return res.status(404).render('error', { error: e.message, status: 404, username: req.session.user.userName});
         }
     })
-    // .post(async (req, res) =>{
-    //     try{
-    //         // TODO: Fetch the album that user searched up once Submit button is pressed
-    //         // Cont. Once name is fetched, query spotify api
-    //         // Cont. Once album is found, then allow ranking -> get ranking
-    //     }catch(e){
-    //         // TODO: Revise later
-    //         console.log(e)
-    //         return res.status(404).render({ error: e.message });
-    //     }
-    // })
-    // .put(async (req, res) =>{
-    //     try{
-    //         // TODO: "Delete" user account -> actually just update name to "Deleted User (some number)" and terminated to = true
-    //     }catch(e){
-    //         // TODO: Revise later
-    //         console.log(e)
-    //         return res.status(404).json({ error: e.message });
-    //     }
-    // })
 
 router
     .route('/user/:username/rankings')
     .get(async (req,res) => {
         try{
-            const username = req.params.username;
+            let username = req.params.username;
+            username = username.toLowerCase();
             if(username != req.session.user.userName){
                 throw new Error('Cannot view other users personal rankings page');
             }
@@ -214,13 +197,13 @@ router
             delete req.session.data;
             const userRankings= await showRankings(username);
             if(userRankings.rankings[0] === 'No rankings yet.'){
-                return res.render('personal_rankings');
+                return res.render('personal_rankings', {userName: username} );
             }
             else{
-                return res.render('personal_rankings', {userRankings:userRankings, rankingAlreadyExists: rankingAlreadyExists});
+                return res.render('personal_rankings', {userRankings:userRankings, rankingAlreadyExists: rankingAlreadyExists, userName: username});
             }
         } catch (e){
-            return res.status(404).render('error', {error: e.message, status: 404});
+            return res.status(404).render('error', {error: e.message, status: 404, username: req.session.user.userName});
         }
     })
 
@@ -228,78 +211,113 @@ router
     .route('/user/:userid/rankings/:rankingid')
     .get(async (req,res) => {
         try{
+            const usersCollection = await users();
+            const exists = await usersCollection.findOne({userName: req.params.userid});
+            if(!exists){
+                throw new Error("Ranking does not exist");
+            }
+
             const rankingid = req.params.rankingid;
-            const userId = req.params.userid;
-            const userRankings= await getRankingById(rankingid);
+            let userId = req.params.userid;
+            userId = userId.toLowerCase();
+            const userRanking= await getRankingById(rankingid);
             const cookieUserName= req.session.user.userName
             const canEditRanking = cookieUserName === req.params.userid
-            return res.render('rankinginfo', {userRankings: userRankings, canEditRanking, userName: userId});
+            let comment_arr = userRanking.comments;
+            return res.render('rankinginfo', {userRanking: userRanking, canEditRanking, userName: userId, rankingid, comments: comment_arr});
         } catch (e){
-            return res.status(404).render('error', {error: e.message, status: 404});
-        }
-    })
-    .put(async (req, res) => {
-        try{
-
-        } catch (e) {
-
-        }
-    })
-    .delete(async (req, res) => {
-        try{
-
-        } catch (e) {
-            
+            return res.status(404).render('error', {error: e.message, status: 404, username: req.session.user.userName});
         }
     });
 
 
-// Edit/Delete ranking
-// router
-//     .route('/:userid/:rankingid')
-//     .put(async (req, res) =>{
-//         try{
-//             // TODO: Edit ranking
-//         }catch(e){
-//             // TODO: Revise later
-//             console.log(e)
-//             return res.status(404).json({ error: e.message });
-//         }
-//     })
-//     .delete(async (req, res) =>{ //Deletes an individual review 
-//         try{
-//             // TODO: 
-//         }catch(e){
-//             // TODO: Revise later
-//             console.log(e)
-//             return res.status(404).json({ error: e.message });
-//         }
-//     })
+router
+.route('/user/:userid/rankings/:rankingid/edit')
+.get(async (req,res) => {
+    try{
+        const rankingid = req.params.rankingid;
+        let userId = req.params.userid;
+        userId = userId.toLowerCase();
+        if(userId != req.session.user.userName){
+            throw new Error('Cannot edit other users rankings');
+        }
+        const userRanking= await getRankingById(rankingid);
+        const cookieUserName= req.session.user.userName
+        const canEditRanking = cookieUserName === req.params.userid
+        //return res.status(400).render('editOrComment', {mode: 'edit'})
+        //return res.render('editOrCommentRanking', {userRanking: userRanking, canEditRanking, userName: userId, rankingid});
+        return res.render('editOrComment', {edit: true})
+    } catch (e){
+        return res.status(404).render('error', {error: e.message, status: 404, username: req.session.user.userName});
+    }
+})
 
-// Comments
-// router
-//     .route('/:rankingid')
-//     .post(async (req, res) =>{
-//         try{
-//             // TODO: Input validation -> Post comment to ranking
-//         }catch(e){
-//             // TODO: Revise later
-//             console.log(e)
-//             return res.status(404).json({ error: e.message });
-//         }
-//     })
+router
+.route('/user/:userid/rankings/:rankingid/delete')
+.get(async (req,res) => {
+    try{
+        const rankingid = req.params.rankingid;
+        let userId = req.params.userid;
+        userId = userId.toLowerCase();
+        deleteRanking(rankingid);
+        return res.render('deleted', {username: userId}); 
+    } catch (e){
+        return res.status(404).render('error', {error: e.message, status: 404, username: req.session.user.userName});
+    }
+})
 
-// Comments Cont.
-// router
-//     .route('/:commentid')
-//     .delete(async (req, res) =>{
-//         try{
-//             // TODO: Input validation -> Delete comment to ranking
-//         }catch(e){
-//             // TODO: Revise later
-//             console.log(e)
-//             return res.status(404).json({ error: e.message });
-//         }
-//     })
+router
+.route('/user/:userid/rankings/:rankingid/delete')
+.get(async (req,res) => {
+    try{
+        const rankingid = req.params.rankingid;
+        let userId = req.params.userid;
+        userId = userId.toLowerCase();
+        deleteRanking(rankingid);
+        return res.render('deleted', {username: userId}); 
+    } catch (e){
+        return res.status(404).render('error', {error: e.message, status: 404});
+    }
+})
+
+router
+    .route('/user/:userid/rankings/:rankingid/comment')
+    .get(async (req,res) => {
+        try{
+            const rankingid = req.params.rankingid;
+            let userId = req.params.userid;
+            userId = userId.toLowerCase();
+            if(userId === req.session.user.userName){
+                throw new Error('Cannot comment on your own post');
+            }
+            const userRanking = await getRankingById(rankingid);
+            const cookieUserName= req.session.user.userName
+            const canEditRanking = cookieUserName === req.params.userid
+            return res.render('editOrComment', {comment: true});
+            //return res.render('editOrCommentRanking', {userRanking: userRanking, canEditRanking, userName: userId, rankingid});
+        } catch (e){
+            return res.status(404).render('error', {error: e.message, status: 404, username: req.session.user.userName});
+        }
+    })
+    .post(async (req, res) =>{
+        try{
+            let comment = req.body.comment;
+            console.log(req.body);
+            comment = comment.trim();
+            if(comment.length === 0){
+                throw new Error('Cannot submit empty comment');
+            }
+            if(comment.length > 250){
+                throw new Error('Exceeded comment length limit (250)');
+            }
+            let new_ranking = await addComment(req.params.rankingid, comment);
+            let url = `/user/${req.params.userid}/rankings/${req.params.rankingid}`;
+            console.log(url);
+            return res.redirect(url);
+        } catch (e) {
+            return res.status(400).render('error', {error: e.message, status: 400, username: req.session.user.userName});
+        }
+    })
+
 
 export default router;
