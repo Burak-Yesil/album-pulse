@@ -135,7 +135,7 @@ export const addRanking = async (albumid, username, rating, review, review_bool,
     const album_name = obj.albumName;  // the album object in the collection
     const rankings_obj = obj.rankings; // array of rankings for specific album
 
-    return {successful: true, rankingAlreadyExists: true};
+    return {successful: true, rankingAlreadyExists: false};
 }
 
 /**
