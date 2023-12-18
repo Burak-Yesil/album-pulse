@@ -28,15 +28,38 @@ if (registerForm) {
 let loginForm = document.getElementById('login-form');
 if (loginForm) {
     loginForm.addEventListener('submit', (event) => {
-        // CANNOT check if the user exists during clientside. must check in the route.
         event.preventDefault();
         errorP.innerText = '';
         checkUser(user.value.trim());
         checkPass(pass.value.trim());
+
         if (errorP.innerText === '') {
-            document.getElementById('login-form').submit();
-        } else{
-            errorP.innerText = 'invalid user or password';
+            let formData = {
+                user: user.value.trim(),
+                pass: pass.value.trim()
+            };
+
+            $.ajax({
+                method: 'POST',
+                url: '/login',
+                data: formData,
+                beforeSend: function () {
+                    event.preventDefault();
+                },
+                success: function (response) {
+                    if (response.includes('Either username or password is invalid')) {
+                        errorP.innerText = 'Either username or password is invalid';
+                    } else {
+                        document.getElementById('login-form').submit();
+                    }
+                },
+                error: function (error) {
+                    console.error('AJAX error:', error);
+                }
+            });
+            
+        }else{
+            errorP.innerText = 'Invalid user or password';
         }
     });
 }
@@ -98,15 +121,15 @@ const checkSearch = (search) => {
 
 
 const checkNum = (rank) => {
-    if(typeof(parseInt(rank)) !== 'number'){
+    if(!(Number.isInteger(Number(rank)))){
         errorP.hidden = false;
         errorP.innerText = 'rank must be an int between 1 and 5';
     }
-    if(parseInt(rank) < 1){
+    if(Number(rank) < 1){
         errorP.hidden = false;
         errorP.innerText = 'rank must be an int between 1 and 5';
     }
-    if(parseInt(rank) > 5){
+    if(Number(rank) > 5){
         errorP.hidden = false;
         errorP.innerText = 'rank must be an int between 1 and 5';
     }
