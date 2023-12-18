@@ -8,7 +8,7 @@
         <label for="comments">Comments</label>
         <ul id="comments">
           {{#each comments}}
-            <li>{{this}}</li>
+            <li><p>Username: {{this.userName}}<p/><p>Comment: {{this.comment}}</p></li>
           {{/each}}
         </ul>
         {{#if canEditRanking}}

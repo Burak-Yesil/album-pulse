@@ -14,6 +14,7 @@ router
             return res.render('search', {title: 'Search'});
         } catch (e) {
             return res.status(404).render('error', {
+                title: 'Error',
                 error: e.message,
                 status: 404,
                 username: req.session.user.userName
@@ -55,9 +56,9 @@ router
         try{
             const user = req.session.user.userName;
             console.log(user);
-            return res.render('recommendations', { userName: user });
+            return res.render('recommendations', { title: 'Recommendations', userName: user });
         } catch (e){
-            return res.status(404).render('error', {error: e.message, status: 404, username: req.session.user.userName});
+            return res.status(404).render('error', {title: 'Error', error: e.message, status: 404, username: req.session.user.userName});
         }
     })
     .post(async (req, res) =>{
@@ -79,7 +80,7 @@ router
             return res.render('recommendations', {title: 'Recommendations', recommendations: gen_recommendations, userName: req.session.user.userName});
             // Generate recommendations
         } catch (e) {
-            return res.status(400).render('error', {error: e.message, status: 400, username: req.session.user.userName});
+            return res.status(400).render('error', {title: 'Error', error: e.message, status: 400, username: req.session.user.userName});
         }
     })
 
@@ -90,13 +91,14 @@ router
         try {
             let mostFrequentAlbums = await mostFrequent();
             if(mostFrequentAlbums.length === 0){
-                return res.render('frequent', {error: 'No rankings added to Album Pulse yet, be the first!', username: req.session.user.userName})
+                return res.render('frequent', {title: 'Most Frequently Ranked Albums', error: 'No rankings added to Album Pulse yet, be the first!', username: req.session.user.userName})
             }
             else{
                 return res.render('frequent', { title: 'Most Frequently Ranked Albums', mostFrequent: mostFrequentAlbums, username: req.session.user.userName });
             }
         } catch (e) {
             return res.status(400).render('error', {
+                title: 'Error',
                 error: e.message,
                 status: 400,
                 username: req.session.user.userName
@@ -111,7 +113,7 @@ router
         try {
             let topRankedAlbums = await trending();
             if(topRankedAlbums.length === 0){
-                return res.render('trending', {error: 'No rankings added to Album Pulse yet, be the first!', userName: req.session.user.userName})
+                return res.render('trending', {title: 'Trending Albums', error: 'No rankings added to Album Pulse yet, be the first!', userName: req.session.user.userName})
             }
             else{
                 const user = req.session.user;
@@ -119,6 +121,7 @@ router
             }
         } catch (e) {
             return res.status(400).render('error', {
+                title: 'Error',
                 errorMessage: e.message,
                 status: 400,
                 username: req.session.user.userName
@@ -160,7 +163,7 @@ router.route('/album/:id')
             return res.render('albumDetails', { title: name, cover: cover, total: total, artists: artists, genres: genres, album_id: req.params.id, avg:avg, userName: user.userName});
         } catch (e) {
             console.log(e);
-            return res.status(404).render('error', { error: e.message, status: 404, username: req.session.user.userName});
+            return res.status(404).render('error', { title: 'Error', error: e.message, status: 404, username: req.session.user.userName});
         }
     })
     .post(async (req, res) =>{
@@ -202,7 +205,7 @@ router.route('/album/:id')
         }
         catch (e) {
             console.log(e);
-            return res.status(404).render('error', { error: e.message, status: 404, username: req.session.user.userName});
+            return res.status(404).render('error', { title: 'Error', error: e.message, status: 404, username: req.session.user.userName});
         }
     });
 
@@ -226,21 +229,5 @@ router.route('/album/:id')
             return res.status(404).json({ error: e.message });
         }
     });
-
-    // I made a function for this already in users.js - Kena
-    // router.route('/user/:userId/ranking/:rankingId')
-    // .get(async (req, res) => {
-    //     try {
-    //         const albumId = req.params.userId;
-    //         const rankingId = req.params.rankingId;
-    //         const ranking = getRankingById(rankingId)
-    //         return res.render('allAlbumRanking', { title: "Rankings", ranking});
-    //     } catch (e) {
-    //         console.log(e);
-    //         return res.status(404).json({ error: e.message });
-    //     }
-    // });
-
-
 
 export default router;

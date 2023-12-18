@@ -135,7 +135,7 @@ export const addRanking = async (albumid, username, rating, review, review_bool,
     const album_name = obj.albumName;  // the album object in the collection
     const rankings_obj = obj.rankings; // array of rankings for specific album
 
-    return {successful: true, rankingAlreadyExists: true};
+    return {successful: true, rankingAlreadyExists: false};
 }
 
 /**
@@ -345,7 +345,7 @@ export const editRanking = async (rankingId, rating, review)=>{
     };
 }
 
-export const addComment= async (rankingId, commentMessage) =>{
+export const addComment= async (userId, rankingId, commentMessage) =>{
     validComment(commentMessage);
 
     rankingId=rankingId.trim();
@@ -354,9 +354,14 @@ export const addComment= async (rankingId, commentMessage) =>{
     const rankingCollection = await rankings();
     const existingRanking = await rankingCollection.findOne({_id: new ObjectId(rankingId)});
     if(!existingRanking) throw 'Error: ranking not found';
+
+    let comment_obj = {
+        userName: userId,
+        comment: commentMessage
+    }
     
     const updatedRanking = {
-        $push: {comments: commentMessage}
+        $push: {comments: comment_obj}
     };
 
     const result= await rankingCollection.findOneAndUpdate(
