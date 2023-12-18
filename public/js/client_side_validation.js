@@ -28,38 +28,15 @@ if (registerForm) {
 let loginForm = document.getElementById('login-form');
 if (loginForm) {
     loginForm.addEventListener('submit', (event) => {
+        // CANNOT check if the user exists during clientside. must check in the route.
         event.preventDefault();
         errorP.innerText = '';
         checkUser(user.value.trim());
         checkPass(pass.value.trim());
-
         if (errorP.innerText === '') {
-            let formData = {
-                user: user.value.trim(),
-                pass: pass.value.trim()
-            };
-
-            $.ajax({
-                method: 'POST',
-                url: '/login',
-                data: formData,
-                beforeSend: function () {
-                    event.preventDefault();
-                },
-                success: function (response) {
-                    if (response.includes('Either username or password is invalid')) {
-                        errorP.innerText = 'Either username or password is invalid';
-                    } else {
-                        document.getElementById('login-form').submit();
-                    }
-                },
-                error: function (error) {
-                    console.error('AJAX error:', error);
-                }
-            });
-            
-        }else{
-            errorP.innerText = 'Invalid user or password';
+            document.getElementById('login-form').submit();
+        } else{
+            errorP.innerText = 'invalid user or password';
         }
     });
 }
