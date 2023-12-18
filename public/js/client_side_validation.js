@@ -161,7 +161,7 @@ const checkNum = (rank) => {
 }
 
 const checkReview = (rev) => {
-    if(rev.length > 250){
+    if(rev.length > 250 || rev.length < 5){
         errorP.hidden = false;
         errorP.innerText = 'review must be under 250 characters long';
     }
