@@ -290,33 +290,59 @@ export const editRanking = async (rankingId, rating, review)=>{
     rating=rating.trim();
     review=review.trim();
 
-    const rankingCollection= await rankings();
-    const existingRanking = await rankingCollection.findOne({_id: new ObjectId(rankingId)});
+    let rankingCollection= await rankings();
+    let existingRanking = await rankingCollection.findOne({_id: new ObjectId(rankingId)});
     if (!existingRanking) throw 'Error: ranking not found';
-    const updatedRanking={
+    let updatedRanking={
         $set:{
             rating:rating,
             review: review,
             review_provided: Boolean(review)
         }
     };
-    const result = await rankingCollection.findOneAndUpdate(
+    let result = await rankingCollection.findOneAndUpdate(
         {_id: new ObjectId(rankingId)},
-        updatedRanking,
-        {returnDocument: 'after'}
+        updatedRanking
+        // {returnDocument: 'after'}
     );
-    if(!result.value){
+
+    if(!result){
         throw 'Error: failed to update';
     }
+    
+    let rnk = await getRankingById(rankingId);
+    let albid = rnk.albumId;
+    let albumcol = await albums();
+    let newrankings = await rankings();
+    let rnksCursor = await newrankings.find({ albumId: albid });
+    let rnks = await rnksCursor.toArray();
+    if(rnks.length === 0){
+        await albumcol.findOneAndDelete({
+            albumId: albid
+        });
+    } else {
+        let ratings = [];
+
+        for (let r of rnks) {
+            if (r.albumId === albid) {
+                ratings.push(r.rating);
+            }
+        }
+
+        let tot = 0;
+        for (let rat of ratings) {
+            tot += parseInt(rat);
+        }
+
+        let newrank = 0;
+        if (ratings.length > 0) {
+            newrank = tot / ratings.length;
+        }
+
+        await albumcol.updateOne({ albumId: albid }, { $set: { avgRanking: newrank } });
+    }
     return{
-        rankingId: result.value._id.toString(),
-        userName: result.value.userName,
-        albumId: result.value.albumId,
-        albumName: result.value.albumName,
-        rating: result.value.rating,
-        review: result.value.review,
-        review_provided: result.value.review_provided,
-        comments: result.value.comments
+        updated: true
     };
 }
 
