@@ -1,14 +1,14 @@
-<strong>{{userRanking.albumName}}</strong></a>
+<strong>{{userRanking.albumName}}</strong>
         <p>Rating: {{userRanking.rating}}</p>
         {{#if userRanking.review_provided}}
           <p>Review: {{userRanking.review}}</p>
         {{else}}
           <p>No review provided</p>
         {{/if}}
-        <label for="comments">Comments</label>
+        <label>Comments</label>
         <ul id="comments">
           {{#each comments}}
-            <li><p>Username: {{this.userName}}<p/><p>Comment: {{this.comment}}</p></li>
+            <li><p>Username: {{this.userName}}</p><p>Comment: {{this.comment}}</p></li>
           {{/each}}
         </ul>
         {{#if canEditRanking}}
