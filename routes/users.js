@@ -20,7 +20,7 @@ router
                 title: "About" 
             })
         }catch(e){
-            return res.status(404).render('error', { error: e.message, status: 404, username: req.session.user.userName });  
+            return res.status(404).render('error', { title: 'Error', error: e.message, status: 404 });  
         }
     })
 
@@ -33,7 +33,7 @@ router
                 title: "Login",
             })
         } catch (e) {
-            return res.status(404).render('error', { error: e.message, status: 404 });
+            return res.status(404).render('error', { title: 'Error', error: e.message, status: 404 });
         }
     })
     .post(
@@ -88,7 +88,7 @@ router
             req.session.destroy();
             return res.render('logout', { title: "Logout" });
         } catch (e) {
-            return res.status(404).render('error', {error: e.message, status: 400, username: req.session.user.userName});
+            return res.status(404).render('error', {title: 'Error', error: e.message, status: 400, username: req.session.user.userName});
         }
     });
 
@@ -101,7 +101,7 @@ router
                 title: "Register",
             })
         } catch (e) {
-            return res.status(404).render('error', { error: e.message, status: 404});
+            return res.status(404).render('error', { title: 'Error', error: e.message, status: 404});
         }
     })
     .post(
@@ -147,7 +147,7 @@ router
                 const user = await userData.registerUser(username, password, confirmPassword);
                 return res.redirect('/login');
             }catch(e){
-                return res.status(400).render('error', {error: e.message, status: 400})
+                return res.status(400).render('error', {title: 'Error', error: e.message, status: 400})
             }
 
         }
@@ -163,7 +163,7 @@ router
                 title: "About",
             })
         } catch (e) {
-            return res.status(404).render('error', { error: e.message, status: 404, username: req.session.user.userName });
+            return res.status(404).render('error', { title: 'Error', error: e.message, status: 404});
         }
     });
 
@@ -181,7 +181,7 @@ router
             return res.render('user', {title: user, username: user});
         }catch(e){
             // TODO: Revise later
-            return res.status(404).render('error', { error: e.message, status: 404, username: req.session.user.userName});
+            return res.status(404).render('error', { title: 'Error', error: e.message, status: 404, username: req.session.user.userName});
         }
     })
 
@@ -198,13 +198,13 @@ router
             delete req.session.data;
             const userRankings= await showRankings(username);
             if(userRankings.rankings[0] === 'No rankings yet.'){
-                return res.render('personal_rankings', {userName: username} );
+                return res.render('personal_rankings', {title: 'Your Rankings', userName: username} );
             }
             else{
-                return res.render('personal_rankings', {userRankings:userRankings, rankingAlreadyExists: rankingAlreadyExists, userName: username});
+                return res.render('personal_rankings', {title: 'Your Rankings', userRankings:userRankings, rankingAlreadyExists: rankingAlreadyExists, userName: username});
             }
         } catch (e){
-            return res.status(404).render('error', {error: e.message, status: 404, username: req.session.user.userName});
+            return res.status(404).render('error', {title: 'Error', error: e.message, status: 404, username: req.session.user.userName});
         }
     })
 
@@ -234,9 +234,9 @@ router
             const cookieUserName= req.session.user.userName
             const canEditRanking = cookieUserName === req.params.userid
             let comment_arr = userRanking.comments;
-            return res.render('rankinginfo', {userRanking: userRanking, canEditRanking, userName: userId, rankingid, comments: comment_arr});
+            return res.render('rankinginfo', {title: 'Ranking Information', userRanking: userRanking, canEditRanking, userName: userId, rankingid, comments: comment_arr});
         } catch (e){
-            return res.status(404).render('error', {error: e.message, status: 404, username: req.session.user.userName});
+            return res.status(404).render('error', {title: 'Error', error: e.message, status: 404, username: req.session.user.userName});
         }
     });
 
@@ -254,11 +254,9 @@ router
         const userRanking= await getRankingById(rankingid);
         const cookieUserName= req.session.user.userName
         const canEditRanking = cookieUserName === req.params.userid
-        //return res.status(400).render('editOrComment', {mode: 'edit'})
-        //return res.render('editOrCommentRanking', {userRanking: userRanking, canEditRanking, userName: userId, rankingid});
-        return res.render('editOrComment', {edit: canEditRanking})
+        return res.render('editOrComment', {title: 'Edit', edit: canEditRanking})
     } catch (e){
-        return res.status(404).render('error', {error: e.message, status: 404, username: req.session.user.userName});
+        return res.status(404).render('error', {title: 'Error', error: e.message, status: 404, username: req.session.user.userName});
     }
 })
 .post(async (req,res) => {
@@ -269,9 +267,9 @@ router
         let newranking = req.body.editRanking;
         let newreview = req.body.editReview;
         let newrank = await editRanking(rankingid, newranking, newreview);
-        return res.render('deleted', {username: userId, deloredit: 'Ranking Edited!'});
+        return res.render('deleted', {title: 'Edited', username: userId, deloredit: 'Ranking Edited!'});
     } catch (e) {
-        return res.status(404).render('error', {error: e.message, status: 404, username: req.session.user.userName});
+        return res.status(404).render('error', {title: 'Error', error: e.message, status: 404, username: req.session.user.userName});
     }
 });
 
@@ -284,9 +282,9 @@ router
         let userId = req.params.userid;
         userId = userId.toLowerCase();
         deleteRanking(rankingid);
-        return res.render('deleted', {username: userId, deloredit: 'Ranking Deleted!'}); 
+        return res.render('deleted', {title: 'Deleted', username: userId, deloredit: 'Ranking Deleted!'}); 
     } catch (e){
-        return res.status(404).render('error', {error: e.message, status: 404});
+        return res.status(404).render('error', {title: 'Error', error: e.message, status: 404});
     }
 })
 
@@ -303,10 +301,9 @@ router
             const userRanking = await getRankingById(rankingid);
             const cookieUserName= req.session.user.userName
             const canEditRanking = cookieUserName === req.params.userid
-            return res.render('editOrComment', {comment: true});
-            //return res.render('editOrCommentRanking', {userRanking: userRanking, canEditRanking, userName: userId, rankingid});
+            return res.render('editOrComment', {title: 'Comment', comment: true});
         } catch (e){
-            return res.status(404).render('error', {error: e.message, status: 404, username: req.session.user.userName});
+            return res.status(404).render('error', {title: 'Error', error: e.message, status: 404, username: req.session.user.userName});
         }
     })
     .post(async (req, res) =>{
@@ -336,7 +333,7 @@ router
             let url = `/user/${req.params.userid}/rankings/${req.params.rankingid}`;
             return res.redirect(url);
         } catch (e) {
-            return res.status(400).render('error', {error: e.message, status: 400, username: req.session.user.userName});
+            return res.status(400).render('error', {title: 'Error', error: e.message, status: 400, username: req.session.user.userName});
         }
     })
 
