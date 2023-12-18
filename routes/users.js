@@ -3,7 +3,7 @@ import { Router } from 'express';
 
 import {userData} from '../data/index.js'
 import helpers from '../helpers.js';
-import { showRankings, getRankingById, deleteRanking, addComment} from '../data/musicData.js';
+import { showRankings, getRankingById, deleteRanking, addComment, editRanking} from '../data/musicData.js';
 import {users} from '../config/mongoCollections.js';
 
 // TODO: Import data functions
@@ -246,11 +246,25 @@ router
         const canEditRanking = cookieUserName === req.params.userid
         //return res.status(400).render('editOrComment', {mode: 'edit'})
         //return res.render('editOrCommentRanking', {userRanking: userRanking, canEditRanking, userName: userId, rankingid});
-        return res.render('editOrComment', {edit: true})
+        return res.render('editOrComment', {edit: canEditRanking})
     } catch (e){
         return res.status(404).render('error', {error: e.message, status: 404, username: req.session.user.userName});
     }
 })
+.post(async (req,res) => {
+    try{
+        let userId = req.params.userid;
+        let rankingid = req.params.rankingid;
+
+        let newranking = req.body.editRanking;
+        let newreview = req.body.editReview;
+        let newrank = await editRanking(rankingid, newranking, newreview);
+        return res.render('deleted', {username: userId, deloredit: 'Ranking Edited!'});
+    } catch (e) {
+        return res.status(404).render('error', {error: e.message, status: 404, username: req.session.user.userName});
+    }
+});
+
 
 router
 .route('/user/:userid/rankings/:rankingid/delete')
@@ -260,21 +274,7 @@ router
         let userId = req.params.userid;
         userId = userId.toLowerCase();
         deleteRanking(rankingid);
-        return res.render('deleted', {username: userId}); 
-    } catch (e){
-        return res.status(404).render('error', {error: e.message, status: 404, username: req.session.user.userName});
-    }
-})
-
-router
-.route('/user/:userid/rankings/:rankingid/delete')
-.get(async (req,res) => {
-    try{
-        const rankingid = req.params.rankingid;
-        let userId = req.params.userid;
-        userId = userId.toLowerCase();
-        deleteRanking(rankingid);
-        return res.render('deleted', {username: userId}); 
+        return res.render('deleted', {username: userId, deloredit: 'Ranking Deleted!'}); 
     } catch (e){
         return res.status(404).render('error', {error: e.message, status: 404});
     }
