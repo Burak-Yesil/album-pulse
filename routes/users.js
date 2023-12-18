@@ -3,7 +3,7 @@ import { Router } from 'express';
 
 import {userData} from '../data/index.js'
 import helpers from '../helpers.js';
-import { showRankings, getRankingById, addComment} from '../data/musicData.js';
+import { showRankings, getRankingById, deleteRanking, addComment} from '../data/musicData.js';
 import {users} from '../config/mongoCollections.js';
 
 // TODO: Import data functions
@@ -228,13 +228,6 @@ router
         } catch (e){
             return res.status(404).render('error', {error: e.message, status: 404, username: req.session.user.userName});
         }
-    })
-    .delete(async (req, res) => {
-        try{
-
-        } catch (e) {
-            
-        }
     });
 
 
@@ -256,6 +249,34 @@ router
         return res.render('editOrComment', {edit: true})
     } catch (e){
         return res.status(404).render('error', {error: e.message, status: 404, username: req.session.user.userName});
+    }
+})
+
+router
+.route('/user/:userid/rankings/:rankingid/delete')
+.get(async (req,res) => {
+    try{
+        const rankingid = req.params.rankingid;
+        let userId = req.params.userid;
+        userId = userId.toLowerCase();
+        deleteRanking(rankingid);
+        return res.render('deleted', {username: userId}); 
+    } catch (e){
+        return res.status(404).render('error', {error: e.message, status: 404, username: req.session.user.userName});
+    }
+})
+
+router
+.route('/user/:userid/rankings/:rankingid/delete')
+.get(async (req,res) => {
+    try{
+        const rankingid = req.params.rankingid;
+        let userId = req.params.userid;
+        userId = userId.toLowerCase();
+        deleteRanking(rankingid);
+        return res.render('deleted', {username: userId}); 
+    } catch (e){
+        return res.status(404).render('error', {error: e.message, status: 404});
     }
 })
 

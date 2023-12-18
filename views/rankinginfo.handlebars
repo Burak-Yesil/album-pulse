@@ -16,6 +16,11 @@
           <a href="/user/{{userName}}/rankings/{{rankingid}}/edit" class="button-style">
             <i class="fas fa-edit"></i> Edit
           </a>
+          <p> 
+            <a href = '/user/{{userName}}/rankings/{{rankingid}}/delete'>
+              <button id="delete ranking"> Delete </button>
+            </a>
+          </p>
         {{else}}
         {{!-- Leave a comment --}}
           <a href="/user/{{userName}}/rankings/{{rankingid}}/comment" class="button-style">
