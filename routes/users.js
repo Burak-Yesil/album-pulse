@@ -311,6 +311,10 @@ router
     })
     .post(async (req, res) =>{
         try{
+            let userId = req.params.userid;
+            userId = userId.trim();
+            let rankingId = req.params.rankingid;
+            rankingId = rankingId.trim();
             let comment = req.body.comment;
             comment = comment.trim();
             if(comment.length === 0){
@@ -319,7 +323,16 @@ router
             if(comment.length > 250){
                 throw new Error('Exceeded comment length limit (250)');
             }
-            let new_ranking = await addComment(req.params.rankingid, comment);
+            const userRanking = await getRankingById(rankingId);
+            let comments = userRanking.comments
+            console.log(comments);
+            for(let i = 0; i < comments.length; i++){
+                if(comments[i]['userName'] === req.session.user.userName){
+                    throw Error('You cannot comment on the same exact ranking more than once');
+                }
+            }
+
+            let new_ranking = await addComment(req.session.user.userName, req.params.rankingid, comment);
             let url = `/user/${req.params.userid}/rankings/${req.params.rankingid}`;
             return res.redirect(url);
         } catch (e) {
