@@ -197,7 +197,7 @@ router
             delete req.session.data;
             const userRankings= await showRankings(username);
             if(userRankings.rankings[0] === 'No rankings yet.'){
-                return res.render('personal_rankings');
+                return res.render('personal_rankings', {userName: username} );
             }
             else{
                 return res.render('personal_rankings', {userRankings:userRankings, rankingAlreadyExists: rankingAlreadyExists, userName: username});
