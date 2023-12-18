@@ -211,7 +211,12 @@ router.route('/album/:id')
             const albumId = req.params.id;
             let rankings = await allAlbumRankings(albumId);
             let user = req.session.user;
-            return res.render('albumRankings', { title: 'Rankings', albumName: rankings.albumName, albumId: albumId, rankings: rankings.rankings, userName: user.userName});
+            if(rankings.rankings[0] === 'No rankings for this album yet, add one!!'){
+                return res.render('albumRankings', { title: 'Rankings', albumName: rankings.albumName, albumId: albumId, userName: user.userName});
+            }
+            else{
+                return res.render('albumRankings', { title: 'Rankings', albumName: rankings.albumName, albumId: albumId, rankings: rankings.rankings, userName: user.userName});
+            }
         } catch (e) {
             console.log(e);
             return res.status(404).json({ error: e.message });

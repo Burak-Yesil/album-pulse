@@ -1,7 +1,7 @@
 <div id="album-rankings">
     <h2>Album Rankings: {{albumName}}</h2>
 
-    {{#if rankings.length}}
+    {{#if rankings}}
     <ul>
       {{#each rankings}}
           <li>
@@ -13,14 +13,11 @@
             <p>No review provided</p>
             {{/if}}
             <a href="/user/{{userName}}/rankings/{{id}}">View Ranking Details</a>
-          </li>
-        </a>
         {{/each}}
     </ul>
     {{else}}
     <p>No rankings yet. Be the first to add one!</p>
     {{/if}}
-    </form>
 
     <a href="/album/{{albumId}}">Back to album page</a>
     <a href="/user/{{userName}}">Back to user page</a>
