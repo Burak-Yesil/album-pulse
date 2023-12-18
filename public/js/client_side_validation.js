@@ -126,7 +126,7 @@ if (commentForm) {
     commentForm.addEventListener('submit', (event) => {
         event.preventDefault();
         errorP.innerText = '';
-        checkReview(comment.value);
+        checkComment(comment.value);
         if (errorP.innerText === '') {
             document.getElementById('comment-form').submit();
         }
@@ -161,11 +161,19 @@ const checkNum = (rank) => {
 }
 
 const checkReview = (rev) => {
-    if(rev.length > 250 || rev.length < 5){
+    if(rev.length > 250){
         errorP.hidden = false;
         errorP.innerText = 'review must be under 250 characters long';
     }
 }
+
+const checkComment = (comm) => {
+    if (comm.length > 250 || comm.length < 5) {
+        errorP.hidden = false;
+        errorP.innerText = 'comment must be between 5 - 250 characters long';
+    }
+}
+
 /**
 * Checks if the username is valid during login & registration.
 */
