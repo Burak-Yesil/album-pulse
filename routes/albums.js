@@ -41,6 +41,7 @@ router
             }
         }catch(e){
             return res.status(400).render('error', {
+                title: 'Error',
                 error: e.message,
                 status: 400,
                 username: req.session.user.userName
@@ -208,6 +209,7 @@ router.route('/album/:id')
     router.route('/album/:id/rankings')
     .get(async (req, res) => {
         try {
+
             const albumId = req.params.id;
             let rankings = await allAlbumRankings(albumId);
             let user = req.session.user;
