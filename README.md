@@ -10,7 +10,7 @@ Built using HTML, CSS, Handlebars, Express, Node.js, and MongoDB.
 
 From this point, you can register as a new user, or use these existing credentials:
 
-Username: PatrickHill
+Username: patrickhill
 
 Password: Patrick1!
 
