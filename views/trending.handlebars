@@ -1,6 +1,7 @@
 <!-- Page for "Most popular albums based on rankings" right now --->
 
 <p>Trending Albums on AlbumPulse:</p>
+<p id="winner"></p>
 <ul class="top_ranked">
     {{#each topRanked}}
     <li><a href = "/album/{{this.albumId}}">{{this.albumName}}: Ranking {{this.avgRanking}}</a></li>
@@ -8,3 +9,29 @@
 </ul>
 <p id="error">{{error}}</p>
 <a href="/user/{{userName}}">Back to user page</a>
+
+{{!-- CHANGED --}}
+<script src="https://code.jquery.com/jquery-2.2.4.min.js"
+    integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+
+{{!-- CHANGED --}}
+{{!-- AJAX --}}
+<script>
+    (function($){
+        try {
+            let winner = $('#winner');
+
+            let request = {
+                method: 'GET',
+                url: '/trending/best',
+            }
+
+            $.ajax(request).then(function(response){
+                winner.text(`The current top album is ${response.albumName} with an average ranking of ${response.avgRanking}!`);
+            });
+        } catch (e) {
+            // silently fail; not a necessary feature
+            return
+        }
+    })(window.jQuery);
+</script>

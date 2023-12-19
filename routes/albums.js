@@ -129,6 +129,24 @@ router
         }
     });
 
+    router.route('/trending/best')
+    .get(async (req, res) => {
+        try {
+            let topRankedAlbums = await trending();
+            if(topRankedAlbums.length === 0){
+                throw "No rankings"
+            }
+            return res.status(200).json(topRankedAlbums[0]);
+        } catch (e) {
+            return res.status(400).render('error', {
+                title: 'Error',
+                errorMessage: e.message,
+                status: 400,
+                username: req.session.user.userName
+            });
+        }
+    });
+
 router.route('/album/:id')
     .get(async (req, res) => {
         try {
