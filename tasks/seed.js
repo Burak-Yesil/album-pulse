@@ -51,20 +51,20 @@ await addRanking(camp, 'kenaw', 3, 'eh', true);
 /****** comments ******/
 let phill = await findUser('patrickhill');
 let mo1 = await findRanking('melissaozcan', pinkFriday2);
-await addComment(phill._id.toString(), mo1._id.toString(), 'this is sick');
+await addComment(phill.userName.toString(), mo1._id.toString(), 'this is sick');
 
 let mozcan = await findUser('melissaozcan');
-let ph1 = await findRanking('patrickhill', blueSlidePark);
-await addComment(mozcan._id.toString(), ph1._id.toString(), 'i disagree');
+let nz1 = await findRanking('nusibazaman', blueSlidePark);
+await addComment(mozcan.userName.toString(), nz1._id.toString(), 'i disagree');
 
 let nzaman = await findUser('nusibazaman');
-await addComment(nzaman._id.toString(), ph1._id.toString(), 'i agree');
+await addComment(nzaman.userName.toString(), mo1._id.toString(), 'i agree');
 
-let nz1 = await findRanking('nusibazaman', offSeason);
-await addComment(mozcan._id.toString(), nz1._id.toString(), 'hot take');
+let nz2 = await findRanking('nusibazaman', offSeason);
+await addComment(mozcan.userName.toString(), nz2._id.toString(), 'hot take');
 
 let kw1 = await findRanking('kenaw', camp);
-await addComment(nzaman._id.toString(), kw1._id.toString(), 'i appreciate your thoughts');
+await addComment(nzaman.userName.toString(), kw1._id.toString(), 'i appreciate your thoughts');
 
 console.log('Done seeding database');
 await closeConnection();
